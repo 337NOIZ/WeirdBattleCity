@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4261032583479788744}
   - component: {fileID: 4261032583479788747}
   m_Layer: 0
-  m_Name: TouchScreen
+  m_Name: VirtualTouchScreen
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -88,3 +88,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5fb95107881e6c4e9413d2c7acace2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  container: {fileID: 4261032583479788746}
+  dragSensitivity: 0.5
+  clampMagnitude: 1
+  maxMagnitude: 150
+  invertX: 0
+  invertY: 1
+  onDrag:
+    m_PersistentCalls:
+      m_Calls: []

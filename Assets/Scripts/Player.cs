@@ -1,16 +1,5 @@
 
-using System.Collections;
-
-using System.Collections.Generic;
-
 using UnityEngine;
-
-using UnityEngine.UI;
-
-public enum PlayerState
-{
-    standing, walking, running, attacking, jumping
-}
 
 public class Player : MonoBehaviour
 {
@@ -18,142 +7,149 @@ public class Player : MonoBehaviour
 
     [SerializeField] private Transform body = null;
 
-    [SerializeField] private TouchScreen touchScreen = null;
+    [Space]
 
-    [SerializeField] private VirtualJoystick virtualJoystick = null;
+    [SerializeField] private LayerMask groundedCheckLayerMask;
 
-    [SerializeField] private Button attackButton = null;
+    private CharacterController characterController;
 
-    [SerializeField] private Button jumpButton = null;
+    private InputManager inputManager;
 
-    private new Rigidbody rigidbody;
+    [SerializeField] private float walkingSpeed = 4f;
 
-    private Vector3 cameraRotation;
+    [SerializeField] private float runningSpeed = 6f;
 
-    public float cameraRotation_x_min = -55;
+    private Vector2 cameraArmRotation;
 
-    public float cameraRotation_x_max = 50f;
+    [SerializeField] private float minCameraArmRotationX = -65f;
 
-    public float cameraRotation_Sensitivity = 2f;
+    [SerializeField] private float maxCameraArmRotationX = 65f;
 
-    public float walkingSpeed = 5f;
+    [SerializeField] private float cameraRotationSensitivity = 1f;
 
-    public float runningSpeed = 5f;
+    [SerializeField] private int jumpCount = 0;
 
-    public int jumpCount = 0;
+    [SerializeField] private int maxJumpCount = 1;
 
-    public int jumpCount_max = 1;
+    [SerializeField] private float jumpForce = 1f;
 
-    public int jumpForce = 5;
+    [SerializeField] private float gravity = 15f;
 
-    private Dictionary<PlayerState, bool> playerStates = new Dictionary<PlayerState, bool>();
+    private float groundedCheckSphereOffset;
+
+    private float groundedCheckSphereRadius;
+
+    private float verticalVelocity;
 
     private void Awake()
     {
-        rigidbody = GetComponent<Rigidbody>();
+        characterController = GetComponent<CharacterController>();
+
+        inputManager = GetComponent<InputManager>();
     }
 
     private void Start()
     {
-        touchScreen.onDragDelegate += RotateCamera;
+        cameraArmRotation = Vector2.zero;
 
-        virtualJoystick.onDragDelegate += Move;
+        cameraArm.transform.localRotation = Quaternion.Euler(cameraArmRotation.x, cameraArmRotation.y, 0f);
 
-        jumpButton.onClick.AddListener(Jump);
+        groundedCheckSphereOffset = characterController.radius;
 
-        attackButton.onClick.AddListener(Attack);
-
-        cameraRotation = Vector3.zero;
-
-        playerStates.Add(PlayerState.standing, false);
-
-        playerStates.Add(PlayerState.walking, false);
-
-        playerStates.Add(PlayerState.running, false);
-
-        playerStates.Add(PlayerState.attacking, false);
-
-        playerStates.Add(PlayerState.jumping, false);
-
+        groundedCheckSphereRadius = characterController.radius + 0.001f;
     }
 
     private void Update()
     {
-#if UNITY_EDITOR
+        CharacterControllerMove();
 
-        var inputDirection = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-
-        if(inputDirection != Vector2.zero)
-        {
-            Move(inputDirection);
-        }
-
-#endif
+        Attack();
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void LateUpdate()
     {
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Ground"))
-        {
-            playerStates[PlayerState.jumping] = false;
+        RotateCamera();
+    }
 
+    private void OnDrawGizmosSelected()
+    {
+        if (jumpCount == 0)
+        {
+            Gizmos.color = new Color(1f, 0f, 0f, 0.25f);
+        }
+
+        else
+        {
+            Gizmos.color = new Color(0f, 1f, 0f, 0.25f);
+        }
+
+        Gizmos.DrawSphere(new Vector3(transform.position.x, transform.position.y + groundedCheckSphereOffset, transform.position.z), groundedCheckSphereRadius);
+    }
+
+    private void CharacterControllerMove()
+    {
+        var moveDirection = Vector3.zero;
+
+        if (inputManager.moveDirection != Vector2.zero)
+        {
+            var inputDirection = (cameraArm.transform.forward * inputManager.moveDirection.y + cameraArm.transform.right * inputManager.moveDirection.x).normalized;
+
+            moveDirection = inputDirection * (inputManager.isRunKeyPressed ? runningSpeed : walkingSpeed);
+
+            body.forward = new Vector3(cameraArm.transform.forward.x, 0f, cameraArm.transform.forward.z).normalized;
+        }
+
+        var spherePosition = new Vector3(transform.position.x, transform.position.y + groundedCheckSphereOffset, transform.position.z);
+
+        if (Physics.CheckSphere(spherePosition, groundedCheckSphereRadius, groundedCheckLayerMask, QueryTriggerInteraction.Ignore))
+        {
             jumpCount = 0;
+
+            verticalVelocity = 0f;
         }
+
+        else
+        {
+            if (jumpCount == 0)
+            {
+                ++jumpCount;
+            }
+
+            verticalVelocity -= gravity * Time.deltaTime;
+        }
+
+        if (inputManager.isJumpKeyPressed)
+        {
+            inputManager.isJumpKeyPressed = false;
+
+            if (jumpCount < maxJumpCount)
+            {
+                ++jumpCount;
+
+                verticalVelocity = Mathf.Sqrt(jumpForce * gravity * 2f);
+            }
+        }
+
+        characterController.Move(new Vector3(moveDirection.x, verticalVelocity, moveDirection.z) * Time.deltaTime);
     }
 
-    private void OnCollisionExit(Collision collision)
+    private void Attack()
     {
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Ground"))
+        if (inputManager.isAttackKeyPressed)
         {
-            if (!playerStates[PlayerState.jumping])
-            {
-                playerStates[PlayerState.jumping] = true;
-
-                //jumpCount += 1;
-            }
+            Debug.Log("Attack");
         }
     }
 
     private void RotateCamera()
     {
-        cameraRotation += new Vector3(-Input.GetAxis("Mouse Y"), Input.GetAxis("Mouse X"), 0f) * cameraRotation_Sensitivity;
-
-        if(cameraRotation.x < cameraRotation_x_min)
+        if (inputManager.lookDirection != Vector2.zero)
         {
-            cameraRotation.x = cameraRotation_x_min;
-        }
+            cameraArmRotation += new Vector2(inputManager.lookDirection.y, inputManager.lookDirection.x) * Time.deltaTime * cameraRotationSensitivity;
 
-        else if (cameraRotation.x > cameraRotation_x_max)
-        {
-            cameraRotation.x = cameraRotation_x_max;
-        }
+            cameraArmRotation.x = Mathf.Clamp(cameraArmRotation.x, minCameraArmRotationX, maxCameraArmRotationX);
 
-        cameraArm.localRotation = Quaternion.Euler(cameraRotation);
-    }
-
-    private void Move(Vector2 moveDirection)
-    {
-        body.forward = (new Vector3(cameraArm.forward.x, 0f, cameraArm.forward.z) * moveDirection.y + new Vector3(cameraArm.right.x, 0f, cameraArm.right.z) * moveDirection.x).normalized;
-
-        transform.position += body.forward * Time.deltaTime * walkingSpeed;
-    }
-
-    private void Attack()
-    {
-        Debug.Log("Attack");
-    }
-
-    private void Jump()
-    {
-        if(jumpCount < jumpCount_max)
-        {
-            ++jumpCount;
-
-            playerStates[PlayerState.jumping] = true;
-
-            rigidbody.velocity = Vector3.zero;
-
-            rigidbody.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            cameraArm.transform.localRotation = Quaternion.Euler(cameraArmRotation.x, cameraArmRotation.y, 0f);
         }
     }
 }
