@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    [Space]
+
     [SerializeField] private Transform cameraArm = null;
 
     [SerializeField] private Transform body = null;
@@ -15,15 +17,15 @@ public class Player : MonoBehaviour
 
     private InputManager inputManager;
 
-    [SerializeField] private float walkingSpeed = 4f;
+    [SerializeField] private float walkingSpeed = 5f;
 
-    [SerializeField] private float runningSpeed = 6f;
+    [SerializeField] private float runningSpeed = 10f;
 
     private Vector2 cameraArmRotation;
 
-    [SerializeField] private float minCameraArmRotationX = -65f;
+    [SerializeField] private float minCameraArmRotationX = -60f;
 
-    [SerializeField] private float maxCameraArmRotationX = 65f;
+    [SerializeField] private float maxCameraArmRotationX = 60f;
 
     [SerializeField] private float cameraRotationSensitivity = 1f;
 
@@ -56,7 +58,7 @@ public class Player : MonoBehaviour
 
         groundedCheckSphereOffset = characterController.radius;
 
-        groundedCheckSphereRadius = characterController.radius + 0.001f;
+        groundedCheckSphereRadius = characterController.radius + 0.0001f;
     }
 
     private void Update()
@@ -75,12 +77,12 @@ public class Player : MonoBehaviour
     {
         if (jumpCount == 0)
         {
-            Gizmos.color = new Color(1f, 0f, 0f, 0.25f);
+            Gizmos.color = new Color(0, 1f, 0f, 0.25f);
         }
 
         else
         {
-            Gizmos.color = new Color(0f, 1f, 0f, 0.25f);
+            Gizmos.color = new Color(1f, 0f, 0f, 0.25f);
         }
 
         Gizmos.DrawSphere(new Vector3(transform.position.x, transform.position.y + groundedCheckSphereOffset, transform.position.z), groundedCheckSphereRadius);

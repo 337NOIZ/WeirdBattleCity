@@ -7,9 +7,9 @@ public class InputManager : MonoBehaviour
 {
     public static InputManager instance { get; private set; }
 
-    public Vector2 moveDirection { get; private set; } = Vector2.zero;
-
     public Vector2 lookDirection { get; private set; } = Vector2.zero;
+
+    public Vector2 moveDirection { get; private set; } = Vector2.zero;
 
     public bool isAttackKeyPressed { get; private set; } = false;
 
@@ -22,16 +22,6 @@ public class InputManager : MonoBehaviour
         instance = this;
     }
 
-    public void OnMove(InputValue value)
-    {
-        Move(value.Get<Vector2>());
-    }
-
-    public void Move(Vector2 direction)
-    {
-        moveDirection = direction;
-    }
-
     public void OnLook(InputValue value)
     {
         Look(value.Get<Vector2>());
@@ -40,6 +30,16 @@ public class InputManager : MonoBehaviour
     public void Look(Vector2 direction)
     {
         lookDirection = direction;
+    }
+
+    public void OnMove(InputValue value)
+    {
+        Move(value.Get<Vector2>());
+    }
+
+    public void Move(Vector2 direction)
+    {
+        moveDirection = direction;
     }
 
     public void OnAttack(InputValue value)
