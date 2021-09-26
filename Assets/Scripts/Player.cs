@@ -7,132 +7,104 @@ public class Player : MonoBehaviour
 
     [SerializeField] private Transform cameraArm = null;
 
-    [SerializeField] private Transform body = null;
+    [SerializeField] private Animator animator = null;
+
+    private new Rigidbody rigidbody = null;
+
+    private InputManager inputManager;
 
     [Space]
 
     [SerializeField] private LayerMask groundedCheckLayerMask;
 
-    private CharacterController characterController;
+    [Space]
 
-    private InputManager inputManager;
+    [SerializeField] private float jumpForce = 5f;
 
-    [SerializeField] private float walkingSpeed = 5f;
+    [SerializeField] private float jumpForceMultiply = 1f;
 
-    [SerializeField] private float runningSpeed = 10f;
-
-    private Vector2 cameraArmRotation;
-
-    [SerializeField] private float minCameraArmRotationX = -60f;
-
-    [SerializeField] private float maxCameraArmRotationX = 60f;
-
-    [SerializeField] private float cameraRotationSensitivity = 1f;
+    [Space]
 
     [SerializeField] private int jumpCount = 0;
 
     [SerializeField] private int maxJumpCount = 1;
 
-    [SerializeField] private float jumpForce = 1f;
+    [Space]
 
-    [SerializeField] private float gravity = 15f;
+    [SerializeField] private float movingSpeed = 3f;
 
-    private float groundedCheckSphereOffset;
+    [SerializeField] private float movingSpeedMultiply = 1f;
 
-    private float groundedCheckSphereRadius;
+    [Space]
 
-    private float verticalVelocity;
+    [SerializeField] private float runningSpeed = 2f;
+
+    [Space]
+
+    [SerializeField] private Vector2 cameraArmRotation;
+
+    [Space]
+
+    [SerializeField] private float cameraArmRotationSensitivity = 1f;
+
+    [Space]
+
+    [SerializeField] private float minCameraArmRotationX = -55f;
+
+    [SerializeField] private float maxCameraArmRotationX = 55f;
 
     private void Awake()
     {
-        characterController = GetComponent<CharacterController>();
-
-        inputManager = GetComponent<InputManager>();
+        rigidbody = GetComponent<Rigidbody>();
     }
 
     private void Start()
     {
+        inputManager = InputManager.instance;
+
         cameraArmRotation = Vector2.zero;
 
         cameraArm.transform.localRotation = Quaternion.Euler(cameraArmRotation.x, cameraArmRotation.y, 0f);
-
-        groundedCheckSphereOffset = characterController.radius;
-
-        groundedCheckSphereRadius = characterController.radius + 0.0001f;
     }
 
     private void Update()
     {
-        CharacterControllerMove();
-
         Attack();
+    }
+
+    private void FixedUpdate()
+    {
+        Jump();
+
+        Move();
     }
 
     private void LateUpdate()
     {
-        RotateCamera();
+        Look();
     }
 
-    private void OnDrawGizmosSelected()
+    private void OnCollisionEnter(Collision collision)
     {
-        if (jumpCount == 0)
-        {
-            Gizmos.color = new Color(0, 1f, 0f, 0.25f);
-        }
-
-        else
-        {
-            Gizmos.color = new Color(1f, 0f, 0f, 0.25f);
-        }
-
-        Gizmos.DrawSphere(new Vector3(transform.position.x, transform.position.y + groundedCheckSphereOffset, transform.position.z), groundedCheckSphereRadius);
-    }
-
-    private void CharacterControllerMove()
-    {
-        var moveDirection = Vector3.zero;
-
-        if (inputManager.moveDirection != Vector2.zero)
-        {
-            var inputDirection = (cameraArm.transform.forward * inputManager.moveDirection.y + cameraArm.transform.right * inputManager.moveDirection.x).normalized;
-
-            moveDirection = inputDirection * (inputManager.isRunKeyPressed ? runningSpeed : walkingSpeed);
-
-            body.forward = new Vector3(cameraArm.transform.forward.x, 0f, cameraArm.transform.forward.z).normalized;
-        }
-
-        var spherePosition = new Vector3(transform.position.x, transform.position.y + groundedCheckSphereOffset, transform.position.z);
-
-        if (Physics.CheckSphere(spherePosition, groundedCheckSphereRadius, groundedCheckLayerMask, QueryTriggerInteraction.Ignore))
+        if(collision.gameObject.layer == LayerMask.NameToLayer("Ground"))
         {
             jumpCount = 0;
 
-            verticalVelocity = 0f;
+            animator.SetBool("isGrounded", true);
         }
+    }
 
-        else
+    private void OnCollisionExit(Collision collision)
+    {
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Ground"))
         {
             if (jumpCount == 0)
             {
                 ++jumpCount;
             }
 
-            verticalVelocity -= gravity * Time.deltaTime;
+            animator.SetBool("isGrounded", false);
         }
-
-        if (inputManager.isJumpKeyPressed)
-        {
-            inputManager.isJumpKeyPressed = false;
-
-            if (jumpCount < maxJumpCount)
-            {
-                ++jumpCount;
-
-                verticalVelocity = Mathf.Sqrt(jumpForce * gravity * 2f);
-            }
-        }
-
-        characterController.Move(new Vector3(moveDirection.x, verticalVelocity, moveDirection.z) * Time.deltaTime);
     }
 
     private void Attack()
@@ -143,11 +115,63 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void RotateCamera()
+    private void Jump()
+    {
+        if (inputManager.isJumpKeyPressed)
+        {
+            inputManager.isJumpKeyPressed = false;
+
+            if (jumpCount < maxJumpCount)
+            {
+                ++jumpCount;
+
+                rigidbody.velocity = Vector3.zero;
+
+                rigidbody.AddForce(Vector3.up * jumpForce * jumpForceMultiply, ForceMode.Impulse);
+
+                animator.SetTrigger("jump");
+            }
+        }
+    }
+
+    private void Move()
+    {
+        var movePosition = Vector3.zero;
+
+        if (inputManager.moveDirection == Vector2.zero)
+        {
+            animator.SetFloat("movingSpeed", 0f);
+        }
+
+        else
+        {
+            movePosition = (cameraArm.transform.forward * inputManager.moveDirection.y + cameraArm.transform.right * inputManager.moveDirection.x).normalized;
+
+            animator.transform.forward = new Vector3(movePosition.x, 0f, movePosition.z);
+
+            movePosition *= movingSpeed * movingSpeedMultiply;
+
+            if (inputManager.isRunKeyPressed == false)
+            {
+                animator.SetFloat("movingSpeed", movingSpeedMultiply);
+            }
+
+            else
+            {
+                movePosition *= runningSpeed;
+
+                animator.SetFloat("movingSpeed", movingSpeedMultiply * runningSpeed);
+            }
+        }
+
+        rigidbody.MovePosition(rigidbody.position + movePosition * Time.deltaTime);
+    }
+
+    private void Look()
     {
         if (inputManager.lookDirection != Vector2.zero)
         {
-            cameraArmRotation += new Vector2(inputManager.lookDirection.y, inputManager.lookDirection.x) * Time.deltaTime * cameraRotationSensitivity;
+            cameraArmRotation += new Vector2(inputManager.lookDirection.y, inputManager.lookDirection.x) * Time.deltaTime * cameraArmRotationSensitivity;
 
             cameraArmRotation.x = Mathf.Clamp(cameraArmRotation.x, minCameraArmRotationX, maxCameraArmRotationX);
 

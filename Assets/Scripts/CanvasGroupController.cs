@@ -69,21 +69,21 @@ public class CanvasGroupController : MonoBehaviour
         interactable = interactable;
     }
 
-    public void SetActivation(bool setActivationValue, float lapTime)
+    public void SetActivation(bool setActivationValue, float routineTime)
     {
         if (_setActivation != null)
         {
             StopCoroutine(_setActivation);
         }
 
-        _setActivation = _SetActivation(setActivationValue, lapTime);
+        _setActivation = _SetActivation(setActivationValue, routineTime);
 
         StartCoroutine(_setActivation);
     }
 
     private IEnumerator _setActivation = null;
 
-    private IEnumerator _SetActivation(bool setActivationValue, float lapTime)
+    private IEnumerator _SetActivation(bool setActivationValue, float routineTime)
     {
         float targetAlpha = 0f;
 
@@ -99,9 +99,9 @@ public class CanvasGroupController : MonoBehaviour
             interactable = setActivationValue;
         }
 
-        if (lapTime > 0f)
+        if (routineTime > 0f)
         {
-           yield return FadeAlpha(targetAlpha, lapTime);
+           yield return FadeAlpha(targetAlpha, routineTime);
         }
         
         else
@@ -122,7 +122,7 @@ public class CanvasGroupController : MonoBehaviour
         _setActivation = null;
     }
 
-    public IEnumerator FadeAlpha(float targetAlpha, float lapTime)
+    public IEnumerator FadeAlpha(float targetAlpha, float routineTime)
     {
         if (_fadeAlpha != null)
         {
@@ -133,7 +133,7 @@ public class CanvasGroupController : MonoBehaviour
             yield return null;
         }
 
-        _fadeAlpha = _FadeAlpha(targetAlpha, lapTime);
+        _fadeAlpha = _FadeAlpha(targetAlpha, routineTime);
 
         StartCoroutine(_fadeAlpha);
 
@@ -145,7 +145,7 @@ public class CanvasGroupController : MonoBehaviour
 
     private IEnumerator _fadeAlpha = null;
 
-    private IEnumerator _FadeAlpha(float targetAlpha, float lapTime)
+    private IEnumerator _FadeAlpha(float targetAlpha, float routineTime)
     {
         if(targetAlpha < 0f)
         {
@@ -157,9 +157,9 @@ public class CanvasGroupController : MonoBehaviour
             targetAlpha = 1f;
         }
 
-        if (lapTime > 0f)
+        if (routineTime > 0f)
         {
-            float maxDelta = (alpha >= targetAlpha ? alpha - targetAlpha : targetAlpha - alpha) / lapTime;
+            float maxDelta = (alpha >= targetAlpha ? alpha - targetAlpha : targetAlpha - alpha) / routineTime;
 
             while (true)
             {

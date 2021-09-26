@@ -5,13 +5,20 @@ using UnityEngine;
 
 using UnityEngine.UI;
 
+public enum ColorType
+{
+    componentBaseColor, materialBaseColor, materialEmissionColor
+}
+
 public class Discolorator : MonoBehaviour
 {
-    public enum ColorType { component, material, emission }
+    [Space]
 
     [SerializeField] private GameObject discolorTarget = null;
 
-    [SerializeField] private ColorType colorType = ColorType.component;
+    [Space]
+
+    [SerializeField] private ColorType colorType = ColorType.componentBaseColor;
 
     private SpriteRenderer discolorTargetSpriteRenderer = null;
 
@@ -75,7 +82,7 @@ public class Discolorator : MonoBehaviour
         {
             _color = value;
 
-            if (colorType == ColorType.component)
+            if (colorType == ColorType.componentBaseColor)
             {
                 if (discolorTargetSpriteRenderer != null)
                 {
@@ -98,7 +105,7 @@ public class Discolorator : MonoBehaviour
                 }
             }
 
-            else if (colorType == ColorType.material)
+            else if (colorType == ColorType.materialBaseColor)
             {
                 if (discolorTargetMaterial != null)
                 {
@@ -106,7 +113,7 @@ public class Discolorator : MonoBehaviour
                 }
             }
 
-            else if (colorType == ColorType.emission)
+            else if (colorType == ColorType.materialEmissionColor)
             {
                 if (discolorTargetMaterial != null)
                 {
@@ -127,7 +134,7 @@ public class Discolorator : MonoBehaviour
         {
             _intensity = value;
 
-            if (colorType == ColorType.component)
+            if (colorType == ColorType.componentBaseColor)
             {
                 if (discolorTargetLight != null)
                 {
@@ -135,7 +142,7 @@ public class Discolorator : MonoBehaviour
                 }
             }
 
-            else if (colorType == ColorType.emission)
+            else if (colorType == ColorType.materialEmissionColor)
             {
                 if (discolorTargetMaterial != null)
                 {
@@ -205,7 +212,7 @@ public class Discolorator : MonoBehaviour
             }
         }
 
-        if (colorType == ColorType.component)
+        if (colorType == ColorType.componentBaseColor)
         {
             if (discolorTargetSpriteRenderer != null)
             {
@@ -230,12 +237,12 @@ public class Discolorator : MonoBehaviour
             }
         }
 
-        if (colorType == ColorType.material)
+        if (colorType == ColorType.materialBaseColor)
         {
             _color = discolorTargetMaterial.GetColor("_BaseColor");
         }
 
-        else if (colorType == ColorType.emission)
+        else if (colorType == ColorType.materialEmissionColor)
         {
             Color emissionColor = discolorTargetMaterial.GetColor("_EmissionColor");
 
