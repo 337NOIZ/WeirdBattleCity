@@ -1,6 +1,4 @@
 
-using System.Reflection;
-
 using UnityEngine;
 
 public class Projectile : MonoBehaviour
@@ -28,14 +26,6 @@ public class Projectile : MonoBehaviour
 
     private void Update()
     {
-        var assembly = Assembly.GetAssembly(typeof(UnityEditor.Editor));
-
-        var type = assembly.GetType("UnityEditor.LogEntries");
-
-        var method = type.GetMethod("Clear");
-
-        method.Invoke(new object(), null);
-
         if(Physics.Linecast(rigidbody.position, rigidbodyPosition_Old, out raycastHit, layerMask) == true)
         {
             Damageable damageable = raycastHit.collider.GetComponent<Damageable>();
