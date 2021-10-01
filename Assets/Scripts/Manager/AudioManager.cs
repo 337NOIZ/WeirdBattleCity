@@ -19,12 +19,14 @@ public class AudioManager : MonoBehaviour
     {
         get
         {
-            if (PlayerPrefs.HasKey("Background Music Master Volume") != true)
+            if (PlayerPrefs.HasKey("BackgroundMusicMasterVolume") != true)
             {
                 backgroundMusicMasterVolume = 1f;
+
+                return 1f;
             }
 
-            return PlayerPrefs.GetFloat("Background Music Master Volume");
+            return PlayerPrefs.GetFloat("BackgroundMusicMasterVolume");
         }
 
         set
@@ -52,6 +54,8 @@ public class AudioManager : MonoBehaviour
             if (PlayerPrefs.HasKey("Sound Effect Master Volume") != true)
             {
                 soundEffectMasterVolume = 1f;
+
+                return 1f;
             }
 
             return PlayerPrefs.GetFloat("Sound Effect Master Volume");
@@ -85,16 +89,13 @@ public class AudioManager : MonoBehaviour
             Destroy(gameObject);
         }
 
-        else
-        {
-            DontDestroyOnLoad(gameObject);
+        DontDestroyOnLoad(gameObject);
 
-            instance = this;
+        instance = this;
 
-            LoadResources();
+        LoadResources();
 
-            InitializeAudioManager();
-        }
+        InitializeAudioManager();
     }
 
     private void LoadResources()

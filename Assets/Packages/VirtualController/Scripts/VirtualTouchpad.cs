@@ -7,25 +7,27 @@ using UnityEngine.Events;
 
 public class VirtualTouchpad : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
 {
-    [Space]
+    [Space, SerializeField] private RectTransform container = null;
 
-    [SerializeField] private RectTransform container = null;
+    [Space, SerializeField] private Vector2 _dragDirection;
 
-    [Space]
+    public Vector2 dragDirection
+    {
+        get
+        {
+            return _dragDirection;
+        }
+    }
 
-    [SerializeField] private float dragSensitivity = 0.5f;
+    [Space, SerializeField] private float dragSensitivity = 0.5f;
 
-    [SerializeField] private bool clampMagnitude = true;
+    [Space, SerializeField] private float maxMagnitude = 200f;
 
-    public float maxMagnitude = 200f;
+    [Space, SerializeField] private bool invertX = false;
 
-    public bool invertX = false;
+    [SerializeField] private bool invertY = true;
 
-    public bool invertY = true;
-
-    [Space]
-
-    public UnityEvent<Vector2> onDrag;
+    [Space] public UnityEvent<Vector2> onDrag;
 
     private Vector2 pointerDownPosition;
 
@@ -40,19 +42,19 @@ public class VirtualTouchpad : MonoBehaviour, IPointerDownHandler, IDragHandler,
     {
         RectTransformUtility.ScreenPointToLocalPointInRectangle(container, eventData.position, eventData.pressEventCamera, out Vector2 pointerDragPosition);
 
-        var dragDirection = (pointerDragPosition - pointerDownPosition) * dragSensitivity;
+        _dragDirection = Vector2.ClampMagnitude((pointerDragPosition - pointerDownPosition) * dragSensitivity, maxMagnitude);
 
-        if(clampMagnitude) dragDirection = Vector2.ClampMagnitude(dragDirection, maxMagnitude);
+        if (invertX) _dragDirection.x = -dragDirection.x;
 
-        if (invertX) dragDirection.x = -dragDirection.x;
+        if (invertY) _dragDirection.y = -dragDirection.y;
 
-        if (invertY) dragDirection.y = -dragDirection.y;
-
-        onDrag.Invoke(dragDirection);
+        onDrag.Invoke(_dragDirection);
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
+        _dragDirection = Vector2.zero;
+
         onDrag.Invoke(Vector2.zero);
     }
 }

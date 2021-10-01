@@ -12,8 +12,6 @@ public class TitleSceneManager : MonoBehaviour
 
     private IEnumerator _Start()
     {
-        yield return GameManager.instance.fadeScreen.Fade(2f, 0f, 1f, 2f);
-
-        //SoundManager.instance.PlayBackgroundMusic("Title", 1f);
+        yield return PrimaryFadeScreen.instance.fadeScreen.Fade(2f, 0f, 1f, 2f);
     }
 }

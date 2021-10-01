@@ -20,18 +20,15 @@ public class FadeScreenManager : MonoBehaviour
             Destroy(gameObject);
         }
 
-        else
+        DontDestroyOnLoad(gameObject);
+
+        instance = this;
+
+        int count = _fadePatterns.Count;
+
+        for (int index = 0; index < count; ++index)
         {
-            DontDestroyOnLoad(gameObject);
-
-            instance = this;
-
-            int count = _fadePatterns.Count;
-
-            for (int index = 0; index < count; ++index)
-            {
-                fadePatterns.Add(_fadePatterns[index].name, _fadePatterns[index]);
-            }
+            fadePatterns.Add(_fadePatterns[index].name, _fadePatterns[index]);
         }
     }
 }

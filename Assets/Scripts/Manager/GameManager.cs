@@ -9,12 +9,15 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance { get; private set; }
 
-    [Space]
-
-    public FadeScreen fadeScreen = null;
-
     private void Awake()
     {
+        if (FindObjectsOfType<AudioManager>().Length > 1)
+        {
+            Destroy(gameObject);
+        }
+
+        DontDestroyOnLoad(gameObject);
+
         instance = this;
     }
 
@@ -27,7 +30,7 @@ public class GameManager : MonoBehaviour
     {
         AudioManager.instance.FadeAudioListenerVolume(0f, routineTime);
 
-        yield return fadeScreen.Fade(null, 2, 0, routineTime);
+        yield return PrimaryFadeScreen.instance.fadeScreen.Fade(null, 2, 0, routineTime);
 
         AudioManager.instance.backgroundMusicAudioSource.Stop();
 

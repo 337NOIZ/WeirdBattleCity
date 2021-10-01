@@ -12,8 +12,6 @@ public class DesertSceneManager : MonoBehaviour
 
     private IEnumerator _Start()
     {
-        yield return GameManager.instance.fadeScreen.Fade(2f, 0f, 1f, 2f);
-
-        //SoundManager.instance.PlayBackgroundMusic("Desert", 1f);
+        yield return PrimaryFadeScreen.instance.fadeScreen.Fade(2f, 0f, 1f, 2f);
     }
 }

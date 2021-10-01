@@ -9,7 +9,7 @@ public class CoroutineTools : MonoBehaviour
     {
         while (true)
         {
-            if (waitTime <= 0 || Input.anyKeyDown == true)
+            if (waitTime <= 0f || Input.anyKeyDown == true)
             {
                 break;
             }

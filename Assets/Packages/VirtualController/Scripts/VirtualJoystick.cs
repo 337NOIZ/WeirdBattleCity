@@ -7,23 +7,29 @@ using UnityEngine.Events;
 
 public class VirtualJoystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
 {
-    [Space]
-
-    [SerializeField] private RectTransform container = null;
+    [Space, SerializeField] private RectTransform container = null;
 
     [SerializeField] private RectTransform handle = null;
 
-    [Space]
+    [Space, SerializeField] private Vector2 _dragDirection;
 
-    [SerializeField] private float dragRange = 75f;
+    public Vector2 dragDirection
+    {
+        get
+        {
+            return _dragDirection;
+        }
+    }
 
-    public bool invertX = false;
+    [Space, SerializeField] private float dragRange = 75f;
 
-    public bool invertY = false;
+    [Space, SerializeField] private bool normalize = true;
 
-    [Space]
+    [Space, SerializeField] private bool invertX = false;
 
-    public UnityEvent<Vector2> onDrag;
+    [SerializeField] private bool invertY = false;
+
+    [Space] public UnityEvent<Vector2> onDrag;
 
     void Start()
     {
@@ -47,33 +53,26 @@ public class VirtualJoystick : MonoBehaviour, IPointerDownHandler, IDragHandler,
             handle.anchoredPosition = pointerPosition.magnitude < dragRange ? pointerPosition : pointerPosition.normalized * dragRange;
         }
 
-        var dragDirection = new Vector2(pointerPosition.x / container.sizeDelta.x, pointerPosition.y / container.sizeDelta.y);
+        _dragDirection = new Vector2(pointerPosition.x / container.sizeDelta.x, pointerPosition.y / container.sizeDelta.y);
 
-        onDrag.Invoke(ApplyInversionFilter(dragDirection));
+        if (normalize == true) _dragDirection = _dragDirection.normalized;
+
+        if (invertX) _dragDirection.x = -_dragDirection.x;
+
+        if (invertY) _dragDirection.y = -_dragDirection.y;
+
+        onDrag.Invoke(_dragDirection);
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
+        _dragDirection = Vector2.zero;
+
         onDrag.Invoke(Vector2.zero);
 
         if(handle)
         {
             handle.anchoredPosition = Vector2.zero;
         }
-    }
-
-    Vector2 ApplyInversionFilter(Vector2 position)
-    {
-        if(invertX)
-        {
-            position.x = -position.x;
-        }
-
-        if(invertY)
-        {
-            position.y = -position.y;
-        }
-
-        return position;
     }
 }

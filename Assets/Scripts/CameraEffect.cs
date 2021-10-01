@@ -18,20 +18,20 @@ public class CameraEffect : MonoBehaviour
 
     public void ShakeCamera(float force, float duration)
     {
-        TryStopShakeCamera();
+        StopShakeCamera();
 
-        shakeCameraCoroutine = ShakeCameraCoroutine(force, duration);
+        _shakeCamera = _ShakeCamera(force, duration);
 
-        StartCoroutine(shakeCameraCoroutine);
+        StartCoroutine(_shakeCamera);
     }
 
-    private IEnumerator shakeCameraCoroutine = null;
+    private IEnumerator _shakeCamera = null;
 
-    private IEnumerator ShakeCameraCoroutine(float force, float duration)
+    private IEnumerator _ShakeCamera(float force, float duration)
     {
         if (force != 0 && duration != 0)
         {
-            float maxDelta = force / duration;
+            var maxDelta = force / duration;
 
             while (force > 0f)
             {
@@ -45,18 +45,18 @@ public class CameraEffect : MonoBehaviour
             transform.localPosition = originalPosition;
         }
 
-        shakeCameraCoroutine = null;
+        _shakeCamera = null;
     }
 
-    public void TryStopShakeCamera()
+    public void StopShakeCamera()
     {
-        if (shakeCameraCoroutine != null)
+        if (_shakeCamera != null)
         {
-            StopCoroutine(shakeCameraCoroutine);
+            StopCoroutine(_shakeCamera);
 
             transform.localPosition = originalPosition;
 
-            shakeCameraCoroutine = null;
+            _shakeCamera = null;
         }
     }
 }

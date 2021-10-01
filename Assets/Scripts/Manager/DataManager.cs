@@ -1,4 +1,6 @@
 
+using System.Collections.Generic;
+
 using System.IO;
 
 using UnityEngine;
@@ -9,29 +11,21 @@ public class DataManager : MonoBehaviour
 {
     public static DataManager instance { get; private set; }
 
-    private string playerDataPath = null;
+    public Dictionary<ItemCode, ItemData> itemDatas;
 
-    public class PlayerData
-    {
-        public PlayerData()
-        {
-
-        }
-    }
-
-    public PlayerData playerData { get; private set; } = null;
-
-    private string gameDataPath = null;
+    public string gameDataPath;
 
     public class GameData
     {
+        public PlayerData playerData;
+
         public GameData()
         {
-
+            playerData = new PlayerData();
         }
     }
 
-    public GameData gameData { get; private set; } = null;
+    public GameData gameData { get; private set; }
 
     private void Awake()
     {
@@ -40,48 +34,24 @@ public class DataManager : MonoBehaviour
             Destroy(gameObject);
         }
 
-        else
-        {
-            DontDestroyOnLoad(gameObject);
+        DontDestroyOnLoad(gameObject);
 
-            instance = this;
+        instance = this;
 
-            InitializePlayerData();
+        InitializeItemDatas();
 
-            InitializeGameData();
-        }
+        InitializeGameData();
     }
-
-    private void InitializePlayerData()
+    
+    private void InitializeItemDatas()
     {
-        playerDataPath = Application.dataPath + "/PlayerData.cfg";
+        itemDatas = new Dictionary<ItemCode, ItemData>();
 
-        if (new FileInfo(playerDataPath).Exists == true)
-        {
-            LoadPlayerData();
-        }
+        itemDatas.Add(ItemCode.BARE_FIST, new ItemData(ItemType.WEAPON, ItemCode.BARE_FIST, true, 1, 1, 0.5f, true, true, 1, 1f));
 
-        else
-        {
-            ResetPlayerData();
+        itemDatas.Add(ItemCode.MEDIKIT, new ItemData(ItemType.CONSUMABLE, ItemCode.MEDIKIT, true, 1, 3, 0.5f, 0f));
 
-            SavePlayerData();
-        }
-    }
-
-    public void LoadPlayerData()
-    {
-        playerData = JsonConvert.DeserializeObject<PlayerData>(System.Text.Encoding.UTF8.GetString(System.Convert.FromBase64String(File.ReadAllText(playerDataPath))));
-    }
-
-    public void ResetPlayerData()
-    {
-        playerData = new PlayerData();
-    }
-
-    public void SavePlayerData()
-    {
-        File.WriteAllText(playerDataPath, System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(playerData))));
+        itemDatas.Add(ItemCode.PISTOL, new ItemData(ItemType.WEAPON, ItemCode.PISTOL, false, 1, 1, 0.3f, true, false, 1, 1f , 5, 100f, 1f, 15, 15, 3f));
     }
 
     private void InitializeGameData()
@@ -97,7 +67,7 @@ public class DataManager : MonoBehaviour
         {
             ResetGameData();
 
-            SaveGameData();
+            //SaveGameData();
         }
     }
 
@@ -113,6 +83,6 @@ public class DataManager : MonoBehaviour
 
     public void SaveGameData()
     {
-        File.WriteAllText(playerDataPath, System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(gameData))));
+        File.WriteAllText(gameDataPath, System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(gameData))));
     }
 }
