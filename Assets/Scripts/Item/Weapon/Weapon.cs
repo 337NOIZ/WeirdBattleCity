@@ -5,6 +5,8 @@ using UnityEngine;
 
 public abstract class Weapon : Item
 {
+    protected bool isAttacking = false;
+
     private void Awake()
     {
         itemType = ItemType.WEAPON;
@@ -14,52 +16,31 @@ public abstract class Weapon : Item
     {
         if (state == true)
         {
-            if (itemData.autoAttack == true)
+            if (_attack == null)
             {
-                if (_attack == null)
-                {
-                    _attack = _Attack();
+                animator.SetBool("isAttacking", true);
 
-                    StartCoroutine(_attack);
-                }
-            }
+                isAttacking = itemData.autoAttack;
 
-            else
-            {
-                __Attack();
+                _attack = _Attack();
+
+                StartCoroutine(_attack);
             }
         }
 
         else
         {
-            if (itemData.autoAttack == true)
-            {
-                if (_attack != null)
-                {
-                    StopCoroutine(_attack);
+            _attack = null;
 
-                    _attack = null;
-                }
-            }
+            isAttacking = false;
+
+            animator.SetBool("isAttacking", false);
         }
     }
 
     private IEnumerator _attack = null;
 
-    private IEnumerator _Attack()
-    {
-        while (true)
-        {
-            if (itemData.cooldown == 0f)
-            {
-                __Attack();
-            }
-
-            yield return null;
-        }
-    }
-
-    protected abstract void __Attack();
+    protected abstract IEnumerator _Attack();
 
     public override bool Reload(bool state)
     {

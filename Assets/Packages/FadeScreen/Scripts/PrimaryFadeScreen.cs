@@ -1,14 +1,17 @@
 
 using UnityEngine;
 
-public class PrimaryFadeScreen : MonoBehaviour
+namespace FadeScreen
 {
-    public static PrimaryFadeScreen instance { get; private set; }
-
-    [Space] public FadeScreen fadeScreen = null;
-
-    private void Awake()
+    public class PrimaryFadeScreen : MonoBehaviour
     {
-        instance = this;
+        public static PrimaryFadeScreen instance { get; private set; }
+
+        [Space] public FadeScreen fadeScreen = null;
+
+        private void Awake()
+        {
+            instance = this;
+        }
     }
 }

@@ -3,7 +3,9 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
-    [Space, SerializeField] string layerName = "Damageable";
+    [Space]
+    
+    [SerializeField] private string layerName = null;
 
     private new Rigidbody rigidbody;
 
@@ -13,7 +15,9 @@ public class Projectile : MonoBehaviour
 
     private int layerMask;
 
-    private float damage;
+    private int damage;
+
+    private float lifeTime;
 
     private void Awake()
     {
@@ -24,7 +28,7 @@ public class Projectile : MonoBehaviour
         layerMask = LayerMask.GetMask(layerName);
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         if(Physics.Linecast(rigidbody.position, rigidbodyPosition_Old, out raycastHit, layerMask) == true)
         {
@@ -32,22 +36,24 @@ public class Projectile : MonoBehaviour
 
             if(damageable != null)
             {
-                damageable.Damaged(damage);
+                damageable.GetDamage(damage);
 
                 Destroy(gameObject);
             }
         }
 
-        Debug.DrawLine(rigidbodyPosition_Old, rigidbody.position, Color.red, 1f);
+        Debug.DrawLine(rigidbody.position, rigidbodyPosition_Old, Color.red, lifeTime);
 
         rigidbodyPosition_Old = rigidbody.position;
     }
 
-    public void Launch(float damage, float force, float lifeTime)
+    public void Launch(int damage, float force, float lifeTime)
     {
         this.damage = damage;
 
         rigidbody.AddForce((transform.forward) * force, ForceMode.Impulse);
+
+        this.lifeTime = lifeTime;
 
         Invoke("Destroy", lifeTime);
     }

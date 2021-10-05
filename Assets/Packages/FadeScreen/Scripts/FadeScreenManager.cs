@@ -3,32 +3,35 @@ using System.Collections.Generic;
 
 using UnityEngine;
 
-public class FadeScreenManager : MonoBehaviour
+namespace FadeScreen
 {
-    public static FadeScreenManager instance { get; private set; }
-
-    [Space]
-
-    [SerializeField] private List<Texture> _fadePatterns = null;
-
-    public Dictionary<string, Texture> fadePatterns { get; private set; } = new Dictionary<string, Texture>();
-
-    private void Awake()
+    public class FadeScreenManager : MonoBehaviour
     {
-        if (FindObjectsOfType<AudioManager>().Length > 1)
+        public static FadeScreenManager instance { get; private set; }
+
+        [Space]
+
+        [SerializeField] private List<Texture> _fadePatterns = null;
+
+        public Dictionary<string, Texture> fadePatterns { get; private set; } = new Dictionary<string, Texture>();
+
+        private void Awake()
         {
-            Destroy(gameObject);
-        }
+            if (FindObjectsOfType<AudioManager>().Length > 1)
+            {
+                Destroy(gameObject);
+            }
 
-        DontDestroyOnLoad(gameObject);
+            DontDestroyOnLoad(gameObject);
 
-        instance = this;
+            instance = this;
 
-        int count = _fadePatterns.Count;
+            int count = _fadePatterns.Count;
 
-        for (int index = 0; index < count; ++index)
-        {
-            fadePatterns.Add(_fadePatterns[index].name, _fadePatterns[index]);
+            for (int index = 0; index < count; ++index)
+            {
+                fadePatterns.Add(_fadePatterns[index].name, _fadePatterns[index]);
+            }
         }
     }
 }

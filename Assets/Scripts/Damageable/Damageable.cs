@@ -3,13 +3,13 @@ using UnityEngine;
 
 public abstract class Damageable : MonoBehaviour
 {
-    [Space, SerializeField] protected float healthPoint = 1f;
+    protected DamageableData damageableData;
 
-    public void Damaged(float damage)
+    public void GetDamage(int damage)
     {
-        healthPoint -= damage;
+        damageableData.healthPoint -= damage;
 
-        if(healthPoint <= 0)
+        if(damageableData.healthPoint <= 0)
         {
             Dead();
         }

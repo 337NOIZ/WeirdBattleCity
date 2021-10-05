@@ -5,11 +5,30 @@ using UnityEngine;
 
 public class TransformController : MonoBehaviour
 {
-    public new Transform transform { get; private set; } = null;
+    private new Transform transform;
 
     private void Awake()
     {
         transform = GetComponent<Transform>();
+    }
+
+    public IEnumerator MoveTransformLocalPosition(Vector3 virtualTransformLocalPosition, Vector3 targetTransformLocalPosition, float lapTime)
+    {
+        if (_moveTransformLocalPosition != null)
+        {
+            StopCoroutine(_moveTransformLocalPosition);
+        }
+
+        _moveTransformLocalPosition = _MoveTransformLocalPosition(virtualTransformLocalPosition, targetTransformLocalPosition, lapTime);
+
+        StartCoroutine(_moveTransformLocalPosition);
+
+        while (_moveTransformLocalPosition != null) yield return null;
+    }
+
+    public IEnumerator MoveTransformLocalPosition(Vector3 targetTransformLocalPosition, float lapTime)
+    {
+        yield return MoveTransformLocalPosition(transform.localPosition, targetTransformLocalPosition, lapTime);
     }
 
     private IEnumerator _moveTransformLocalPosition = null;
@@ -46,23 +65,16 @@ public class TransformController : MonoBehaviour
         _moveTransformLocalPosition = null;
     }
 
-    public IEnumerator MoveTransformLocalPosition(Vector3 virtualTransformLocalPosition, Vector3 targetTransformLocalPosition, float lapTime)
+    public void RotateTransformLocalEulerAngles(Vector3 targetTransformLocalEulerAngles, float lapTime)
     {
-        if (_moveTransformLocalPosition != null)
+        if (_rotateTransformLocalEulerAngles != null)
         {
-            StopCoroutine(_moveTransformLocalPosition);
+            StopCoroutine(_rotateTransformLocalEulerAngles);
         }
 
-        _moveTransformLocalPosition = _MoveTransformLocalPosition(virtualTransformLocalPosition, targetTransformLocalPosition, lapTime);
+        _rotateTransformLocalEulerAngles = _RotateTransformLocalEulerAngles(targetTransformLocalEulerAngles, lapTime);
 
-        StartCoroutine(_moveTransformLocalPosition);
-
-        while (_moveTransformLocalPosition != null) yield return null;
-    }
-
-    public IEnumerator MoveTransformLocalPosition(Vector3 targetTransformLocalPosition, float lapTime)
-    {
-        yield return MoveTransformLocalPosition(transform.localPosition, targetTransformLocalPosition, lapTime);
+        StartCoroutine(_rotateTransformLocalEulerAngles);
     }
 
     private IEnumerator _rotateTransformLocalEulerAngles = null;
@@ -106,87 +118,5 @@ public class TransformController : MonoBehaviour
         }
 
         _rotateTransformLocalEulerAngles = null;
-    }
-
-    public void RotateTransformLocalEulerAngles(Vector3 targetTransformLocalEulerAngles, float lapTime)
-    {
-        if (_rotateTransformLocalEulerAngles != null)
-        {
-            StopCoroutine(_rotateTransformLocalEulerAngles);
-        }
-
-        _rotateTransformLocalEulerAngles = _RotateTransformLocalEulerAngles(targetTransformLocalEulerAngles, lapTime);
-
-        StartCoroutine(_rotateTransformLocalEulerAngles);
-    }
-
-    private IEnumerator _spiningTransformLocalEulerAngles = null;
-
-    private IEnumerator _SpiningTransformLocalEulerAngles(Vector3 direction)
-    {
-        while (true)
-        {
-            transform.localEulerAngles += direction * Time.deltaTime;
-
-            yield return null;
-        }
-    }
-
-    public void SpiningTransformLocalEulerAngles(Vector3 direction)
-    {
-        StopSpiningTransformLocalEulerAngles();
-
-        _spiningTransformLocalEulerAngles = _SpiningTransformLocalEulerAngles(direction);
-
-        StartCoroutine(_spiningTransformLocalEulerAngles);
-    }
-
-    public void StopSpiningTransformLocalEulerAngles()
-    {
-        if (_spiningTransformLocalEulerAngles != null)
-        {
-            StopCoroutine(_spiningTransformLocalEulerAngles);
-
-            _spiningTransformLocalEulerAngles = null;
-        }
-    }
-
-    private IEnumerator _floating = null;
-
-    private IEnumerator _Floating(Vector3 delta, float speed)
-    {
-        Vector3 localPosition = transform.localPosition;
-
-        while (true)
-        {
-            localPosition.x = delta.x * Mathf.Sin(Time.time * speed);
-
-            localPosition.y = delta.y * Mathf.Sin(Time.time * speed);
-
-            localPosition.z = delta.z * Mathf.Sin(Time.time * speed);
-
-            transform.localPosition = localPosition;
-
-            yield return null;
-        }
-    }
-
-    public void Floating(Vector3 delta, float speed)
-    {
-        StopFloating();
-
-        _floating = _Floating(delta, speed);
-
-        StartCoroutine(_floating);
-    }
-
-    public void StopFloating()
-    {
-        if (_floating != null)
-        {
-            StopCoroutine(_floating);
-
-            _floating = null;
-        }
     }
 }

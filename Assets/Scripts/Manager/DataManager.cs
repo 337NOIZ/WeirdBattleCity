@@ -7,13 +7,28 @@ using UnityEngine;
 
 using Newtonsoft.Json;
 
+public enum EnemyCode
+{
+    CRAZY_BIRD, CRAZY_SPIDER, CRAZY_COW, DUMMY
+}
+
+public enum ItemType
+{
+    AMMO, CONSUMABLE, WEAPON,
+}
+
+public enum ItemCode
+{
+    ARROW, BARE_FIST, BOW, CROSSBOW, CROSSBOW_BOLT, GRENADE, MEDIKIT, PISTOL, PISTOL_AMMO, SHOTGUN_AMMO, SMG, SMG_AMMO,
+}
+
 public class DataManager : MonoBehaviour
 {
     public static DataManager instance { get; private set; }
 
-    public Dictionary<ItemCode, ItemData> itemDatas;
+    public Dictionary<ItemCode, ItemData> itemDatas { get; private set; }
 
-    public string gameDataPath;
+    private string gameDataPath;
 
     public class GameData
     {
@@ -47,11 +62,11 @@ public class DataManager : MonoBehaviour
     {
         itemDatas = new Dictionary<ItemCode, ItemData>();
 
-        itemDatas.Add(ItemCode.BARE_FIST, new ItemData(ItemType.WEAPON, ItemCode.BARE_FIST, true, 1, 1, 0.5f, true, true, 1, 1f));
+        itemDatas.Add(ItemCode.BARE_FIST, new ItemData(ItemType.WEAPON, ItemCode.BARE_FIST, true, 0.5f, true, true, 1, 1f));
 
-        itemDatas.Add(ItemCode.MEDIKIT, new ItemData(ItemType.CONSUMABLE, ItemCode.MEDIKIT, true, 1, 3, 0.5f, 0f));
+        itemDatas.Add(ItemCode.MEDIKIT, new ItemData(ItemType.CONSUMABLE, ItemCode.MEDIKIT, true, 1, 999, 10f, 0f));
 
-        itemDatas.Add(ItemCode.PISTOL, new ItemData(ItemType.WEAPON, ItemCode.PISTOL, false, 1, 1, 0.3f, true, false, 1, 1f , 5, 100f, 1f, 15, 15, 3f));
+        itemDatas.Add(ItemCode.PISTOL, new ItemData(ItemType.WEAPON, ItemCode.PISTOL, false, 0.3f, false, false, 1, 1f, 5, 100f, 1f, 15, 15, 3f));
     }
 
     private void InitializeGameData()

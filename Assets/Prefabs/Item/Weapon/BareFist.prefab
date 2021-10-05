@@ -89,3 +89,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   grip: {fileID: 6221459681594354686}
+  muzzle: {fileID: 0}
+  pair: {fileID: 0}
+  projectile: {fileID: 0}
+  itemData:
+    itemType: 0
+    itemCode: 0
+    onlyHaveOne: 0
+    count: 0
+    countMax: 0
+    cooldown: 0
+    cooldownTime: 0
+    consumTime: 0
+    autoAttack: 0
+    dualWield: 0
+    physicalDamage: 0
+    physicalReach: 0
+    projectileDamage: 0
+    projectileForce: 0
+    projectileLifeTime: 0
+    magazineCapacity: 0
+    magazinRest: 0
+    reloadTime: 0

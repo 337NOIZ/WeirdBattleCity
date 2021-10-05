@@ -111,6 +111,25 @@ MonoBehaviour:
   muzzle: {fileID: 5687860491906726669}
   pair: {fileID: 0}
   projectile: {fileID: 2236956428267794515, guid: a5591fd407d7c5947b5e32c75b67214a, type: 3}
+  itemData:
+    itemType: 0
+    itemCode: 0
+    onlyHaveOne: 0
+    count: 0
+    countMax: 0
+    cooldown: 0
+    cooldownTime: 0
+    consumTime: 0
+    autoAttack: 0
+    dualWield: 0
+    physicalDamage: 0
+    physicalReach: 0
+    projectileDamage: 0
+    projectileForce: 0
+    projectileLifeTime: 0
+    magazineCapacity: 0
+    magazinRest: 0
+    reloadTime: 0
 --- !u!1 &7288579042187406275
 GameObject:
   m_ObjectHideFlags: 0

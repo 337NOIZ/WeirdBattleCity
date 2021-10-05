@@ -11,9 +11,9 @@ public class ItemData
 
     [Space] public bool onlyHaveOne;
 
-    [Space] public int count;
+    [Space] public int count = 1;
 
-    public int countMax;
+    public int countMax = 1;
 
     [Space] public float cooldown = 0;
 
@@ -71,17 +71,13 @@ public class ItemData
         this.consumTime = consumTime;
     }
 
-    public ItemData(ItemType itemType, ItemCode itemCode, bool onlyHaveOne, int count, int countMax, float cooldownTime, bool autoAttack, bool dualWield, int physicalDamage, float physicalReach)
+    public ItemData(ItemType itemType, ItemCode itemCode, bool onlyHaveOne, float cooldownTime, bool autoAttack, bool dualWield, int physicalDamage, float physicalReach)
     {
         this.itemType = itemType;
 
         this.itemCode = itemCode;
 
         this.onlyHaveOne = onlyHaveOne;
-
-        this.count = count;
-
-        this.countMax = countMax;
 
         this.cooldownTime = cooldownTime;
 
@@ -94,17 +90,13 @@ public class ItemData
         this.physicalReach = physicalReach;
     }
 
-    public ItemData(ItemType itemType, ItemCode itemCode, bool onlyHaveOne, int count, int countMax, float cooldownTime, bool autoAttack, bool dualWield, int physicalDamage, float physicalReach, int projectileDamage, float projectileForce, float projectileLifeTime, int magazineCapacity, int magazinRest, float reloadTime)
+    public ItemData(ItemType itemType, ItemCode itemCode, bool onlyHaveOne, float cooldownTime, bool autoAttack, bool dualWield, int physicalDamage, float physicalReach, int projectileDamage, float projectileForce, float projectileLifeTime, int magazineCapacity, int magazinRest, float reloadTime)
     {
         this.itemType = itemType;
 
         this.itemCode = itemCode;
 
         this.onlyHaveOne = onlyHaveOne;
-
-        this.count = count;
-
-        this.countMax = countMax;
 
         this.cooldownTime = cooldownTime;
 

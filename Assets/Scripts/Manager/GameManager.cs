@@ -5,6 +5,8 @@ using UnityEngine;
 
 using UnityEngine.SceneManagement;
 
+using FadeScreen;
+
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance { get; private set; }

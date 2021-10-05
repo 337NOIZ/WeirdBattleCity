@@ -5,168 +5,171 @@ using UnityEngine;
 
 using UnityEngine.UI;
 
-public class FadeScreen : MonoBehaviour
+namespace FadeScreen
 {
-    [Space]
-
-    [SerializeField, Range(0, 1)] private int startFadeProgress = 0;
-
-    public CanvasGroupController canvasGroupController { get; private set; } = null;
-
-    public Image image { get; private set; } = null;
-
-    public Texture baseMap
+    public class FadeScreen : MonoBehaviour
     {
-        set
+        [Space]
+
+        [SerializeField, Range(0, 1)] private int startFadeProgress = 0;
+
+        public CanvasGroupController canvasGroupController { get; private set; } = null;
+
+        public Image image { get; private set; } = null;
+
+        public Texture baseMap
         {
-            image.material.SetTexture("_baseMap", value);
-        }
-    }
-
-    private float _fadeProgress;
-
-    public float fadeProgress
-    {
-        get
-        {
-            return _fadeProgress;
-        }
-
-        set
-        {
-            _fadeProgress = value;
-
-            if (value == 1)
+            set
             {
-                image.raycastTarget = false;
+                image.material.SetTexture("_baseMap", value);
+            }
+        }
+
+        private float _fadeProgress;
+
+        public float fadeProgress
+        {
+            get
+            {
+                return _fadeProgress;
             }
 
-            else
+            set
             {
-                image.raycastTarget = true;
-            }
+                _fadeProgress = value;
 
-            image.material.SetFloat("_fadeProgress", value);
-        }
-    }
-
-    private void Awake()
-    {
-        canvasGroupController = GetComponent<CanvasGroupController>();
-
-        image = GetComponent<Image>();
-
-        image.material = new Material(image.material);
-
-        fadeProgress = startFadeProgress;
-    }
-
-    private IEnumerator fade = null;
-
-    public IEnumerator Fade(string fadePatternName, float fadeSmoothness, float virtualFadeProgress, float targetFadeProgress, float routineTime)
-    {
-        if (fade != null)
-        {
-            StopCoroutine(fade);
-
-            fade = null;
-
-            yield return null;
-        }
-
-        fade = _Fade(fadePatternName, fadeSmoothness, virtualFadeProgress, targetFadeProgress, routineTime);
-
-        StartCoroutine(fade);
-
-        while (fade != null)
-        {
-            yield return null;
-        }
-    }
-
-    public IEnumerator Fade(string fadePatternName, float fadeSmoothness, float targetFadeProgress, float routineTime)
-    {
-        yield return Fade(fadePatternName, fadeSmoothness, fadeProgress, targetFadeProgress, routineTime);
-    }
-
-    public IEnumerator Fade(float fadeSmoothness, float virtualFadeProgress, float targetFadeProgress, float routineTime)
-    {
-        yield return Fade(null, fadeSmoothness, virtualFadeProgress, targetFadeProgress, routineTime);
-    }
-
-    public IEnumerator Fade(float fadeSmoothness, float targetFadeProgress, float routineTime)
-    {
-        yield return Fade(null, fadeSmoothness, fadeProgress, targetFadeProgress, routineTime);
-    }
-
-    private IEnumerator _Fade(string fadePatternName, float fadeSmoothness, float virtualFadeProgress, float targetFadeProgress, float routineTime)
-    {
-        if(fadePatternName != null)
-        {
-            image.material.SetTexture("_fadePattern", FadeScreenManager.instance.fadePatterns[fadePatternName]);
-        }
-
-        if (fadeSmoothness > 2f)
-        {
-            fadeSmoothness = 2f;
-        }
-
-        else if(fadeSmoothness < 0f)
-        {
-            fadeSmoothness = 0f;
-        }
-
-        image.material.SetFloat("_fadeSmoothness", fadeSmoothness);
-
-        if (virtualFadeProgress > 1f)
-        {
-            virtualFadeProgress = 1f;
-        }
-
-        else if (virtualFadeProgress < 0f)
-        {
-            virtualFadeProgress = 0f;
-        }
-
-        if (targetFadeProgress > 1f)
-        {
-            targetFadeProgress = 1f;
-        }
-
-        else if (targetFadeProgress < 0f)
-        {
-            targetFadeProgress = 0f;
-        }
-
-        image.raycastTarget = true;
-
-        if (routineTime > 0f)
-        {
-            float maxDelta = (virtualFadeProgress > targetFadeProgress ? virtualFadeProgress - targetFadeProgress : targetFadeProgress - virtualFadeProgress) / routineTime;
-
-            while (true)
-            {
-                fadeProgress = Mathf.MoveTowards(fadeProgress, targetFadeProgress, maxDelta * Time.deltaTime);
-
-                if (fadeProgress == targetFadeProgress)
+                if (value == 1)
                 {
-                    break;
+                    image.raycastTarget = false;
                 }
 
+                else
+                {
+                    image.raycastTarget = true;
+                }
+
+                image.material.SetFloat("_fadeProgress", value);
+            }
+        }
+
+        private void Awake()
+        {
+            canvasGroupController = GetComponent<CanvasGroupController>();
+
+            image = GetComponent<Image>();
+
+            image.material = new Material(image.material);
+
+            fadeProgress = startFadeProgress;
+        }
+
+        private IEnumerator fade = null;
+
+        public IEnumerator Fade(string fadePatternName, float fadeSmoothness, float virtualFadeProgress, float targetFadeProgress, float routineTime)
+        {
+            if (fade != null)
+            {
+                StopCoroutine(fade);
+
+                fade = null;
+
+                yield return null;
+            }
+
+            fade = _Fade(fadePatternName, fadeSmoothness, virtualFadeProgress, targetFadeProgress, routineTime);
+
+            StartCoroutine(fade);
+
+            while (fade != null)
+            {
                 yield return null;
             }
         }
 
-        else
+        public IEnumerator Fade(string fadePatternName, float fadeSmoothness, float targetFadeProgress, float routineTime)
         {
-            fadeProgress = targetFadeProgress;
+            yield return Fade(fadePatternName, fadeSmoothness, fadeProgress, targetFadeProgress, routineTime);
         }
 
-        if (fadeProgress == 1f)
+        public IEnumerator Fade(float fadeSmoothness, float virtualFadeProgress, float targetFadeProgress, float routineTime)
         {
-            image.raycastTarget = false;
+            yield return Fade(null, fadeSmoothness, virtualFadeProgress, targetFadeProgress, routineTime);
         }
 
-        fade = null;
+        public IEnumerator Fade(float fadeSmoothness, float targetFadeProgress, float routineTime)
+        {
+            yield return Fade(null, fadeSmoothness, fadeProgress, targetFadeProgress, routineTime);
+        }
+
+        private IEnumerator _Fade(string fadePatternName, float fadeSmoothness, float virtualFadeProgress, float targetFadeProgress, float routineTime)
+        {
+            if (fadePatternName != null)
+            {
+                image.material.SetTexture("_fadePattern", FadeScreenManager.instance.fadePatterns[fadePatternName]);
+            }
+
+            if (fadeSmoothness > 2f)
+            {
+                fadeSmoothness = 2f;
+            }
+
+            else if (fadeSmoothness < 0f)
+            {
+                fadeSmoothness = 0f;
+            }
+
+            image.material.SetFloat("_fadeSmoothness", fadeSmoothness);
+
+            if (virtualFadeProgress > 1f)
+            {
+                virtualFadeProgress = 1f;
+            }
+
+            else if (virtualFadeProgress < 0f)
+            {
+                virtualFadeProgress = 0f;
+            }
+
+            if (targetFadeProgress > 1f)
+            {
+                targetFadeProgress = 1f;
+            }
+
+            else if (targetFadeProgress < 0f)
+            {
+                targetFadeProgress = 0f;
+            }
+
+            image.raycastTarget = true;
+
+            if (routineTime > 0f)
+            {
+                float maxDelta = (virtualFadeProgress > targetFadeProgress ? virtualFadeProgress - targetFadeProgress : targetFadeProgress - virtualFadeProgress) / routineTime;
+
+                while (true)
+                {
+                    fadeProgress = Mathf.MoveTowards(fadeProgress, targetFadeProgress, maxDelta * Time.deltaTime);
+
+                    if (fadeProgress == targetFadeProgress)
+                    {
+                        break;
+                    }
+
+                    yield return null;
+                }
+            }
+
+            else
+            {
+                fadeProgress = targetFadeProgress;
+            }
+
+            if (fadeProgress == 1f)
+            {
+                image.raycastTarget = false;
+            }
+
+            fade = null;
+        }
     }
 }

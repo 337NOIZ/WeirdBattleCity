@@ -3,38 +3,41 @@ using System.Collections;
 
 using UnityEngine;
 
-public enum ItemType
-{
-    AMMO, CONSUMABLE, WEAPON,
-}
-
-public enum ItemCode
-{
-    ARROW, BARE_FIST, BOW, CROSSBOW, CROSSBOW_BOLT, GRENADE, MEDIKIT, PISTOL, PISTOL_AMMO, SHOTGUN_AMMO, SMG, SMG_AMMO,
-}
-
 public abstract class  Item : MonoBehaviour
 {
-    [Space, SerializeField] protected Transform grip = null;
+    [Space]
+
+    [SerializeField] protected Transform grip = null;
 
     [SerializeField] protected Transform muzzle = null;
 
-    [Space, SerializeField] protected Item pair = null;
+    [Space]
 
-    [Space, SerializeField] protected Projectile projectile = null;
+    [SerializeField] protected Item pair = null;
+
+    [Space]
+
+    [SerializeField] protected Projectile projectile = null;
+
+    [Space] public ItemData itemData;
 
     public ItemType itemType { get; protected set; }
 
     public ItemCode itemCode { get; protected set; }
 
-    [Space] public ItemData itemData;
+    protected Animator animator;
+
+    public void Initialize(Animator animator)
+    {
+        this.animator = animator;
+
+        gameObject.SetActive(false);
+    }
 
     public bool TryDualWield(bool dualWield)
     {
         if (pair != null)
         {
-            pair.gameObject.SetActive(dualWield);
-
             itemData.dualWield = dualWield;
 
             return true;
@@ -43,7 +46,7 @@ public abstract class  Item : MonoBehaviour
         return false;
     }
 
-    public void SetCooldown()
+    protected void SetCooldown()
     {
         if(_setCooldown != null)
         {
@@ -57,7 +60,7 @@ public abstract class  Item : MonoBehaviour
 
     private IEnumerator _setCooldown = null;
 
-    private IEnumerator _SetCooldown()
+    protected IEnumerator _SetCooldown()
     {
         itemData.cooldown = itemData.cooldownTime;
 
@@ -72,6 +75,8 @@ public abstract class  Item : MonoBehaviour
 
         _setCooldown = null;
     }
+
+    public virtual void Equip(bool state) { }
 
     public virtual bool Consum(bool state)
     {

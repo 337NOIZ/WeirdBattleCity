@@ -12,9 +12,9 @@ TagManager:
   - Water
   - UI
   - Stepable
-  - Damageable
+  - Enemy
   - Projectile
-  - 
+  - Drop
   - 
   - 
   - 
