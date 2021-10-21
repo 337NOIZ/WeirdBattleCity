@@ -1,4 +1,6 @@
 
+using System.Collections;
+
 using UnityEngine;
 
 public abstract class Enemy : Damageable
@@ -7,17 +9,48 @@ public abstract class Enemy : Damageable
 
     [SerializeField] private Animator animator = null;
 
+    //
+
+    public EnemyCode enemyCode { get; protected set; }
+
     [Space]
 
     [SerializeField] private EnemyData enemyData = null;
 
-    private new Rigidbody rigidbody;
-
-    public EnemyCode enemyCode { get; protected set; }
-
-    public virtual void Initialize()
+    private void OnCollisionEnter(Collision collision)
     {
-        rigidbody = GetComponent<Rigidbody>();
+        Player player = collision.gameObject.GetComponent<Player>();
+
+        if (player != null)
+        {
+            doDamage = DoDamage(player);
+
+            StartCoroutine(doDamage);
+        }
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        Player player = collision.gameObject.GetComponent<Player>();
+
+        if (player != null)
+        {
+            StopCoroutine(doDamage);
+
+            doDamage = null;
+        }
+    }
+
+    private IEnumerator doDamage = null;
+
+    private IEnumerator DoDamage(Player player)
+    {
+        while(true)
+        {
+            player.TakeDamage(damageableData.contactDamage);
+
+            yield return null;
+        }
     }
 
     public void Spawn(EnemyData enemyData)

@@ -39,7 +39,7 @@ public class PlayerData
 
     public int jumpCountMax;
 
-    public Dictionary<ItemType, List<ItemData>> inventory;
+    public Dictionary<ItemType, List<ItemInfo>> inventory;
 
     public Dictionary<ItemType, int> currentItemNumber;
 
@@ -51,7 +51,7 @@ public class PlayerData
 
         animatorlocalEulerAngles = Vector3.zero;
 
-        damageableData = new DamageableData(100, 100, 1f);
+        damageableData = new DamageableData(100, 100, 1f, 0);
 
         movingSpeed = 3f;
 
@@ -63,27 +63,33 @@ public class PlayerData
 
         jumpCountMax = 1;
 
-        inventory = new Dictionary<ItemType, List<ItemData>>();
+        inventory = new Dictionary<ItemType, List<ItemInfo>>();
 
-        inventory.Add(ItemType.AMMO, new List<ItemData>());
+        inventory.Add(ItemType.ammo, new List<ItemInfo>());
 
-        inventory[ItemType.AMMO].Add(new ItemData(ItemType.AMMO, ItemCode.PISTOL_AMMO, true, 15, 150));
+        inventory[ItemType.ammo].Add(new ItemInfo(ItemType.ammo, ItemCode.pistolAmmo, 135));
 
-        inventory.Add(ItemType.CONSUMABLE, new List<ItemData>());
+        inventory[ItemType.ammo].Add(new ItemInfo(ItemType.ammo, ItemCode.shotgunAmmo, 27));
 
-        inventory[ItemType.CONSUMABLE].Add(new ItemData(ItemType.CONSUMABLE, ItemCode.MEDIKIT, true, 0, 3, 10f, 0f));
+        inventory[ItemType.ammo].Add(new ItemInfo(ItemType.ammo, ItemCode.submachineGunAmmo, 270));
 
-        inventory.Add(ItemType.WEAPON, new List<ItemData>());
+        inventory.Add(ItemType.consumable, new List<ItemInfo>());
 
-        inventory[ItemType.WEAPON].Add(new ItemData(ItemType.WEAPON, ItemCode.BARE_FIST, true, 0.5f, true, true, 1, 1f));
+        inventory[ItemType.consumable].Add(new ItemInfo(ItemType.consumable, ItemCode.medikit, 0));
 
-        inventory[ItemType.WEAPON].Add(new ItemData(ItemType.WEAPON, ItemCode.PISTOL, false, 0.3f, false, false, 1, 1f, 5, 100f, 1f, 15, 15, 3f));
+        inventory.Add(ItemType.weapon, new List<ItemInfo>());
+
+        inventory[ItemType.weapon].Add(new ItemInfo(ItemType.weapon, ItemCode.pistol, 1, 15));
+
+        inventory[ItemType.weapon].Add(new ItemInfo(ItemType.weapon, ItemCode.shotgun, 1, 3));
+
+        inventory[ItemType.weapon].Add(new ItemInfo(ItemType.weapon, ItemCode.submachineGun, 1, 30));
 
         currentItemNumber = new Dictionary<ItemType, int>();
 
-        currentItemNumber.Add(ItemType.CONSUMABLE, 0);
+        currentItemNumber.Add(ItemType.consumable, 0);
 
-        currentItemNumber.Add(ItemType.WEAPON, 0);
+        currentItemNumber.Add(ItemType.weapon, 0);
     }
 
     public PlayerData(PlayerData playerData)
@@ -104,7 +110,7 @@ public class PlayerData
 
         jumpCountMax = playerData.jumpCountMax;
 
-        inventory = new Dictionary<ItemType, List<ItemData>>(playerData.inventory);
+        inventory = new Dictionary<ItemType, List<ItemInfo>>(playerData.inventory);
 
         currentItemNumber = new Dictionary<ItemType, int>(playerData.currentItemNumber);
     }

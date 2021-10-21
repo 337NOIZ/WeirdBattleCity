@@ -1,8 +1,8 @@
 
 public class Ammo : Item
 {
-    private void Awake()
+    protected virtual void Awake()
     {
-        itemType = ItemType.AMMO;
+        itemType = ItemType.ammo;
     }
 }

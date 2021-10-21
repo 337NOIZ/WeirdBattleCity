@@ -1,31 +1,35 @@
 
-using UnityEngine;
-
-[System.Serializable]
-
 public class DamageableData
 {
-    [Space] public int healthPoint;
+    public int healthPoint;
     
-    public int healthPointMax;
+    public int healthPoint_Max;
+    
+    public float invincibleTime = 0f;
 
-    [Space] public float invincibleTime;
+    public float invincibleTime_Seconds;
 
-    public DamageableData(int healthPoint, int healthPointMax, float invincibleTime)
+    public int contactDamage;
+
+    public DamageableData(int healthPoint, int healthPoint_Max, float invincibleTime_Seconds, int contactDamage)
     {
         this.healthPoint = healthPoint;
 
-        this.healthPointMax = healthPointMax;
+        this.healthPoint_Max = healthPoint_Max;
 
-        this.invincibleTime = invincibleTime;
+        this.invincibleTime_Seconds = invincibleTime_Seconds;
+
+        this.contactDamage = contactDamage;
     }
 
     public DamageableData(DamageableData damageableDate)
     {
         healthPoint = damageableDate.healthPoint;
 
-        healthPointMax = damageableDate.healthPointMax;
+        healthPoint_Max = damageableDate.healthPoint_Max;
 
-        invincibleTime = damageableDate.invincibleTime;
+        invincibleTime_Seconds = damageableDate.invincibleTime_Seconds;
+
+        contactDamage = damageableDate.contactDamage;
     }
 }

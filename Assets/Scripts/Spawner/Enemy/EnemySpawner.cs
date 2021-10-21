@@ -30,8 +30,6 @@ public class EnemySpawner : Spawner
 
         for(int index = 0; index < length; ++index)
         {
-            enemies[index].Initialize();
-
             EnemyCode enemyCode = enemies[index].enemyCode;
 
             if (this.enemies.ContainsKey(enemyCode) == false)

@@ -1,17 +1,25 @@
 
+using System.Collections;
+
 using UnityEngine;
 
 public class Medikit : Consumable
 {
-    private void Awake()
+    protected override void Awake()
     {
-        itemCode = ItemCode.MEDIKIT;
+        base.Awake();
+
+        itemCode = ItemCode.medikit;
     }
 
-    protected override void __Consum()
+    protected override IEnumerator _Consum()
     {
-        Debug.Log("Medikit Consum");
+        yield return new WaitForSeconds(itemData.consumTime_Seconds);
 
-        --itemData.count;
+        Cooldown();
+
+        --itemInfo.stackCount;
+
+        _consum = null;
     }
 }

@@ -1,181 +1,113 @@
 
-using UnityEngine;
-
-[System.Serializable]
-
 public class ItemData
 {
-    [Space] public ItemType itemType;
+    public int stackCount_Max { get; private set; }
 
-    public ItemCode itemCode;
+    public float cooldownTime_Seconds { get; private set; }
 
-    [Space] public bool onlyHaveOne;
+    public float drawingTime_Seconds { get; private set; }
 
-    [Space] public int count = 1;
+    public float consumTime_Seconds { get; private set; }
 
-    public int countMax = 1;
+    public bool autoAttack { get; private set; }
 
-    [Space] public float cooldown = 0;
+    public int physicalDamage { get; private set; }
 
-    public float cooldownTime;
+    public float physicalReach { get; private set; }
 
-    [Space] public float consumTime = 0;
+    public float projectileMultishot { get; private set; }
 
-    [Space] public bool autoAttack = false;
+    public float projectileDiffusion { get; private set; }
 
-    [Space] public bool dualWield = false;
+    public int projectileDamage { get; private set; }
 
-    [Space] public int physicalDamage = 0;
+    public int projectileExposionDamage { get; private set; }
 
-    public float physicalReach = 0;
+    public float projectileForce { get; private set; }
 
-    [Space] public int projectileDamage = 0;
+    public float projectileLifeTime_Seconds { get; private set; }
 
-    public float projectileForce = 0f;
+    public int magazine_AmmoCount_Max { get; private set; }
 
-    public float projectileLifeTime = 0f;
+    public float reloadingTime_Seconds { get; private set; }
 
-    [Space] public int magazineCapacity = 0;
-
-    public int magazinRest = 0;
-
-    [Space] public float reloadTime = 0f;
-
-    public ItemData(ItemType itemType, ItemCode itemCode, bool onlyHaveOne, int count, int countMax)
+    public ItemData(int stackCount_Max)
     {
-        this.itemType = itemType;
-
-        this.itemCode = itemCode;
-
-        this.onlyHaveOne = onlyHaveOne;
-
-        this.count = count;
-
-        this.countMax = countMax;
+        this.stackCount_Max = stackCount_Max;
     }
 
-    public ItemData(ItemType itemType, ItemCode itemCode, bool onlyHaveOne, int count, int countMax, float cooldownTime, float consumTime)
+    public ItemData(int stackCount_Max, float cooldownTime_Seconds, float drawingTime_Seconds, float consumTime_Seconds)
     {
-        this.itemType = itemType;
+        this.stackCount_Max = stackCount_Max;
 
-        this.itemCode = itemCode;
+        this.cooldownTime_Seconds = cooldownTime_Seconds;
 
-        this.onlyHaveOne = onlyHaveOne;
+        this.drawingTime_Seconds = drawingTime_Seconds;
 
-        this.count = count;
-
-        this.countMax = countMax;
-
-        this.cooldownTime = cooldownTime;
-
-        this.consumTime = consumTime;
+        this.consumTime_Seconds = consumTime_Seconds;
     }
 
-    public ItemData(ItemType itemType, ItemCode itemCode, bool onlyHaveOne, float cooldownTime, bool autoAttack, bool dualWield, int physicalDamage, float physicalReach)
+    public ItemData(int stackCount_Max, float cooldownTime_Seconds, float drawingTime_Seconds, bool autoAttack, int physicalDamage, float physicalReach, float projectileMultishot, float projectileDiffusion, int projectileDamage, int projectileExposionDamage, float projectileForce, float projectileLifeTime_Seconds, int magazine_AmmoCount_Max, float reloadingTime_Seconds)
     {
-        this.itemType = itemType;
+        this.stackCount_Max = stackCount_Max;
 
-        this.itemCode = itemCode;
+        this.cooldownTime_Seconds = cooldownTime_Seconds;
 
-        this.onlyHaveOne = onlyHaveOne;
-
-        this.cooldownTime = cooldownTime;
+        this.drawingTime_Seconds = drawingTime_Seconds;
 
         this.autoAttack = autoAttack;
-
-        this.dualWield = dualWield;
 
         this.physicalDamage = physicalDamage;
 
         this.physicalReach = physicalReach;
-    }
 
-    public ItemData(ItemType itemType, ItemCode itemCode, bool onlyHaveOne, float cooldownTime, bool autoAttack, bool dualWield, int physicalDamage, float physicalReach, int projectileDamage, float projectileForce, float projectileLifeTime, int magazineCapacity, int magazinRest, float reloadTime)
-    {
-        this.itemType = itemType;
+        this.projectileMultishot = projectileMultishot;
 
-        this.itemCode = itemCode;
-
-        this.onlyHaveOne = onlyHaveOne;
-
-        this.cooldownTime = cooldownTime;
-
-        this.autoAttack = autoAttack;
-
-        this.dualWield = dualWield;
-
-        this.physicalDamage = physicalDamage;
-
-        this.physicalReach = physicalReach;
+        this.projectileDiffusion = projectileDiffusion;
 
         this.projectileDamage = projectileDamage;
 
+        this.projectileExposionDamage = projectileExposionDamage;
+
         this.projectileForce = projectileForce;
 
-        this.projectileLifeTime = projectileLifeTime;
+        this.projectileLifeTime_Seconds = projectileLifeTime_Seconds;
 
-        this.magazineCapacity = magazineCapacity;
+        this.magazine_AmmoCount_Max = magazine_AmmoCount_Max;
 
-        this.magazinRest = magazinRest;
-
-        this.reloadTime = reloadTime;
+        this.reloadingTime_Seconds = reloadingTime_Seconds;
     }
 
     public ItemData(ItemData itemData)
     {
-        itemType = itemData.itemType;
+        stackCount_Max = itemData.stackCount_Max;
 
-        itemCode = itemData.itemCode;
+        cooldownTime_Seconds = itemData.cooldownTime_Seconds;
 
-        onlyHaveOne = itemData.onlyHaveOne;
+        drawingTime_Seconds = itemData.drawingTime_Seconds;
 
-        count = itemData.count;
-
-        countMax = itemData.countMax;
-
-        cooldown = itemData.cooldown;
-
-        cooldownTime = itemData.cooldownTime;
-
-        consumTime = itemData.consumTime;
+        consumTime_Seconds = itemData.consumTime_Seconds;
 
         autoAttack = itemData.autoAttack;
-
-        dualWield = itemData.dualWield;
 
         physicalDamage = itemData.physicalDamage;
 
         physicalReach = itemData.physicalReach;
 
+        projectileMultishot = itemData.projectileMultishot;
+
+        projectileDiffusion = itemData.projectileDiffusion;
+
         projectileDamage = itemData.projectileDamage;
+
+        projectileExposionDamage = itemData.projectileExposionDamage;
 
         projectileForce = itemData.projectileForce;
 
-        projectileLifeTime = itemData.projectileLifeTime;
+        projectileLifeTime_Seconds = itemData.projectileLifeTime_Seconds;
 
-        magazineCapacity = itemData.magazineCapacity;
+        magazine_AmmoCount_Max = itemData.magazine_AmmoCount_Max;
 
-        magazinRest = itemData.magazinRest;
-
-        reloadTime = itemData.reloadTime;
-}
-
-    public int Stack(int count)
-    {
-        this.count += count;
-
-        int stackRest = this.count - countMax;
-
-        if(stackRest > 0)
-        {
-            this.count -= stackRest;
-        }
-
-        else
-        {
-            stackRest = 0;
-        }
-
-        return stackRest;
+        reloadingTime_Seconds = itemData.reloadingTime_Seconds;
     }
 }

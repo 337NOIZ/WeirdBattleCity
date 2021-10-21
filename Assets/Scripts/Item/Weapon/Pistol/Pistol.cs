@@ -1,41 +1,18 @@
 
-using System.Collections;
-
 public class Pistol : Weapon
 {
-    private void Awake()
+    protected override void Awake()
     {
-        itemCode = ItemCode.PISTOL;
-    }
+        base.Awake();
 
-    public override void Equip(bool state)
-    {
-        animator.SetBool("pistolStance", state);
+        itemCode = ItemCode.pistol;
 
-        gameObject.SetActive(state);
-    }
+        stance = "pistolStance";
 
-    protected override IEnumerator _Attack()
-    {
-        do
-        {
-            yield return null;
+        cooldownTime_Seconds = AnimationTools.FrameCountToSeconds(10);
 
-            if (itemData.magazinRest > 0)
-            {
-                --itemData.magazinRest;
+        drawingTime_Seconds = AnimationTools.FrameCountToSeconds(40);
 
-                Projectile projectile = Instantiate(this.projectile, muzzle.position, muzzle.rotation);
-
-                projectile.Launch(itemData.projectileDamage, itemData.projectileForce, itemData.projectileLifeTime);
-
-                animator.SetBool("recoil", true);
-
-                yield return _SetCooldown();
-
-                animator.SetBool("recoil", false);
-            }
-        }
-        while (isAttacking == true);
+        reloadingTime_Seconds = AnimationTools.FrameCountToSeconds(104);
     }
 }

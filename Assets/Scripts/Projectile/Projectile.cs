@@ -1,7 +1,7 @@
 
 using UnityEngine;
 
-public class Projectile : MonoBehaviour
+public abstract class Projectile : MonoBehaviour
 {
     [Space]
     
@@ -19,7 +19,7 @@ public class Projectile : MonoBehaviour
 
     private float lifeTime;
 
-    private void Awake()
+    protected virtual void Awake()
     {
         rigidbody = GetComponent<Rigidbody>();
 
@@ -30,19 +30,19 @@ public class Projectile : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if(Physics.Linecast(rigidbody.position, rigidbodyPosition_Old, out raycastHit, layerMask) == true)
+        Debug.DrawLine(rigidbody.position, rigidbodyPosition_Old, Color.red, lifeTime);
+
+        if (Physics.Linecast(rigidbody.position, rigidbodyPosition_Old, out raycastHit, layerMask) == true)
         {
             Damageable damageable = raycastHit.collider.GetComponent<Damageable>();
 
             if(damageable != null)
             {
-                damageable.GetDamage(damage);
+                damageable.TakeDamage(damage);
 
                 Destroy(gameObject);
             }
         }
-
-        Debug.DrawLine(rigidbody.position, rigidbodyPosition_Old, Color.red, lifeTime);
 
         rigidbodyPosition_Old = rigidbody.position;
     }

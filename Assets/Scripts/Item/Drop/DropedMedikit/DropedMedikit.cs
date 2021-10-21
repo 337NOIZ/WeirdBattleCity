@@ -7,7 +7,7 @@ public class DropedMedikit : Drop
     {
         base.Initialize();
 
-        itemCode = ItemCode.MEDIKIT;
+        itemCode = ItemCode.medikit;
     }
 
     private void OnCollisionEnter(Collision collision)

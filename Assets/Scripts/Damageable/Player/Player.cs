@@ -1,17 +1,27 @@
 
+using System.Collections;
+
 using System.Collections.Generic;
 
 using UnityEngine;
 
 using UnityEngine.InputSystem;
 
-public class Player : Damageable
+public sealed class Player : Damageable
 {
     #region Variables
 
     [Space]
 
     [SerializeField] public Transform cameraPivot = null;
+
+    [SerializeField] public Transform cameraFollower = null;
+
+    [Space]
+
+    [SerializeField] private Vector3 cameraForward;
+
+    [SerializeField] private Vector3 cameraRight;
 
     [Space]
 
@@ -29,15 +39,15 @@ public class Player : Damageable
 
     [Space]
 
-    [SerializeField] private GameObject _leftHandAmmos = null;
-
-    [SerializeField] private GameObject _leftHandWeapons = null;
+    [SerializeField] public Transform AimTarget = null;
 
     [Space]
 
-    [SerializeField] private GameObject _rightHandConsumables = null;
+    [SerializeField] private GameObject _ammos = null;
 
-    [SerializeField] private GameObject _rightHandWeapons = null;
+    [SerializeField] private GameObject _consumables = null;
+
+    [SerializeField] private GameObject _weapons = null;
 
     [Space]
 
@@ -55,23 +65,21 @@ public class Player : Damageable
 
     [SerializeField] private int jumpCount = 0;
 
-    [Space]
-
-    [SerializeField] private PlayerData playerData;
-
-    private new Rigidbody rigidbody;
-
     private GroundedCheckSphere groundedCheckSphere;
 
-    private Dictionary<ItemCode, Ammo> leftHandAmmos = new Dictionary<ItemCode, Ammo>();
+    [Space]
 
-    private Dictionary<ItemCode, Weapon> leftHandWeapons = new Dictionary<ItemCode, Weapon>();
+    [SerializeField] private PlayerData playerData = null;
 
-    private Dictionary<ItemCode, Consumable> rightHandConsumables = new Dictionary<ItemCode, Consumable>();
+    private Dictionary<ItemCode, Ammo> ammos = new Dictionary<ItemCode, Ammo>();
 
-    private Dictionary<ItemCode, Weapon> rightHandWeapons = new Dictionary<ItemCode, Weapon>();
+    private Dictionary<ItemCode, Consumable> consumables = new Dictionary<ItemCode, Consumable>();
+
+    private Dictionary<ItemCode, Weapon> weapons = new Dictionary<ItemCode, Weapon>();
 
     private Dictionary<ItemType, Item> currentItem;
+
+    private RaycastHit raycastHit;
 
     private bool isGrounded = false;
 
@@ -79,16 +87,18 @@ public class Player : Damageable
 
     #endregion
 
-    private void Awake()
+    #region Initialize
+
+    protected override void Awake()
     {
-        rigidbody = GetComponent<Rigidbody>();
+        base.Awake();
 
         groundedCheckSphere = GetComponent<GroundedCheckSphere>();
     }
 
     public void Initialize()
     {
-        playerData = DataManager.instance.gameData.playerData;
+        playerData = GameManager.instance.gameData.playerData;
 
         damageableData = playerData.damageableData;
 
@@ -98,73 +108,71 @@ public class Player : Damageable
 
         animator.transform.localEulerAngles = playerData.animatorlocalEulerAngles;
 
-        _leftHandAmmos.SetActive(true);
-
-        var ammos = _leftHandAmmos.GetComponentsInChildren<Ammo>();
+        var ammos = _ammos.GetComponentsInChildren<Ammo>();
 
         int length = ammos.Length;
 
         for (int index = 0; index < length; ++index)
         {
-            leftHandAmmos.Add(ammos[index].itemCode, ammos[index]);
+            this.ammos.Add(ammos[index].itemCode, ammos[index]);
 
-            ammos[index].Initialize(animator);
+            ammos[index].animator = animator;
         }
 
-        _rightHandConsumables.SetActive(true);
-
-        var consumables = _rightHandConsumables.GetComponentsInChildren<Consumable>();
+        var consumables = _consumables.GetComponentsInChildren<Consumable>();
 
         length = consumables.Length;
 
         for (int index = 0; index < length; ++index)
         {
-            rightHandConsumables.Add(consumables[index].itemCode, consumables[index]);
+            this.consumables.Add(consumables[index].itemCode, consumables[index]);
 
-            consumables[index].Initialize(animator);
+            consumables[index].animator = animator;
         }
 
-        _leftHandWeapons.SetActive(true);
-
-        var weapons = _leftHandWeapons.GetComponentsInChildren<Weapon>();
-
-        length = weapons.Length;
-
-        for (int intdex = 0; intdex < length; ++intdex)
-        {
-            leftHandWeapons.Add(weapons[intdex].itemCode, weapons[intdex]);
-
-            weapons[intdex].Initialize(animator);
-        }
-
-        _rightHandWeapons.SetActive(true);
-
-        weapons = _rightHandWeapons.GetComponentsInChildren<Weapon>();
+        var weapons = _weapons.GetComponentsInChildren<Weapon>();
 
         length = weapons.Length;
 
         for (int index = 0; index < length; ++index)
         {
-            rightHandWeapons.Add(weapons[index].itemCode, weapons[index]);
+            this.weapons.Add(weapons[index].itemCode, weapons[index]);
 
-            weapons[index].Initialize(animator);
+            weapons[index].animator = animator;
         }
 
-        playerData = DataManager.instance.gameData.playerData;
+        playerData = GameManager.instance.gameData.playerData;
 
         currentItem = new Dictionary<ItemType, Item>();
 
-        int number = playerData.currentItemNumber[ItemType.CONSUMABLE];
+        int number = playerData.currentItemNumber[ItemType.consumable];
 
-        currentItem.Add(ItemType.CONSUMABLE, rightHandConsumables[playerData.inventory[ItemType.CONSUMABLE][number].itemCode]);
+        currentItem.Add(ItemType.consumable, this.consumables[playerData.inventory[ItemType.consumable][number].itemCode]);
 
-        number = playerData.currentItemNumber[ItemType.WEAPON];
+        number = playerData.currentItemNumber[ItemType.weapon];
 
-        currentItem.Add(ItemType.WEAPON, rightHandWeapons[playerData.inventory[ItemType.WEAPON][number].itemCode]);
+        currentItem.Add(ItemType.weapon, this.weapons[playerData.inventory[ItemType.weapon][number].itemCode]);
 
-        currentItem[ItemType.WEAPON].itemData = playerData.inventory[ItemType.WEAPON][number];
+        SelectWeapon(number);
 
-        currentItem[ItemType.WEAPON].Equip(true);
+        StartCoroutine(currentItem[ItemType.weapon].Draw());
+    }
+
+    #endregion
+
+    private void Update()
+    {
+        if(Physics.Raycast(cameraFollower.position, cameraFollower.forward, out raycastHit, 1000f) == true)
+        {
+            AimTarget.position = raycastHit.point;
+        }
+
+        else
+        {
+            AimTarget.position = cameraFollower.forward * 1000f;
+        }
+
+        //Debug.DrawLine(cameraPivot.position, AimTarget.position, Color.red);
     }
 
     private void FixedUpdate()
@@ -249,7 +257,7 @@ public class Player : Damageable
     {
         if (value.isPressed == true)
         {
-            ChangeWeaponNext();
+            SwitchWeaponNext();
         }
     }
 
@@ -257,7 +265,7 @@ public class Player : Damageable
     {
         if (value.isPressed == true)
         {
-            ChangeWeaponPrevious();
+            SwitchWeaponPrevious();
         }
     }
 
@@ -298,9 +306,54 @@ public class Player : Damageable
 
     private void Move()
     {
-        playerData.transformPosition = rigidbody.position;
+        cameraForward = new Vector3(cameraPivot.forward.x, 0f, cameraPivot.forward.z).normalized;
 
-        if (groundedCheckSphere.isGrounded == true)
+        cameraRight = new Vector3(cameraPivot.right.x, 0f, cameraPivot.right.z).normalized;
+
+        if (moveDirection == Vector2.zero)
+        {
+            animator.SetFloat("movingSpeed", 0f);
+        }
+
+        else
+        {
+            movePosition = Vector3.zero;
+
+            movePosition = cameraForward * moveDirection.y + cameraRight * moveDirection.x;
+
+            playerData.animatorlocalEulerAngles = cameraForward;
+
+            movePosition *= playerData.movingSpeed * playerData.movingSpeedMultiply;
+
+            if (isRunKeyPressed == false)
+            {
+                animator.SetFloat("movingSpeed", playerData.movingSpeedMultiply);
+            }
+
+            else
+            {
+                movePosition *= playerData.runningSpeedMultiply;
+
+                animator.SetFloat("movingSpeed", playerData.movingSpeedMultiply * playerData.runningSpeedMultiply);
+            }
+
+            rigidbody.MovePosition(rigidbody.position + movePosition * Time.deltaTime);
+        }
+
+        if (animator.GetBool("isAiming") == false)
+        {
+            if(movePosition != Vector3.zero)
+            {
+                animator.transform.forward = movePosition;
+            }
+        }
+
+        else
+        {
+            animator.transform.forward = cameraForward;
+        }
+
+        /*if (groundedCheckSphere.isGrounded == true)
         {
             if (moveDirection == Vector2.zero)
             {
@@ -342,7 +395,9 @@ public class Player : Damageable
 
                 rigidbody.MovePosition(playerData.transformPosition);
             }
-        }
+        }*/
+
+        playerData.transformPosition = rigidbody.position;
     }
 
     public void Look(Vector2 lookDirection)
@@ -378,7 +433,9 @@ public class Player : Damageable
 
             rigidbody.velocity = Vector3.zero;
 
-            rigidbody.AddForce(new Vector3(movePosition.x, playerData.jumpForce, movePosition.z), ForceMode.Impulse);
+            rigidbody.AddForce(new Vector3(0f, playerData.jumpForce, 0f), ForceMode.Impulse);
+
+            //rigidbody.AddForce(new Vector3(movePosition.x, playerData.jumpForce, movePosition.z), ForceMode.Impulse);
 
             animator.SetBool("isGrounded", false);
 
@@ -388,94 +445,123 @@ public class Player : Damageable
 
     #endregion
 
-    public void GetItem(ItemData itemData)
+    public void GetItem(ItemInfo itemInfo)
     {
-        int count = playerData.inventory[itemData.itemType].Count;
+        int count = playerData.inventory[itemInfo.itemType].Count;
 
         for (int i = 0; i < count; ++i)
         {
-            if (playerData.inventory[itemData.itemType][i].itemCode == itemData.itemCode)
+            if (playerData.inventory[itemInfo.itemType][i].itemCode == itemInfo.itemCode)
             {
-                itemData.count = playerData.inventory[itemData.itemType][i].Stack(itemData.count);
+                itemInfo.stackCount = playerData.inventory[itemInfo.itemType][i].Stack(itemInfo.stackCount);
 
-                if (itemData.onlyHaveOne == false || itemData.count == 0)
+                if (itemInfo.stackCount == 0)
                 {
                     return;
                 }
             }
         }
 
-        playerData.inventory[itemData.itemType].Add(itemData);
+        playerData.inventory[itemInfo.itemType].Add(itemInfo);
     }
 
-    public void SelectConsumable(ItemCode itemCode)
+    public void SelectItem(ItemType itemType, ItemCode itemCode)
     {
-        for (int number = playerData.inventory[ItemType.CONSUMABLE].Count - 1; number >= 0; --number)
+        for (int number = 0; number < playerData.inventory[itemType].Count; ++number)
         {
-            if (playerData.inventory[ItemType.CONSUMABLE][number].itemCode == itemCode)
+            if (playerData.inventory[itemType][number].itemCode == itemCode)
             {
-                currentItem[ItemType.CONSUMABLE] = rightHandConsumables[itemCode];
+                currentItem[itemType] = consumables[itemCode];
 
-                currentItem[ItemType.CONSUMABLE].itemData = playerData.inventory[ItemType.CONSUMABLE][number];
+                currentItem[itemType].Initialize(playerData.inventory[itemType][number]);
 
                 break;
             }
         }
     }
 
+    private void SelectWeapon(int number)
+    {
+        playerData.currentItemNumber[ItemType.weapon] = number;
+
+        currentItem[ItemType.weapon] = weapons[playerData.inventory[ItemType.weapon][number].itemCode];
+
+        currentItem[ItemType.consumable].Initialize(playerData.inventory[ItemType.consumable][number]);
+    }
+
+    public void SwitchWeapon(int number)
+    {
+        if (_switchWeapon == null)
+        {
+            if (number > playerData.inventory[ItemType.weapon].Count - 1)
+            {
+                number = 0;
+            }
+
+            else if (number < 0)
+            {
+                number = playerData.inventory[ItemType.weapon].Count - 1;
+            }
+
+            if (number != playerData.currentItemNumber[ItemType.weapon])
+            {
+                _switchWeapon = _SwitchWeapon(number);
+
+                StartCoroutine(_switchWeapon);
+            }
+        }
+    }
+
+    private IEnumerator _switchWeapon = null;
+
+    private IEnumerator _SwitchWeapon(int number)
+    {
+        yield return currentItem[ItemType.weapon].Store();
+
+        SelectWeapon(number);
+
+        yield return currentItem[ItemType.weapon].Draw();
+
+        _switchWeapon = null;
+    }
+
+    public void SwitchWeaponNext()
+    {
+        SwitchWeapon(playerData.currentItemNumber[ItemType.weapon] + 1);
+    }
+
+    public void SwitchWeaponPrevious()
+    {
+        SwitchWeapon(playerData.currentItemNumber[ItemType.weapon] - 1);
+    }
+
     public void Consum(bool state)
     {
-        currentItem[ItemType.CONSUMABLE].Consum(state);
+        currentItem[ItemType.consumable].Consum(state);
+    }
+
+    public void Medikit()
+    {
+
+    }
+
+    public void Grenade()
+    {
+
     }
 
     public void Attack(bool state)
     {
-        currentItem[ItemType.WEAPON].Attack(state);
+        movePosition = new Vector3(cameraPivot.forward.x, 0f, cameraPivot.forward.z).normalized;
+
+        animator.transform.forward = movePosition;
+
+        currentItem[ItemType.weapon].Attack(state);
     }
 
     public void Reload(bool state)
     {
-        currentItem[ItemType.WEAPON].Reload(state);
-    }
-
-    public void SelectWeapon(int number)
-    {
-        currentItem[ItemType.CONSUMABLE].Consum(false);
-
-        if (number > playerData.inventory[ItemType.WEAPON].Count - 1)
-        {
-            number = 0;
-        }
-
-        else if (number < 0)
-        {
-            number = playerData.inventory[ItemType.WEAPON].Count - 1;
-        }
-
-        if (playerData.currentItemNumber[ItemType.WEAPON] != number)
-        {
-            playerData.currentItemNumber[ItemType.WEAPON] = number;
-
-            currentItem[ItemType.WEAPON].Equip(false);
-
-            currentItem[ItemType.WEAPON] = rightHandWeapons[playerData.inventory[ItemType.WEAPON][number].itemCode];
-
-            currentItem[ItemType.WEAPON].itemData = playerData.inventory[ItemType.WEAPON][number];
-
-            currentItem[ItemType.WEAPON].gameObject.SetActive(true);
-
-            currentItem[ItemType.WEAPON].Equip(true);
-        }
-    }
-
-    public void ChangeWeaponNext()
-    {
-        SelectWeapon(playerData.currentItemNumber[ItemType.WEAPON] + 1);
-    }
-
-    public void ChangeWeaponPrevious()
-    {
-        SelectWeapon(playerData.currentItemNumber[ItemType.WEAPON] - 1);
+        currentItem[ItemType.weapon].Reload(state);
     }
 
     protected override void Dead()

@@ -1,10 +1,10 @@
 
 public class Dummy : Enemy
 {
-    public override void Initialize()
+    protected override void Awake()
     {
-        base.Initialize();
+        base.Awake();
 
-        enemyCode = EnemyCode.DUMMY;
+        enemyCode = EnemyCode.dummy;
     }
 }

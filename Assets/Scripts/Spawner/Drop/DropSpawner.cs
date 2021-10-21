@@ -45,9 +45,9 @@ public class DropSpawner : Spawner
         }
     }
 
-    public void Spawn(ItemData itemData, Vector3 transformPosition)
+    public void Spawn(ItemInfo itemInfo, Vector3 transformPosition)
     {
-        ItemCode itemCode = itemData.itemCode;
+        ItemCode itemCode = itemInfo.itemCode;
 
         int count = drops[itemCode].Count;
 
@@ -57,7 +57,7 @@ public class DropSpawner : Spawner
             {
                 ++itemCount;
 
-                drops[itemCode][index].Spawn(itemData, transformPosition);
+                drops[itemCode][index].Spawn(itemInfo, transformPosition);
             }
         }
     }

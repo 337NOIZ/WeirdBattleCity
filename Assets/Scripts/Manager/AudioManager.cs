@@ -1,4 +1,4 @@
-﻿
+
 using System.Collections;
 
 using System.Collections.Generic;
@@ -11,9 +11,9 @@ public class AudioManager : MonoBehaviour
 
     public Dictionary<string, AudioClip> audioClips { get; private set; } = new Dictionary<string, AudioClip>();
 
-    public AudioSource backgroundMusicAudioSource { get; private set; } = null;
+    public AudioSource backgroundMusicAudioSource { get; private set; }
 
-    public AudioSource[] soundEffectAudioSources { get; private set; } = null;
+    public AudioSource[] soundEffectAudioSources { get; private set; }
 
     public float backgroundMusicMasterVolume
     {
@@ -21,9 +21,7 @@ public class AudioManager : MonoBehaviour
         {
             if (PlayerPrefs.HasKey("BackgroundMusicMasterVolume") != true)
             {
-                backgroundMusicMasterVolume = 1f;
-
-                return 1f;
+                return backgroundMusicMasterVolume = 1f;
             }
 
             return PlayerPrefs.GetFloat("BackgroundMusicMasterVolume");
@@ -53,9 +51,7 @@ public class AudioManager : MonoBehaviour
         {
             if (PlayerPrefs.HasKey("Sound Effect Master Volume") != true)
             {
-                soundEffectMasterVolume = 1f;
-
-                return 1f;
+                return soundEffectMasterVolume = 1f;
             }
 
             return PlayerPrefs.GetFloat("Sound Effect Master Volume");
@@ -84,7 +80,7 @@ public class AudioManager : MonoBehaviour
 
     private void Awake()
     {
-        if (FindObjectsOfType<AudioManager>().Length > 1)
+        if (FindObjectsOfType<GameManager>().Length > 1)
         {
             Destroy(gameObject);
         }
@@ -93,12 +89,10 @@ public class AudioManager : MonoBehaviour
 
         instance = this;
 
-        LoadResources();
-
-        InitializeAudioManager();
+        Initialize();
     }
 
-    private void LoadResources()
+    private void Initialize()
     {
         AudioClip[] audioClips = Resources.LoadAll<AudioClip>("Audio Clips");
 
@@ -106,10 +100,7 @@ public class AudioManager : MonoBehaviour
         {
             this.audioClips.Add(audioClips[index].name, audioClips[index]);
         }
-    }
-    
-    private void InitializeAudioManager()
-    {
+
         backgroundMusicAudioSource = gameObject.AddComponent<AudioSource>();
 
         backgroundMusicAudioSource.playOnAwake = false;

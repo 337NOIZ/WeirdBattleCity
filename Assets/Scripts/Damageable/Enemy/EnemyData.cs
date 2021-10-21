@@ -25,11 +25,11 @@ public class EnemyData
 
     public int physicalDamage;
 
-    public EnemyData(EnemyCode enemyCode,  Vector3 rigidbodyPosition, Vector3 animatorlocalEulerAngles, DamageableData damageableData, int physicalDamage)
+    public EnemyData(EnemyCode enemyCode,  Vector3 transformPosition, Vector3 animatorlocalEulerAngles, DamageableData damageableData, int physicalDamage)
     {
         this.enemyCode = enemyCode;
 
-        this.transformPosition = rigidbodyPosition;
+        this.transformPosition = transformPosition;
 
         this.animatorlocalEulerAngles = animatorlocalEulerAngles;
 

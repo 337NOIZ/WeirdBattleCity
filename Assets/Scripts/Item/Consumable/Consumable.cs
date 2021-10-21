@@ -1,30 +1,26 @@
 
 using System.Collections;
 
-using UnityEngine;
-
 public abstract class Consumable : Item
 {
-    private void Awake()
+    protected virtual void Awake()
     {
-        itemType = ItemType.CONSUMABLE;
+        itemType = ItemType.consumable;
     }
 
-    public override bool Consum(bool state)
+    public override void Consum(bool state)
     {
         if (state == true)
         {
             if (_consum == null)
             {
-                if (itemData.count > 0)
+                if (itemInfo.stackCount > 0)
                 {
-                    if (itemData.cooldown <= 0)
+                    if (itemInfo.cooldownTime <= 0)
                     {
                         _consum = _Consum();
 
                         StartCoroutine(_consum);
-
-                        return true;
                     }
                 }
             }
@@ -36,20 +32,9 @@ public abstract class Consumable : Item
 
             _consum = null;
         }
-
-        return false;
     }
 
-    private IEnumerator _consum = null;
+    protected IEnumerator _consum = null;
 
-    private IEnumerator _Consum()
-    {
-        yield return new WaitForSeconds(itemData.consumTime);
-
-        __Consum();
-
-        _consum = null;
-    }
-
-    protected abstract void __Consum();
+    protected abstract IEnumerator _Consum();
 }

@@ -6,18 +6,16 @@ public class Drop : MonoBehaviour
     [Space]
 
     [SerializeField] private SpinAndFloat model = null;
-
-    [Space]
-
-    [SerializeField] private ItemData itemData;
+    
+    private ItemInfo itemInfo;
 
     public ItemCode itemCode { get; protected set; }
 
     public virtual void Initialize() { }
 
-    public void Spawn(ItemData itemData, Vector3 transformPosition)
+    public void Spawn(ItemInfo itemInfo, Vector3 transformPosition)
     {
-        this.itemData = new ItemData(itemData);
+        this.itemInfo = new ItemInfo(itemInfo);
 
         transform.position = transformPosition;
 

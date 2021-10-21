@@ -3,90 +3,90 @@ using System.Collections;
 
 using UnityEngine;
 
-public abstract class  Item : MonoBehaviour
+public abstract class Item : MonoBehaviour
 {
     [Space]
 
-    [SerializeField] protected Transform grip = null;
-
-    [SerializeField] protected Transform muzzle = null;
-
-    [Space]
-
-    [SerializeField] protected Item pair = null;
-
-    [Space]
-
-    [SerializeField] protected Projectile projectile = null;
-
-    [Space] public ItemData itemData;
+    [SerializeField] protected GameObject model = null;
 
     public ItemType itemType { get; protected set; }
 
     public ItemCode itemCode { get; protected set; }
 
-    protected Animator animator;
+    protected string stance;
 
-    public void Initialize(Animator animator)
+    protected float cooldownTime_Seconds;
+
+    protected float drawingTime_Seconds;
+
+    protected float reloadingTime_Seconds;
+
+    public ItemData itemData { get; protected set; }
+
+    public Animator animator { get; set; }
+
+    public ItemInfo itemInfo { get; protected set; }
+
+    private void Start()
     {
-        this.animator = animator;
-
-        gameObject.SetActive(false);
+        itemData = GameManager.instance.itemDatas[itemCode];
     }
 
-    public bool TryDualWield(bool dualWield)
+    public void Initialize(ItemInfo itemInfo)
     {
-        if (pair != null)
-        {
-            itemData.dualWield = dualWield;
+        this.itemInfo = itemInfo;
+    }
 
-            return true;
+    protected void Cooldown()
+    {
+        if (_cooldown != null)
+        {
+            StopCoroutine(_cooldown);
         }
 
-        return false;
+        _cooldown = _Cooldown();
+
+        StartCoroutine(_cooldown);
     }
 
-    protected void SetCooldown()
+    protected IEnumerator _cooldown = null;
+
+    private IEnumerator _Cooldown()
     {
-        if(_setCooldown != null)
+        itemInfo.cooldownTime = itemData.cooldownTime_Seconds / itemInfo.cooldownSpeed;
+
+        while (itemInfo.cooldownTime > 0f)
         {
-            StopCoroutine(_setCooldown);
-        }
-
-        _setCooldown = _SetCooldown();
-
-        StartCoroutine(_setCooldown);
-    }
-
-    private IEnumerator _setCooldown = null;
-
-    protected IEnumerator _SetCooldown()
-    {
-        itemData.cooldown = itemData.cooldownTime;
-
-        while (itemData.cooldown > 0f)
-        {
-            itemData.cooldown -= Time.deltaTime;
-
             yield return null;
+
+            itemInfo.cooldownTime -= Time.deltaTime;
         }
 
-        itemData.cooldown = 0f;
+        itemInfo.cooldownTime = 0f;
 
-        _setCooldown = null;
+        _cooldown = null;
     }
 
-    public virtual void Equip(bool state) { }
-
-    public virtual bool Consum(bool state)
+    public IEnumerator Draw()
     {
-        return false;
+        animator.SetBool(stance, true);
+
+        animator.SetFloat("drawingSpeed", drawingTime_Seconds / itemData.drawingTime_Seconds * itemInfo.drawingSpeed);
+
+        animator.SetTrigger("draw");
+
+        animator.SetBool("isDrawing", true);
+
+        model.SetActive(true);
+
+        while (animator.GetBool("isDrawing") == true) yield return null;
     }
+
+    public virtual IEnumerator Store() { yield return null; }
+
+    public virtual void Consum(bool state) { }
 
     public virtual void Attack(bool state) { }
 
-    public virtual bool Reload(bool state)
-    {
-        return false;
-    }
+    public virtual void Reload(bool state) { }
 }

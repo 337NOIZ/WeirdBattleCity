@@ -17,7 +17,7 @@ namespace FadeScreen
 
         private void Awake()
         {
-            if (FindObjectsOfType<AudioManager>().Length > 1)
+            if (FindObjectsOfType<FadeScreenManager>().Length > 1)
             {
                 Destroy(gameObject);
             }
