@@ -169,4 +169,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5baf718f46a7f747a9eb05f692ec0ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  layerName: Enemy
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 192

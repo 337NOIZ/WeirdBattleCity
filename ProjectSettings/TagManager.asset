@@ -13,8 +13,8 @@ TagManager:
   - UI
   - Stepable
   - Enemy
-  - Projectile
-  - Drop
+  - Item
+  - 
   - 
   - 
   - 
@@ -40,4 +40,10 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: HeadUpDisplay
+    uniqueID: 4024085367
+    locked: 0
+  - name: UserInterface
+    uniqueID: 3384858493
     locked: 0

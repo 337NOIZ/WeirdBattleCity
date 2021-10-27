@@ -65,7 +65,7 @@ namespace FadeScreen
 
         private IEnumerator fade = null;
 
-        public IEnumerator Fade(string fadePatternName, float fadeSmoothness, float virtualFadeProgress, float targetFadeProgress, float routineTime)
+        public IEnumerator Fade(string fadePatternName, float fadeSmoothness, float virtualFadeProgress, float targetFadeProgress, float fadeTime_Seconds)
         {
             if (fade != null)
             {
@@ -76,7 +76,7 @@ namespace FadeScreen
                 yield return null;
             }
 
-            fade = _Fade(fadePatternName, fadeSmoothness, virtualFadeProgress, targetFadeProgress, routineTime);
+            fade = _Fade(fadePatternName, fadeSmoothness, virtualFadeProgress, targetFadeProgress, fadeTime_Seconds);
 
             StartCoroutine(fade);
 
@@ -86,22 +86,22 @@ namespace FadeScreen
             }
         }
 
-        public IEnumerator Fade(string fadePatternName, float fadeSmoothness, float targetFadeProgress, float routineTime)
+        public IEnumerator Fade(string fadePatternName, float fadeSmoothness, float targetFadeProgress, float fadeTime_Seconds)
         {
-            yield return Fade(fadePatternName, fadeSmoothness, fadeProgress, targetFadeProgress, routineTime);
+            yield return Fade(fadePatternName, fadeSmoothness, fadeProgress, targetFadeProgress, fadeTime_Seconds);
         }
 
-        public IEnumerator Fade(float fadeSmoothness, float virtualFadeProgress, float targetFadeProgress, float routineTime)
+        public IEnumerator Fade(float fadeSmoothness, float virtualFadeProgress, float targetFadeProgress, float fadeTime_Seconds)
         {
-            yield return Fade(null, fadeSmoothness, virtualFadeProgress, targetFadeProgress, routineTime);
+            yield return Fade(null, fadeSmoothness, virtualFadeProgress, targetFadeProgress, fadeTime_Seconds);
         }
 
-        public IEnumerator Fade(float fadeSmoothness, float targetFadeProgress, float routineTime)
+        public IEnumerator Fade(float fadeSmoothness, float targetFadeProgress, float fadeTime_Seconds)
         {
-            yield return Fade(null, fadeSmoothness, fadeProgress, targetFadeProgress, routineTime);
+            yield return Fade(null, fadeSmoothness, fadeProgress, targetFadeProgress, fadeTime_Seconds);
         }
 
-        private IEnumerator _Fade(string fadePatternName, float fadeSmoothness, float virtualFadeProgress, float targetFadeProgress, float routineTime)
+        private IEnumerator _Fade(string fadePatternName, float fadeSmoothness, float virtualFadeProgress, float targetFadeProgress, float fadeTime_Seconds)
         {
             if (fadePatternName != null)
             {
@@ -142,9 +142,9 @@ namespace FadeScreen
 
             image.raycastTarget = true;
 
-            if (routineTime > 0f)
+            if (fadeTime_Seconds > 0f)
             {
-                float maxDelta = (virtualFadeProgress > targetFadeProgress ? virtualFadeProgress - targetFadeProgress : targetFadeProgress - virtualFadeProgress) / routineTime;
+                float maxDelta = (virtualFadeProgress > targetFadeProgress ? virtualFadeProgress - targetFadeProgress : targetFadeProgress - virtualFadeProgress) / fadeTime_Seconds;
 
                 while (true)
                 {

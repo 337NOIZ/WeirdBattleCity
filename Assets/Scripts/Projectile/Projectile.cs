@@ -4,16 +4,14 @@ using UnityEngine;
 public abstract class Projectile : MonoBehaviour
 {
     [Space]
-    
-    [SerializeField] private string layerName = null;
+
+    [SerializeField] private LayerMask layerMask = default;
 
     private new Rigidbody rigidbody;
 
     private Vector3 rigidbodyPosition_Old;
 
     private RaycastHit raycastHit;
-
-    private int layerMask;
 
     private int damage;
 
@@ -24,8 +22,6 @@ public abstract class Projectile : MonoBehaviour
         rigidbody = GetComponent<Rigidbody>();
 
         rigidbodyPosition_Old = rigidbody.position;
-
-        layerMask = LayerMask.GetMask(layerName);
     }
 
     private void FixedUpdate()
@@ -34,14 +30,14 @@ public abstract class Projectile : MonoBehaviour
 
         if (Physics.Linecast(rigidbody.position, rigidbodyPosition_Old, out raycastHit, layerMask) == true)
         {
-            Damageable damageable = raycastHit.collider.GetComponent<Damageable>();
+            Character character = raycastHit.collider.GetComponent<Character>();
 
-            if(damageable != null)
+            if(character != null)
             {
-                damageable.TakeDamage(damage);
-
-                Destroy(gameObject);
+                character.GetHealthPoint(-damage);
             }
+
+            Destroy(gameObject);
         }
 
         rigidbodyPosition_Old = rigidbody.position;

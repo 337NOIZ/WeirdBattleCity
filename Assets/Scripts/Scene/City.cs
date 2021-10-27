@@ -7,25 +7,9 @@ using FadeScreen;
 
 public class City : MonoBehaviour
 {
-    [Space]
-
-    [SerializeField] private Player player = null;
-
-    private EnemySpawner enemySpawner;
-
-    private DropSpawner dropSpawner;
-
     private void Start()
     {
-        player.Initialize();
-
-        enemySpawner = EnemySpawner.instance;
-
-        enemySpawner.Initialize();
-
-        dropSpawner = DropSpawner.instance;
-
-        dropSpawner.Initialize();
+        Player.instance.Initialize(GameManager.instance.gameData.playerInfo);
 
         StartCoroutine(_Start());
     }

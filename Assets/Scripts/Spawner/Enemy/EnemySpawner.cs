@@ -3,15 +3,11 @@ using System.Collections.Generic;
 
 using UnityEngine;
 
-public class EnemySpawner : Spawner
+public class EnemySpawner : MonoBehaviour
 {
     public static EnemySpawner instance { get; private set; }
 
-    [Space]
-
-    [SerializeField] private GameObject _enemies = null;
-
-    private Dictionary<EnemyCode, List<Enemy>> enemies = new Dictionary<EnemyCode, List<Enemy>>();
+    private Dictionary<CharacterCode, List<Character>> enemies = new Dictionary<CharacterCode, List<Character>>();
 
     public int enemyCount { get; set; } = 0;
 
@@ -19,44 +15,33 @@ public class EnemySpawner : Spawner
     {
         instance = this;
     }
-
-    public void Initialize()
+    public void Spawn(CharacterInfo characterInfo)
     {
-        _enemies.SetActive(true);
+        CharacterCode damageableCode = characterInfo.damageableInfo.damageableCode;
 
-        var enemies = _enemies.GetComponentsInChildren<Enemy>();
+        int index = 0;
 
-        int length = enemies.Length;
-
-        for(int index = 0; index < length; ++index)
+        if (enemies.ContainsKey(damageableCode) == false)
         {
-            EnemyCode enemyCode = enemies[index].enemyCode;
-
-            if (this.enemies.ContainsKey(enemyCode) == false)
-            {
-                this.enemies.Add(enemyCode, new List<Enemy>());
-            }
-
-            this.enemies[enemyCode].Add(enemies[index]);
-
-            enemies[index].gameObject.SetActive(false);
+            enemies.Add(damageableCode, new List<Character>());
         }
-    }
+        int count = enemies[damageableCode].Count;
 
-    public void Spawn(EnemyData enemyData)
-    {
-        EnemyCode enemyCode = enemyData.enemyCode;
-
-        int count = enemies[enemyCode].Count;
-
-        for (int index = 0; index < count; ++index)
+        for (; ; ++index)
         {
-            if(enemies[enemyCode][index].gameObject.activeSelf == false)
+            if (index >= count)
             {
-                ++enemyCount;
+                enemies[damageableCode].Add(Instantiate(GameManager.instance.characterPrefabs[damageableCode], transform));
 
-                enemies[enemyCode][index].Spawn(enemyData);
+                break;
+            }
+            if (enemies[damageableCode][index].gameObject.activeSelf == false)
+            {
+                break;
             }
         }
+        enemies[damageableCode][index].Initialize(characterInfo);
+
+        ++enemyCount;
     }
 }

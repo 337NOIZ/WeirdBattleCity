@@ -27,18 +27,6 @@ public class SpinAndFloat : MonoBehaviour
         StartCoroutine(_floating);
     }
 
-    public void StopFloating()
-    {
-        if (_floating != null)
-        {
-            StopCoroutine(_floating);
-
-            _floating = null;
-
-            transform.localPosition = originalLocalPosition;
-        }
-    }
-
     private IEnumerator _floating = null;
 
     private IEnumerator _Floating(Vector3 delta, float speed)
@@ -48,6 +36,18 @@ public class SpinAndFloat : MonoBehaviour
             transform.localPosition = originalLocalPosition + delta * Mathf.Sin(speed * Time.time);
 
             yield return null;
+        }
+    }
+
+    public void StopFloating()
+    {
+        if (_floating != null)
+        {
+            StopCoroutine(_floating);
+
+            _floating = null;
+
+            transform.localPosition = originalLocalPosition;
         }
     }
 
@@ -62,18 +62,6 @@ public class SpinAndFloat : MonoBehaviour
         StartCoroutine(_spining);
     }
 
-    public void StopSpining()
-    {
-        if (_spining != null)
-        {
-            StopCoroutine(_spining);
-
-            _spining = null;
-
-            transform.localEulerAngles = originalLocalEulerAngles;
-        }
-    }
-
     private IEnumerator _spining = null;
 
     private IEnumerator _Spining(Vector3 direction)
@@ -83,6 +71,18 @@ public class SpinAndFloat : MonoBehaviour
             transform.localEulerAngles += direction * Time.deltaTime;
 
             yield return null;
+        }
+    }
+
+    public void StopSpining()
+    {
+        if (_spining != null)
+        {
+            StopCoroutine(_spining);
+
+            _spining = null;
+
+            transform.localEulerAngles = originalLocalEulerAngles;
         }
     }
 }

@@ -13,13 +13,22 @@ public class DebugRay : MonoBehaviour
 
     [Space]
 
-    [SerializeField] private Vector3 direction = Vector3.forward * 1000f;
+    [SerializeField] private float length = 1000f;
+
+    private void Awake()
+    {
+        #if UNITY_EDITOR == false
+
+            Destroy(this);
+
+        #endif
+    }
 
     private void Update()
     {
         if (draw == true)
         {
-            Debug.DrawRay(target.position, direction, Color.red);
+            Debug.DrawRay(target.position, target.forward * length, Color.red);
         }
     }
 }
