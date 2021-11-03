@@ -7,7 +7,7 @@ using UnityEngine;
 
 using FadeScreen;
 
-public class Desert : MonoBehaviour
+public class DesertSecene : MonoBehaviour
 {
     private void Start()
     {
@@ -15,7 +15,6 @@ public class Desert : MonoBehaviour
 
         StartCoroutine(_Start());
     }
-
     private IEnumerator _Start()
     {
         yield return new WaitForSeconds(1f);
@@ -24,6 +23,18 @@ public class Desert : MonoBehaviour
 
         yield return new WaitForSeconds(1f);
 
-        EnemySpawner.instance.Spawn(new CharacterInfo(new TransformInfo(new Vector3(0f, 0f, 10f), new Vector3(0f, 180f, 0f)), new DamageableInfo(CharacterType.enemy, CharacterCode.crazySpider, 1f, 1f), new MovementInfo(), new List<SkillInfo>() { new SkillInfo() }));
+        EnemySpawner.instance.Spawn
+        (
+            new CharacterInfo
+            (
+                new TransformInfo(new Vector3(0f, 0f, 10f), new Vector3(0f, 180f, 0f)),
+
+                new DamageableInfo(CharacterType.enemy, CharacterCode.crazySpider, 1f, 1f),
+
+                new MovementInfo(),
+
+                new List<SkillInfo>() { new SkillInfo() }
+            )
+        );
     }
 }
