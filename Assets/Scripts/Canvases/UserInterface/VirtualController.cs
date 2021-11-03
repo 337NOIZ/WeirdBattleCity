@@ -1,7 +1,7 @@
 
 using UnityEngine;
 
-public class VirtualControllerManager : MonoBehaviour
+public class VirtualController : MonoBehaviour
 {
     public void OnMove(Vector2 moveDirection)
     {
