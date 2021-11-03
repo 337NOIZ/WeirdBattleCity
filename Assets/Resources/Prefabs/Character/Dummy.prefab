@@ -131,12 +131,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4540b81ecb98e444f94518f11ca0f12b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _cameraPivot: {fileID: 0}
-  _cameraFollower: {fileID: 0}
-  _aimTarget_Crosshair: {fileID: 0}
   _animator: {fileID: 3018401752681900827}
-  _movement: {fileID: 0}
-  _inventory: {fileID: 0}
 --- !u!114 &922129404091953940
 MonoBehaviour:
   m_ObjectHideFlags: 0
