@@ -9,11 +9,13 @@ public class DebugRay : MonoBehaviour
 
     [Space]
 
-    [SerializeField] private Transform target;
+    [SerializeField] private Transform start = null;
 
-    [Space]
+    [SerializeField] private Transform direction = null;
 
     [SerializeField] private float length = 1000f;
+
+    [SerializeField] private Color color = Color.red; 
 
     private void Awake()
     {
@@ -28,7 +30,7 @@ public class DebugRay : MonoBehaviour
     {
         if (draw == true)
         {
-            Debug.DrawRay(target.position, target.forward * length, Color.red);
+            Debug.DrawRay(start.position, direction.position.normalized * length, color);
         }
     }
 }

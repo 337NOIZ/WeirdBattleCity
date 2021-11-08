@@ -8,15 +8,15 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - Player
+  - Stepable
   - Water
   - UI
-  - Stepable
+  - Player
   - Enemy
+  - Friendly
+  - Neutrality
   - Item
-  - 
-  - 
-  - 
+  - Projectile
   - 
   - 
   - 
@@ -46,4 +46,7 @@ TagManager:
     locked: 0
   - name: UserInterface
     uniqueID: 3384858493
+    locked: 0
+  - name: PrimaryFadeScreen
+    uniqueID: 565781581
     locked: 0
