@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 918450144075782229}
   - component: {fileID: 892035021333189088}
   - component: {fileID: 1363226311405580849}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Playground Support 3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -94,7 +94,7 @@ GameObject:
   - component: {fileID: 5115859884409042641}
   - component: {fileID: 7355318885685994595}
   - component: {fileID: 2416741975432425157}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Playground Support 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -177,7 +177,7 @@ GameObject:
   - component: {fileID: 7854421097074445122}
   - component: {fileID: 368590361463638583}
   - component: {fileID: 8363260812124759002}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Playground Support 4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -260,7 +260,7 @@ GameObject:
   - component: {fileID: 7296437697829690130}
   - component: {fileID: 1847662016714815854}
   - component: {fileID: 4278805759448130334}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Playground Support 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -341,7 +341,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7613475344432373333}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Playground Supports 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}

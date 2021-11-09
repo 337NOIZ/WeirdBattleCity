@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1895739655062125472}
   - component: {fileID: 7427565615341519254}
   - component: {fileID: 3758406688082607471}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Pull Up Bar 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -68,11 +68,6 @@ public sealed class PlayerMovement : MonoBehaviour
         {
             isGrounded = true;
         }
-
-        if (layer == groundedCheckSphere.nameToLayer)
-        {
-            isGrounded = true;
-        }
     }
 
     private void OnCollisionExit(Collision collision)

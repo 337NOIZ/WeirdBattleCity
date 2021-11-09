@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8117918769613041836}
   - component: {fileID: 1005325964215700122}
   - component: {fileID: 6831727298145039971}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Playground Roof
   m_TagString: Untagged
   m_Icon: {fileID: 0}

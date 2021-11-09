@@ -159,7 +159,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3416898858661455667}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -192,7 +192,7 @@ GameObject:
   - component: {fileID: 4583898854355149680}
   - component: {fileID: 991911060686839428}
   - component: {fileID: 6958897802738592654}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Object001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -274,7 +274,7 @@ GameObject:
   - component: {fileID: 6728102018755288689}
   - component: {fileID: 2424232598019069948}
   - component: {fileID: 2850534677744820507}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Cylinder001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -357,7 +357,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1370624909461954280}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Windmill
   m_TagString: Untagged
   m_Icon: {fileID: 0}

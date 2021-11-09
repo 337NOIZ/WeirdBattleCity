@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2172633507281764168}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Building_Skyscraper_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -140,7 +140,7 @@ GameObject:
   - component: {fileID: 867162127103226389}
   - component: {fileID: 4491910986441510881}
   - component: {fileID: 5982882889358555883}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Object001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -220,7 +220,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1836146013399638844}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}

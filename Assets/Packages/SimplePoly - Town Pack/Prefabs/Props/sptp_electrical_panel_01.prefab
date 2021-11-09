@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3357622}
   - component: {fileID: 2382944}
   - component: {fileID: 6460964}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: sptp_electrical_panel_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}

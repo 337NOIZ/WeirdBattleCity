@@ -19,7 +19,7 @@ public class GroundedCheckSphere : MonoBehaviour
 
     [Space]
 
-    [SerializeField] private string checklayerName = null;
+    [SerializeField] private string layerMask = null;
 
     [Space]
 
@@ -33,9 +33,9 @@ public class GroundedCheckSphere : MonoBehaviour
 
     private void Awake()
     {
-        getMask = LayerMask.GetMask(checklayerName);
+        getMask = LayerMask.GetMask(layerMask);
 
-        nameToLayer = LayerMask.NameToLayer(checklayerName);
+        nameToLayer = LayerMask.NameToLayer(layerMask);
     }
 
     private void OnDrawGizmosSelected()

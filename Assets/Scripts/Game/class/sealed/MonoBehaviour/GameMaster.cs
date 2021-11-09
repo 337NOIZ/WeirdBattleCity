@@ -43,6 +43,8 @@ public sealed class GameMaster : MonoBehaviour
             LoadResources();
 
             CheckGameInfo();
+
+            Initialize();
         }
     }
 
@@ -91,6 +93,11 @@ public sealed class GameMaster : MonoBehaviour
 
             //SaveUserInfo();
         }
+    }
+    
+    public void Initialize()
+    {
+        Application.targetFrameRate = 60;
     }
 
     public void LoadGameInfo()

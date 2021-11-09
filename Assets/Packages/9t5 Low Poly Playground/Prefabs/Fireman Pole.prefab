@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5374611005824647557}
   - component: {fileID: 4020995957714484147}
   - component: {fileID: 7273871880217528138}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Fireman Pole
   m_TagString: Untagged
   m_Icon: {fileID: 0}

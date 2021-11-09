@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2308756}
   - component: {fileID: 9570716}
   - component: {fileID: 6465552}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: sptp_air_conditioning_04
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -129,7 +129,7 @@ GameObject:
   - component: {fileID: 438936}
   - component: {fileID: 3390220}
   - component: {fileID: 2302894}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: sptp_air_conditioningFan_04
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6465980763818529328}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Swing.004
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -40,7 +40,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7762122588873940225}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Swing.007 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -71,7 +71,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3512775865996761916}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Swing.006
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -102,7 +102,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2638498571102960643}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Swing.004 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -134,7 +134,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1538378655979267029}
   - component: {fileID: 8821840367619639420}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Swing 2 Rope
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -227,7 +227,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1971471707664126937}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Swing.002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -258,7 +258,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9114110940585676160}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Swing.010
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -290,7 +290,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1051530040951415912}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Swing.002 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -323,7 +323,7 @@ GameObject:
   - component: {fileID: 5194845680046541415}
   - component: {fileID: 6370493913558390240}
   - component: {fileID: 2560989350242934279}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Swing 1 Seat
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -404,7 +404,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7979803985389544041}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Swing.005 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -435,7 +435,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 665410363302040291}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Swing.009 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -466,7 +466,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2196601041991806315}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Swing.010_end
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -498,7 +498,7 @@ GameObject:
   - component: {fileID: 683561802080027437}
   - component: {fileID: 5254271014279195022}
   - component: {fileID: 7149276455553249507}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Swing Set
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -583,7 +583,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2412572281258593338}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Swing.003
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -614,7 +614,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7249452626940650626}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Swing.003 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -646,7 +646,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1129483157592334131}
   - component: {fileID: 7000486300462051913}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Swing Set
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -700,7 +700,7 @@ GameObject:
   - component: {fileID: 9006624932060564256}
   - component: {fileID: 901779670239779918}
   - component: {fileID: 8076601165041711601}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Swing 2 Seat
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -781,7 +781,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1636250774572454839}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Swing.009
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -812,7 +812,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5263675125959630598}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Swing 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -843,7 +843,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2330272619501614434}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Swing.007
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -874,7 +874,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5626375679113828984}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Swing.010 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -906,7 +906,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3373941444283819233}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Swing.006 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -937,7 +937,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1622280684928727106}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Swing.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -968,7 +968,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3343593460312205698}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Swing.005
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -999,7 +999,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8310399461253722273}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Swing.001 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1030,7 +1030,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3880993950188725442}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Swing.008
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1061,7 +1061,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4769302317634839564}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Swing.008 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1093,7 +1093,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3987712314141174393}
   - component: {fileID: 5127698323000761540}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Swing 1 Rope
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1186,7 +1186,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9093798433765061785}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Swing 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1217,7 +1217,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4252284584617693171}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Swing.010_end 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}

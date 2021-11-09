@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2409900169279729878}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -142,7 +142,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5208985413943863647}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Car_Bus
   m_TagString: Untagged
   m_Icon: {fileID: 0}

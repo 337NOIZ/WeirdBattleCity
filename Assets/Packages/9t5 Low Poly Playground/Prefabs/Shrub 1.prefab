@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4413689079772899952}
   - component: {fileID: 4619449026896285766}
   - component: {fileID: 1380103701194517695}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Shrub 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}

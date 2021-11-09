@@ -27,7 +27,7 @@ public abstract class Weapon : InventoryItem
 
     protected bool isAttacking = false;
 
-    private Stack<Projectile> projectilePool = new Stack<Projectile>();
+    private Queue<Projectile> projectilePool = new Queue<Projectile>();
 
     protected virtual void Awake()
     {
@@ -132,7 +132,7 @@ public abstract class Weapon : InventoryItem
                 {
                     if (projectilePool.Count > 0)
                     {
-                        projectile = projectilePool.Pop();
+                        projectile = projectilePool.Dequeue();
 
                         projectile.transform.position = muzzle.position;
 

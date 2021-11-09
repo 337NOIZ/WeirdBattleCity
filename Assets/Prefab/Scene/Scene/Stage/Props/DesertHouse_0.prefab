@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4631749386235335643}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -129,7 +129,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3789536508203969690}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: DesertHouse_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}

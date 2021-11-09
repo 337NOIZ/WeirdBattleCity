@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3370624}
   - component: {fileID: 2310772}
   - component: {fileID: 6438158}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: sptp_fire_hydrant_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}

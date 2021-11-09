@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6450448782230384779}
   - component: {fileID: 2657016314773523133}
   - component: {fileID: 8638773977381451332}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Playground Rail
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7432312483145562232}
   - component: {fileID: 1909498120158872142}
   - component: {fileID: 5279185264392240823}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Playground Ground
   m_TagString: Untagged
   m_Icon: {fileID: 0}

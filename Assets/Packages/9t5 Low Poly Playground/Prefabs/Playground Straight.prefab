@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 168144013343725361}
   - component: {fileID: 9155352578798202119}
   - component: {fileID: 3184838519813231102}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Playground Straight
   m_TagString: Untagged
   m_Icon: {fileID: 0}

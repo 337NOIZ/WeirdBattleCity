@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3359384}
   - component: {fileID: 2391964}
   - component: {fileID: 6432132}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: sptp_building_05
   m_TagString: Untagged
   m_Icon: {fileID: 0}

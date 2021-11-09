@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3309202}
   - component: {fileID: 2329072}
   - component: {fileID: 6449516}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: sptp_mail_box_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}

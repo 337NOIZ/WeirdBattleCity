@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2738285119717230003}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -42,7 +42,7 @@ GameObject:
   - component: {fileID: 4872563532858801054}
   - component: {fileID: 8419846360757407049}
   - component: {fileID: 1257058577021366118}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Garbage_Bag_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -125,7 +125,7 @@ GameObject:
   - component: {fileID: 196873766165872458}
   - component: {fileID: 3414030723068685664}
   - component: {fileID: 3239204590490641295}
-  m_Layer: 9
+  m_Layer: 3
   m_Name: Garbage_Bag_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -174,7 +174,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 126
   m_CollisionDetection: 0
 --- !u!114 &3239204590490641295
 MonoBehaviour:
@@ -189,3 +189,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _animator: {fileID: 0}
+  healthPointBar: {fileID: 0}

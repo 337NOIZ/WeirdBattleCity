@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 298953015615506742}
   - component: {fileID: 8754186854947123968}
   - component: {fileID: 3044881928819806201}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Monkey Bars
   m_TagString: Untagged
   m_Icon: {fileID: 0}

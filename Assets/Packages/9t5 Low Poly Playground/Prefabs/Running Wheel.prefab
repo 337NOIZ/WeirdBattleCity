@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6689684619319341944}
   - component: {fileID: 6293392822951879048}
   - component: {fileID: 3226232752023154692}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Running Wheel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -94,7 +94,7 @@ GameObject:
   - component: {fileID: 2586950542875723099}
   - component: {fileID: 2540531228252079836}
   - component: {fileID: 3946984672111245338}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Wheel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -176,7 +176,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5242244950282228499}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Running Wheel
   m_TagString: Untagged
   m_Icon: {fileID: 0}

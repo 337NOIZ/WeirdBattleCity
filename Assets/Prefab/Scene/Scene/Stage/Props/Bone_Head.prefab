@@ -107,7 +107,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8854168468277067756}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -138,7 +138,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8474674093088992526}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Bone_Head
   m_TagString: Untagged
   m_Icon: {fileID: 0}

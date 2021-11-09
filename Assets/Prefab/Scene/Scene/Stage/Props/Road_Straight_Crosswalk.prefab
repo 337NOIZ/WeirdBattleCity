@@ -106,7 +106,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6029216590838517430}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -137,7 +137,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1848011386049962616}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Road_Straight_Crosswalk
   m_TagString: Untagged
   m_Icon: {fileID: 0}

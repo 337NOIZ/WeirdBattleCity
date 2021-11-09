@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3534911434404223947}
   - component: {fileID: 5500444939389919741}
   - component: {fileID: 2263350100961369348}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Playground Flag
   m_TagString: Untagged
   m_Icon: {fileID: 0}

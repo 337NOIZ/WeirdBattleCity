@@ -240,7 +240,7 @@ MonoBehaviour:
   radius: 0.2
   defaultColor: {r: 1, g: 0, b: 0, a: 0.5}
   groundedColor: {r: 0, g: 1, b: 0, a: 0.5}
-  checklayerName: Stepable
+  layerMask: Stepable
   queryTriggerInteraction: 1
 --- !u!114 &3751706764364150767
 MonoBehaviour:
@@ -255,9 +255,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _animator: {fileID: 7470844317982854195}
+  healthPointBar: {fileID: 0}
+  experiencePointBar: {fileID: 0}
   layerMask:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 904
   _cameraPivot: {fileID: 4675812208089605674}
   cameraFollower_Right_Pivot: {fileID: 9049385319235928540}
   cameraFollower_Right: {fileID: 2576214701524810943}
@@ -382,7 +384,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8453593803755030614
 Transform:
   m_ObjectHideFlags: 0

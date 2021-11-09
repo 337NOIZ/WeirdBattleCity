@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3391360}
   - component: {fileID: 2363240}
   - component: {fileID: 6429020}
-  m_Layer: 6
+  m_Layer: 3
   m_Name: sptp_bench_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}

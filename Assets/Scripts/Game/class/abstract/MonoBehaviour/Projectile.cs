@@ -13,7 +13,7 @@ public abstract class Projectile : MonoBehaviour
 
     private TrailRenderer trailRenderer;
 
-    Stack<Projectile> projectilePool;
+    Queue<Projectile> projectilePool;
 
     private Vector3 rigidbody_Position_Old;
 
@@ -31,7 +31,7 @@ public abstract class Projectile : MonoBehaviour
 
         trailRenderer.Clear();
 
-        projectilePool.Push(this);
+        projectilePool.Enqueue(this);
     }
 
     private void FixedUpdate()
@@ -51,7 +51,7 @@ public abstract class Projectile : MonoBehaviour
         rigidbody_Position_Old = rigidbody.position;
     }
 
-    public void Initialize(Stack<Projectile> projectilePool)
+    public void Initialize(Queue<Projectile> projectilePool)
     {
         rigidbody = GetComponent<Rigidbody>();
 
