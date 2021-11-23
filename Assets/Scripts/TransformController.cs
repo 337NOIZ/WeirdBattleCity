@@ -3,7 +3,7 @@ using System.Collections;
 
 using UnityEngine;
 
-public class TransformController : MonoBehaviour
+public sealed class TransformController : MonoBehaviour
 {
     private new Transform transform;
 

@@ -37,19 +37,19 @@ public class ImageFillAmountController : MonoBehaviour
 
     public void Fill(float targetFillAmount, float fillSpeed)
     {
-        if(_fill != null)
+        if(fillRoutine != null)
         {
-            StopCoroutine(_fill);
+            StopCoroutine(fillRoutine);
         }
 
-        _fill = _Fill(targetFillAmount, fillSpeed);
+        fillRoutine = FillRoutine(targetFillAmount, fillSpeed);
 
-        StartCoroutine(_fill);
+        StartCoroutine(fillRoutine);
     }
 
-    public IEnumerator _fill = null;
+    public IEnumerator fillRoutine = null;
 
-    public IEnumerator _Fill(float targetFillAmount, float fillSpeed)
+    public IEnumerator FillRoutine(float targetFillAmount, float fillSpeed)
     {
         if(targetFillAmount > 1f)
         {
@@ -63,11 +63,17 @@ public class ImageFillAmountController : MonoBehaviour
 
         if (fillSpeed > 0f)
         {
-            float time = Time.time;
+            float time = 0f;
 
             while (_fillAmount != targetFillAmount)
             {
-                fillAmount = Mathf.SmoothStep(_fillAmount, targetFillAmount, (Time.time - time) * fillSpeed);
+                time += Time.deltaTime;
+
+                fillAmount = Mathf.Lerp(_fillAmount, targetFillAmount, time * fillSpeed);
+
+                Debug.Log(_fillAmount);
+
+                //fillAmount = Mathf.SmoothStep(_fillAmount, targetFillAmount, (Time.time - time) * fillSpeed);
 
                 yield return null;
             }
@@ -75,6 +81,6 @@ public class ImageFillAmountController : MonoBehaviour
 
         fillAmount = targetFillAmount;
 
-        _fill = null;
+        fillRoutine = null;
     }
 }

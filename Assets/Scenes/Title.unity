@@ -184,8 +184,8 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 1, g: 0, b: 0, a: 1}
-    m_PressedColor: {r: 0.5, g: 0, b: 0, a: 1}
+    m_HighlightedColor: {r: 1, g: 1, b: 1, a: 1}
+    m_PressedColor: {r: 1, g: 0, b: 0, a: 1}
     m_SelectedColor: {r: 1, g: 1, b: 1, a: 1}
     m_DisabledColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
     m_ColorMultiplier: 1
@@ -522,8 +522,8 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 1, g: 0, b: 0, a: 1}
-    m_PressedColor: {r: 0.5, g: 0, b: 0, a: 1}
+    m_HighlightedColor: {r: 1, g: 1, b: 1, a: 1}
+    m_PressedColor: {r: 1, g: 0, b: 0, a: 1}
     m_SelectedColor: {r: 1, g: 1, b: 1, a: 1}
     m_DisabledColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
     m_ColorMultiplier: 1
@@ -624,6 +624,7 @@ GameObject:
   - component: {fileID: 1089807822}
   - component: {fileID: 1089807821}
   - component: {fileID: 1089807824}
+  - component: {fileID: 1089807825}
   m_Layer: 0
   m_Name: MainCamera
   m_TagString: MainCamera
@@ -728,6 +729,18 @@ MonoBehaviour:
   m_RequiresDepthTexture: 0
   m_RequiresColorTexture: 0
   m_Version: 2
+--- !u!114 &1089807825
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1089807820}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32fd12dd95f2e5448bcc1bce81ad0d73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1137583698
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -846,8 +859,8 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 1, g: 0, b: 0, a: 1}
-    m_PressedColor: {r: 0.5, g: 0, b: 0, a: 1}
+    m_HighlightedColor: {r: 1, g: 1, b: 1, a: 1}
+    m_PressedColor: {r: 1, g: 0, b: 0, a: 1}
     m_SelectedColor: {r: 1, g: 1, b: 1, a: 1}
     m_DisabledColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
     m_ColorMultiplier: 1
@@ -1039,7 +1052,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 0
   m_TargetDisplay: 0
 --- !u!1001 &1702267301
 PrefabInstance:
@@ -1048,9 +1061,17 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1018751499100357682, guid: 10de66da7ea619d4489fcc1bef1befa2, type: 3}
+      propertyPath: startFadeProgress
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1524075514628755663, guid: 10de66da7ea619d4489fcc1bef1befa2, type: 3}
       propertyPath: m_RootOrder
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1524075514628755663, guid: 10de66da7ea619d4489fcc1bef1befa2, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1524075514628755663, guid: 10de66da7ea619d4489fcc1bef1befa2, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1059,6 +1080,10 @@ PrefabInstance:
     - target: {fileID: 1524075514628755663, guid: 10de66da7ea619d4489fcc1bef1befa2, type: 3}
       propertyPath: m_LocalPosition.z
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1524075514628755663, guid: 10de66da7ea619d4489fcc1bef1befa2, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1524075514628755663, guid: 10de66da7ea619d4489fcc1bef1befa2, type: 3}
       propertyPath: m_LocalRotation.x
@@ -1072,13 +1097,29 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: -0
       objectReference: {fileID: 0}
+    - target: {fileID: 1524075514628755663, guid: 10de66da7ea619d4489fcc1bef1befa2, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1524075514628755663, guid: 10de66da7ea619d4489fcc1bef1befa2, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1524075514628755663, guid: 10de66da7ea619d4489fcc1bef1befa2, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6633630527167958563, guid: 10de66da7ea619d4489fcc1bef1befa2, type: 3}
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 1089807822}
-    - target: {fileID: 6633630527167958563, guid: 10de66da7ea619d4489fcc1bef1befa2, type: 3}
-      propertyPath: m_SortingLayerID
-      value: 565781581
+    - target: {fileID: 8117284990849918360, guid: 10de66da7ea619d4489fcc1bef1befa2, type: 3}
+      propertyPath: startFadeProgress
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8264862819939945320, guid: 10de66da7ea619d4489fcc1bef1befa2, type: 3}
+      propertyPath: m_Name
+      value: ScreenEffecter
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 10de66da7ea619d4489fcc1bef1befa2, type: 3}
@@ -1264,8 +1305,8 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 1, g: 0, b: 0, a: 1}
-    m_PressedColor: {r: 0.5, g: 0, b: 0, a: 1}
+    m_HighlightedColor: {r: 1, g: 1, b: 1, a: 1}
+    m_PressedColor: {r: 1, g: 0, b: 0, a: 1}
     m_SelectedColor: {r: 1, g: 1, b: 1, a: 1}
     m_DisabledColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
     m_ColorMultiplier: 1

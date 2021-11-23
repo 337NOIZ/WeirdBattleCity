@@ -3,11 +3,9 @@ using UnityEngine;
 
 using UnityEngine.UI;
 
-public class FixedText : Text
+public sealed class FixedText : Text
 {
-    [SerializeField]
-    
-    private bool disableWordWrap = false;
+    [SerializeField] private bool wordwrap = true;
 
     public override string text
     {
@@ -15,14 +13,15 @@ public class FixedText : Text
 
         set
         {
-            if (disableWordWrap)
+            if (wordwrap == true)
             {
-                base.text = value.Replace(' ', '\u00A0');
-
-                return;
+                base.text = value;
             }
 
-            base.text = value;
+            else
+            {
+                base.text = value.Replace(' ', '\u00A0');
+            }
         }
     }
 }

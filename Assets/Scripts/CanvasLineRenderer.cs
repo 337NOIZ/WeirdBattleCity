@@ -3,7 +3,7 @@ using UnityEngine;
 
 using UnityEngine.UI;
 
-public class CanvasLineRenderer : MonoBehaviour
+public sealed class CanvasLineRenderer : MonoBehaviour
 {
     public new Transform transform { get; private set; } = null;
 

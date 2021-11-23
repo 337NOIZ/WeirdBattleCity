@@ -7,13 +7,13 @@ using UnityEditor.UI;
 
 public class FixedTextInspector : TextEditor
 {
-    private SerializedProperty disableWordWrap = null;
+    private SerializedProperty wordwrap = null;
 
     protected override void OnEnable()
     {
         base.OnEnable();
 
-        disableWordWrap = serializedObject.FindProperty("disableWordWrap");
+        wordwrap = serializedObject.FindProperty("wordwrap");
     }
 
     public override void OnInspectorGUI()
@@ -22,9 +22,8 @@ public class FixedTextInspector : TextEditor
 
         serializedObject.Update();
 
-        EditorGUILayout.PropertyField(disableWordWrap);
+        EditorGUILayout.PropertyField(wordwrap);
 
         serializedObject.ApplyModifiedProperties();
     }
-
 }

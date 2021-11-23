@@ -1,7 +1,7 @@
 
 using UnityEngine;
 
-public class DrawDebugLine : MonoBehaviour
+public sealed class DrawDebugLine : MonoBehaviour
 {
     [Space]
 

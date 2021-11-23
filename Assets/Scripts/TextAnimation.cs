@@ -7,94 +7,95 @@ using UnityEngine;
 
 using UnityEngine.UI;
 
-public class TextAnimation : MonoBehaviour
+public sealed class TextAnimation : MonoBehaviour
 {
     [Space]
 
-    [SerializeField]
+    [SerializeField] private List<string> _textStrings = null;
 
-    private List<string> textStringList = null;
+    public List<string> textStrings
+    {
+        get
+        {
+            return _textStrings;
+        }
 
-    public Text text { get; private set; } = null;
+        set
+        {
+            _textStrings = value;
+        }
+    }
 
-    private string originalTextstring = null;
-
-    private int textStringListCount = 0;
-
-    [HideInInspector]
-
-    public int index = 0;
+    public Text text { get; private set; }
 
     private void Awake()
     {
         text = GetComponent<Text>();
-
-        originalTextstring = text.text;
-
-        textStringListCount = textStringList.Count;
     }
 
-    public void StartTextSlideShow(float latency, bool loof)
+    public void SlideShow(bool loof, float latency)
     {
-        TryStopTextSlideShow();
+        StopSlideShow(0f);
 
-        textSlideShowCoroutine = TextSlideShowCoroutine(latency, loof);
+        _slideShow = _SlideShow(loof, latency);
 
-        StartCoroutine(textSlideShowCoroutine);
+        StartCoroutine(_slideShow);
     }
 
-    private IEnumerator textSlideShowCoroutine = null;
+    private IEnumerator _slideShow = null;
 
-    private IEnumerator TextSlideShowCoroutine(float latency, bool loof)
+    private IEnumerator _SlideShow(bool loof, float latency)
     {
-        while (true)
+        string textString_Origin = text.text;
+
+        int count = _textStrings.Count;
+
+        if (count > 0)
         {
-            text.text = originalTextstring;
-
-            text.text += textStringList[index++];
-
-            if (index == textStringListCount)
+            for (int index = 0; ; ++index)
             {
-                if (loof == false)
+                if (index >= count)
                 {
-                    break;
+                    if (loof == false) break;
+
+                    index = 0;
                 }
-                
-                index = 0;
+
+                text.text = textString_Origin + _textStrings[index];
+
+                yield return new WaitForSeconds(latency);
+            }
+        }
+
+        _slideShow = null;
+    }
+
+    public void StopSlideShow(float waitTime)
+    {
+        if(_stopSlideShow != null)
+        {
+            StopCoroutine(_stopSlideShow);
+        }
+
+        _stopSlideShow = _StopSlideShow(waitTime);
+
+        StartCoroutine(_stopSlideShow);
+    }
+
+    private IEnumerator _stopSlideShow = null;
+
+    private IEnumerator _StopSlideShow(float waitTime)
+    {
+        if (_slideShow != null)
+        {
+            if(waitTime > 0f)
+            {
+                yield return new WaitForSeconds(waitTime);
             }
 
-            yield return new WaitForSeconds(latency);
+            StopCoroutine(_slideShow);
+
+            _slideShow = null;
         }
-
-        textSlideShowCoroutine = null;
-    }
-
-    public bool TryStopTextSlideShow(float initialLatency)
-    {
-        if(textSlideShowCoroutine != null)
-        {
-            StartCoroutine(StopTextSlideShowCoroutine(initialLatency));
-
-            return true;
-        }
-
-        return false;
-    }
-
-    public void TryStopTextSlideShow()
-    {
-        TryStopTextSlideShow(0f);
-    }
-
-    private IEnumerator StopTextSlideShowCoroutine(float initialLatency)
-    {
-        if(initialLatency > 0)
-        {
-            yield return new WaitForSeconds(initialLatency);
-        }
-
-        StopCoroutine(textSlideShowCoroutine);
-
-        textSlideShowCoroutine = null;
     }
 }

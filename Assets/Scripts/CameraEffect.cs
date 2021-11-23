@@ -3,7 +3,7 @@ using System.Collections;
 
 using UnityEngine;
 
-public class CameraEffect : MonoBehaviour
+public sealed class CameraEffect : MonoBehaviour
 {
     public static CameraEffect instance { get; private set; } = null;
 

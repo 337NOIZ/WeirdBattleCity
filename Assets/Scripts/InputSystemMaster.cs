@@ -3,7 +3,7 @@ using UnityEngine;
 
 using UnityEngine.InputSystem;
 
-public class InputSystemMaster : MonoBehaviour
+public sealed class InputSystemMaster : MonoBehaviour
 {
     public static InputSystemMaster instance { get; private set; }
 

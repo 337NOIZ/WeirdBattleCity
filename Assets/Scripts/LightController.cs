@@ -3,7 +3,7 @@ using System.Collections;
 
 using UnityEngine;
 
-public class LightController : MonoBehaviour
+public sealed class LightController : MonoBehaviour
 {
     public new Light light { get; private set; } = null;
 

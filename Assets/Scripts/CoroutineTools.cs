@@ -3,7 +3,7 @@ using System.Collections;
 
 using UnityEngine;
 
-public class CoroutineTools : MonoBehaviour
+public sealed class CoroutineTools : MonoBehaviour
 {
     public static IEnumerator WaitOrNot(float waitTime)
     {

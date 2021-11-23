@@ -3,7 +3,7 @@ using System.Collections;
 
 using UnityEngine;
 
-public class SpinAndFloat : MonoBehaviour
+public sealed class SpinAndFloat : MonoBehaviour
 {
     private new Transform transform;
 

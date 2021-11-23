@@ -1,7 +1,7 @@
 ﻿
 using UnityEngine;
 
-public class CameraResolution : MonoBehaviour
+public sealed class CameraResolution : MonoBehaviour
 {
     private new Camera camera;
 

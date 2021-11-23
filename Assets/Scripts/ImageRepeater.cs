@@ -3,7 +3,7 @@ using System.Collections;
 
 using UnityEngine;
 
-public class ImageRepeater : MonoBehaviour
+public sealed class ImageRepeater : MonoBehaviour
 {
     private new Transform transform = null;
 
