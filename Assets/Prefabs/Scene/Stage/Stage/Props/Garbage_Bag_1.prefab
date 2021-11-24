@@ -16,7 +16,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 29
   m_IsActive: 1
 --- !u!4 &1713891865847915532
 Transform:
@@ -58,8 +58,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7806e64e069ec34183824a28b731d22, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _animator: {fileID: 0}
-  healthPointBar: {fileID: 0}
+  _aim: {fileID: 0}
+  _aimTarget: {fileID: 0}
+  model: {fileID: 0}
+  _hostileLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  _healthPointBar: {fileID: 0}
+  _experiencePointBar: {fileID: 0}
 --- !u!1 &3562750959063420368
 GameObject:
   m_ObjectHideFlags: 0
@@ -74,7 +80,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 29
   m_IsActive: 1
 --- !u!4 &1409169867291858020
 Transform:
@@ -107,7 +113,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 29
   m_IsActive: 1
 --- !u!4 &8191679136207585253
 Transform:
