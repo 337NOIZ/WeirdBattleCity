@@ -5,9 +5,9 @@ using System.Collections.Generic;
 
 public sealed class Shotgun : Weapon
 {
-    public override ItemCode itemCode { get { return ItemCode.shotgun; } }
+    public override ItemCode itemCode => ItemCode.shotgun;
 
-    protected override ItemCode ammoItemCode { get { return ItemCode.shotgunAmmo; } }
+    protected override ItemCode ammo_ItemCode => ItemCode.shotgunAmmo;
 
     public override void Initialize()
     {
@@ -34,48 +34,42 @@ public sealed class Shotgun : Weapon
             0f,
         };
 
-        skillMotionNames = new List<string>()
-        {
-            "skillMotion_0",
-        };
-
         Caching();
     }
 
-    protected override IEnumerator _Reload()
+    protected override IEnumerator ReloadRoutine()
     {
-        if (itemInfo.ammoCount < itemInfo.ammoCount_Max)
+        if (ammo != null)
         {
-            if (ammoItemInfo.stackCount > 0)
+            if (itemInfo.ammoCount < itemInfo.ammoCount_Max)
             {
-                player.animator.SetFloat("reloadingMotionSpeed", reloadingMotionSpeed);
-
-                player.animator.SetTrigger("reloadingMotion");
-
-                player.animator.SetBool("isReloading", true);
-
-                do
+                if (ammo.stackCount > 0)
                 {
-                    yield return null;
+                    player.animator.SetFloat("reloadingMotionSpeed", reloadingMotionSpeed);
 
-                    if (player.animator.GetBool("isBulletInTubular") == true)
-                    {
-                        player.animator.SetBool("isBulletInTubular", false);
+                    player.animator.SetTrigger("reloadingMotion");
 
-                        --ammoItemInfo.stackCount;
+                    player.animator.SetBool("isReloading", true);
 
-                        ++itemInfo.ammoCount;
+                    player.animationTools.SetEventAction(BulletInTubular);
 
-                        if (ammoItemInfo.stackCount == 0 || itemInfo.ammoCount == itemInfo.ammoCount_Max)
-                        {
-                            player.animator.SetTrigger("stopReloadingMotion");
-                        }
-                    }
+                    while (player.animator.GetBool("isReloading") == true) yield return null;
                 }
-                while (player.animator.GetBool("isReloading") == true);
             }
         }
 
-        _reload = null;
+        reloadRoutine = null;
+    }
+
+    private void BulletInTubular()
+    {
+        --ammo.stackCount;
+
+        ++itemInfo.ammoCount;
+
+        if (ammo.stackCount == 0 || itemInfo.ammoCount == itemInfo.ammoCount_Max)
+        {
+            player.animator.SetTrigger("finishReloading");
+        }
     }
 }

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 
 public sealed class ExplosionData
 {
+    public ParticleEffectCode particleEffectCode { get; private set; }
+
     public float range { get; private set; }
 
     public int damage { get; private set; }
@@ -11,8 +13,10 @@ public sealed class ExplosionData
 
     public List<StatusEffectData> statusEffectDatas { get; private set; } = null;
 
-    public ExplosionData(float range, int damage, float force, List<StatusEffectData> statusEffectDatas)
+    public ExplosionData(ParticleEffectCode particleEffectCode, float range, int damage, float force, List<StatusEffectData> statusEffectDatas)
     {
+        this.particleEffectCode = particleEffectCode;
+
         this.range = range;
 
         this.damage = damage;

@@ -42,7 +42,7 @@ public sealed class TimerDisplayer : Timer
     {
         text_Explain.text = explain;
 
-        IEnumerator setTimer = SetTimer(time);
+        var setTimer = SetTimer(time);
 
         while (setTimer.MoveNext())
         {

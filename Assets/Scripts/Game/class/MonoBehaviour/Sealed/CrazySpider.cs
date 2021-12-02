@@ -7,9 +7,7 @@ using UnityEngine;
 
 public sealed class CrazySpider : Enemy
 {
-    public override CharacterCode characterCode { get { return CharacterCode.crazySpider; } }
-
-    [Space]
+    public override CharacterCode characterCode => CharacterCode.crazySpider;
 
     [SerializeField] private Transform muzzle = null;
 
@@ -30,21 +28,16 @@ public sealed class CrazySpider : Enemy
 
             0f,
         };
-
-        skillMotionNames = new List<string>()
-        {
-            "skillMotion_0",
-
-            "skillMotion_0",
-        };
     }
 
     protected override IEnumerator Thinking()
     {
-        StartCoroutine(RepeatSetDestination(Player.instance.aimTarget));
+        Tracking();
 
         while (true)
         {
+            SetSkillTarget();
+
             yield return null;
 
             for (var index = 0; ; ++index)
@@ -62,11 +55,11 @@ public sealed class CrazySpider : Enemy
                 {
                     skillNumber = index;
 
-                    targetingRoutine = TargetingRoutine(index);
+                    orderSkillRoutine = OrderSkillRoutine(index);
 
-                    StartCoroutine(targetingRoutine);
+                    StartCoroutine(orderSkillRoutine);
 
-                    while (targetingRoutine != null) yield return null;
+                    while (orderSkillRoutine != null) yield return null;
 
                     break;
                 }
@@ -74,7 +67,7 @@ public sealed class CrazySpider : Enemy
         }
     }
 
-    protected override void Skill()
+    protected override void SkillEffect()
     {
         var rangedInfo = characterInfo.skillInfos[skillNumber].rangedInfo;
 
@@ -84,6 +77,6 @@ public sealed class CrazySpider : Enemy
 
         projectile.transform.rotation = muzzle.rotation;
 
-        projectile.Launch(this, rangedInfo.force, rangedInfo.lifeTime, rangedInfo.damage, rangedInfo.statusEffectInfos);
+        projectile.Launch(this, rangedInfo.projectileInfo);
     }
 }

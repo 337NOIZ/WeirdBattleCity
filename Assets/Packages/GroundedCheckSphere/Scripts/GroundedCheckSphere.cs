@@ -1,4 +1,6 @@
 
+using System.Collections;
+
 using UnityEngine;
 
 public class GroundedCheckSphere : MonoBehaviour
@@ -19,7 +21,7 @@ public class GroundedCheckSphere : MonoBehaviour
 
     [Space]
 
-    [SerializeField] private string layerMask = null;
+    [SerializeField] private string stepableLayer = null;
 
     [Space]
 
@@ -29,18 +31,20 @@ public class GroundedCheckSphere : MonoBehaviour
 
     public int nameToLayer { get; private set; }
 
-    public bool isGrounded { get; private set; }
+    private bool onCollision = false;
+
+    public bool isGrounded { get; private set; } = false;
 
     private void Awake()
     {
-        getMask = LayerMask.GetMask(layerMask);
+        getMask = LayerMask.GetMask(stepableLayer);
 
-        nameToLayer = LayerMask.NameToLayer(layerMask);
+        nameToLayer = LayerMask.NameToLayer(stepableLayer);
     }
 
     private void OnDrawGizmosSelected()
     {
-        if (Check() == false)
+        if (CheckSphere() == false)
         {
             Gizmos.color = defaultColor;
         }
@@ -53,8 +57,53 @@ public class GroundedCheckSphere : MonoBehaviour
         Gizmos.DrawSphere(transform.position + position, radius);
     }
 
-    public bool Check()
+    private void OnCollisionEnter(Collision collision)
     {
-        return isGrounded = Physics.CheckSphere(transform.position + position, radius, getMask, queryTriggerInteraction);
+        if (collision.gameObject.layer == nameToLayer)
+        {
+            onCollision = true;
+
+            GroundedCheck();
+        }
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        if (collision.gameObject.layer == nameToLayer)
+        {
+            onCollision = false;
+        }
+    }
+
+    private void GroundedCheck()
+    {
+        if (groundedCheckRoutine != null)
+        {
+            StopCoroutine(groundedCheckRoutine);
+        }
+
+        groundedCheckRoutine = GroundedCheckRoutine();
+
+        StartCoroutine(groundedCheckRoutine);
+    }
+
+    private IEnumerator groundedCheckRoutine = null;
+    private IEnumerator GroundedCheckRoutine()
+    {
+        while (onCollision == true)
+        {
+            isGrounded = CheckSphere();
+
+            yield return null;
+        }
+
+        while (CheckSphere() == true) yield return null;
+
+        isGrounded = false;
+    }
+
+    private bool CheckSphere()
+    {
+        return Physics.CheckSphere(transform.position + position, radius, getMask, queryTriggerInteraction);
     }
 }

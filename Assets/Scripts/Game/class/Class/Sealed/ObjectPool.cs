@@ -15,11 +15,15 @@ public sealed class ObjectPool : MonoBehaviour
 
     private Dictionary<ProjectileCode, Stack<Projectile>> projectilePool = new Dictionary<ProjectileCode, Stack<Projectile>>();
 
+    private Dictionary<ParticleEffectCode, Stack<ParticleEffect>> particleEffectPool = new Dictionary<ParticleEffectCode, Stack<ParticleEffect>>();
+
     private Dictionary<CharacterCode, Character> characterPrefabs;
 
     private Dictionary<ItemCode, DroppedItem> droppedItemPrefabs;
 
     private Dictionary<ProjectileCode, Projectile> projectilePrefabs;
+
+    private Dictionary<ParticleEffectCode, ParticleEffect> particleEffectPrefabs;
 
     private void Awake()
     {
@@ -39,6 +43,11 @@ public sealed class ObjectPool : MonoBehaviour
         {
             projectilePool.Add(projectileCode, new Stack<Projectile>());
         }
+
+        foreach (ParticleEffectCode particleEffectCode in Enum.GetValues(typeof(ParticleEffectCode)))
+        {
+            particleEffectPool.Add(particleEffectCode, new Stack<ParticleEffect>());
+        }
     }
 
     private void Start()
@@ -48,11 +57,13 @@ public sealed class ObjectPool : MonoBehaviour
         droppedItemPrefabs = GameMaster.instance.droppedItemPrefabs;
 
         projectilePrefabs = GameMaster.instance.projectilePrefabs;
+
+        particleEffectPrefabs = GameMaster.instance.particleEffectPrefabs;
     }
 
     public Character Pop(CharacterCode characterCode)
     {
-        Character character = null;
+        Character character;
 
         if (characterPool[characterCode].Count > 0)
         {
@@ -73,7 +84,7 @@ public sealed class ObjectPool : MonoBehaviour
 
     public DroppedItem Pop(ItemCode itemCode)
     {
-        DroppedItem droppedItem = null;
+        DroppedItem droppedItem;
 
         if (droppedItemPool[itemCode].Count > 0)
         {
@@ -109,24 +120,44 @@ public sealed class ObjectPool : MonoBehaviour
         return projectile;
     }
 
+    public ParticleEffect Pop(ParticleEffectCode particleEffectCode)
+    {
+        ParticleEffect particleEffect;
+
+        if (particleEffectPool[particleEffectCode].Count > 0)
+        {
+            particleEffect = particleEffectPool[particleEffectCode].Pop();
+
+            particleEffect.gameObject.SetActive(true);
+        }
+
+        else
+        {
+            particleEffect = Instantiate(particleEffectPrefabs[particleEffectCode], transform);
+
+            particleEffect.Initialize();
+        }
+
+        return particleEffect;
+    }
+
     public void Push(Character character)
     {
         characterPool[character.characterCode].Push(character);
-
-        character.gameObject.SetActive(false);
     }
 
     public void Push(DroppedItem droppedItem)
     {
         droppedItemPool[droppedItem.itemCode].Push(droppedItem);
-
-        droppedItem.gameObject.SetActive(false);
     }
 
     public void Push(Projectile projectile)
     {
         projectilePool[projectile.projectileCode].Push(projectile);
+    }
 
-        projectile.gameObject.SetActive(false);
+    public void Push(ParticleEffect particleEffect)
+    {
+        particleEffectPool[particleEffect.particleEffectCode].Push(particleEffect);
     }
 }

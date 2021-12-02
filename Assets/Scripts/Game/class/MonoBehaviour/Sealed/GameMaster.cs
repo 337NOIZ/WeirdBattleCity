@@ -27,6 +27,8 @@ public sealed class GameMaster : MonoBehaviour
 
     public Dictionary<ProjectileCode, Projectile> projectilePrefabs { get; private set; } = new Dictionary<ProjectileCode, Projectile>();
 
+    public Dictionary<ParticleEffectCode, ParticleEffect> particleEffectPrefabs { get; private set; } = new Dictionary<ParticleEffectCode, ParticleEffect>();
+
     public GameData gameData { get; private set; } = new GameData();
 
     public GameInfo gameInfo { get; private set; }
@@ -56,6 +58,12 @@ public sealed class GameMaster : MonoBehaviour
 
     public void Initialize()
     {
+        #if UNITY_EDITOR == true
+
+            Application.runInBackground = true;
+
+        #endif
+
         Application.targetFrameRate = targetFrameRate;
 
         gameInfoPath = Application.dataPath + "/GameInfo.cfg";
@@ -97,6 +105,15 @@ public sealed class GameMaster : MonoBehaviour
         for (int index = 0; index < length; ++index)
         {
             this.projectilePrefabs.Add(projectilePrefabs[index].projectileCode, projectilePrefabs[index]);
+        }
+
+        var particleEffectPrefabs = Resources.LoadAll<ParticleEffect>("Prefabs/ParticleEffect");
+
+        length = particleEffectPrefabs.Length;
+
+        for (int index = 0; index < length; ++index)
+        {
+            this.particleEffectPrefabs.Add(particleEffectPrefabs[index].particleEffectCode, particleEffectPrefabs[index]);
         }
     }
 

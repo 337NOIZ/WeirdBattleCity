@@ -12,7 +12,7 @@ public sealed class EnemySpawner : Spawner
         instance = this;
     }
 
-    public void Spawn(CharacterCode characterCode, int spotNumber, int characterLevel)
+    public void Spawn(CharacterCode characterCode, int characterLevel, int spotNumber)
     {
         var character = ObjectPool.instance.Pop(characterCode);
 

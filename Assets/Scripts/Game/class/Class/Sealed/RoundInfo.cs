@@ -3,25 +3,36 @@ using System.Collections.Generic;
 
 public sealed class RoundInfo
 {
-    public float roundTimer { get; set; }
-
     public List<WaveInfo> waveInfos { get; private set; }
 
-    public int waveNumber { get; set; } = 0;
+    public int waveNumber { get; set; }
 
-    public RoundInfo(float roundTimer, List<WaveInfo> waveInfos)
+    public float roundTimer { get; set; }
+
+    public RoundInfo(RoundData roundData)
     {
-        this.roundTimer = roundTimer;
+        var waveDatas = roundData.waveDatas;
 
-        this.waveInfos = new List<WaveInfo>(waveInfos);
+        waveInfos = new List<WaveInfo>();
+
+        int index_Max = waveDatas.Count;
+
+        for (int index = 0; index < index_Max; ++index)
+        {
+            waveInfos.Add(new WaveInfo(waveDatas[index]));
+        }
+
+        waveNumber = 0;
+
+        roundTimer = roundData.roundTime;
     }
 
     public RoundInfo(RoundInfo roundInfo)
     {
-        roundTimer = roundInfo.roundTimer;
-
         waveInfos = new List<WaveInfo>(roundInfo.waveInfos);
 
         waveNumber = roundInfo.waveNumber;
+
+        roundTimer = roundInfo.roundTimer;
     }
 }

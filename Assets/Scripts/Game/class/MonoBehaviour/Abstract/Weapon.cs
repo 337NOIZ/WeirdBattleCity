@@ -5,19 +5,15 @@ using UnityEngine;
 
 public abstract class Weapon : InventoryItem
 {
-    [Space]
+    public override ItemType itemType => ItemType.weapon;
 
-    [SerializeField] protected Transform muzzle = null;
+    protected virtual ItemCode ammo_ItemCode { get; }
 
-    public override ItemType itemType { get { return ItemType.weapon; } }
-
-    protected virtual ItemCode ammoItemCode { get; }
-
-    protected ItemInfo ammoItemInfo;
-
-    protected float keepAimingTimer = 0f;
+    protected ItemInfo ammo;
 
     protected float keepAimingTime = 1.5f;
+
+    protected float keepAimingTimer = 0f;
 
     protected bool isUsingSkill = false;
 
@@ -25,7 +21,7 @@ public abstract class Weapon : InventoryItem
     {
         base.Initialize();
 
-        ammoItemInfo = player.playerInfo.playerInventoryInfo.itemInfos[ItemType.ammo][player.playerInventory.Search(ItemType.ammo, ammoItemCode)];
+        ammo = player.SearchItem(ItemType.ammo, ammo_ItemCode);
     }
 
     public override IEnumerator Draw()
@@ -54,9 +50,98 @@ public abstract class Weapon : InventoryItem
         player.animator.SetBool(stance, false);
     }
 
-    protected IEnumerator keepAiming = null;
+    public override IEnumerator Skill(int skillNumber)
+    {
+        if (skillRoutine == null)
+        {
+            StopKeepAming();
 
-    protected IEnumerator KeepAiming()
+            StopReload();
+
+            skillRoutine = SkillRoutine(skillNumber);
+
+            StartCoroutine(skillRoutine);
+
+            while (skillRoutine != null) yield return null;
+        }
+    }
+
+    protected override IEnumerator SkillRoutine(int skillNumber)
+    {
+        player.animator.SetBool("isAiming", true);
+
+        yield return new WaitForSeconds(0.05f);
+
+        isUsingSkill = itemInfo.autoSkill;
+
+        do
+        {
+            yield return null;
+
+            if (itemInfo.ammoCount > 0)
+            {
+                --itemInfo.ammoCount;
+
+                LaunchProjectile(skillNumber);
+
+                player.animator.SetFloat("skillMotionSpeed", skillMotionSpeeds[skillNumber]);
+
+                player.animator.SetBool("isUsingSkill", true);
+
+                player.animator.SetInteger("skillNumber", skillNumber);
+
+                player.animator.SetTrigger("skillMotion");
+
+                yield return new WaitForSeconds(itemInfo.skillInfos[skillNumber].skillMotionTime);
+
+                player.animator.SetBool("isUsingSkill", false);
+            }
+        }
+        while (isUsingSkill == true);
+
+        skillRoutine = null;
+    }
+
+    public override IEnumerator StopSkill(bool keepAiming)
+    {
+        if (skillRoutine != null)
+        {
+            //player.animator.SetBool("isUsingSkill", false);
+
+            isUsingSkill = false;
+
+            while (skillRoutine != null) yield return null;
+        }
+
+        if (keepAiming == true)
+        {
+            KeepAiming();
+        }
+
+        else
+        {
+            keepAimingTimer = 0f;
+        }
+    }
+
+    protected void KeepAiming()
+    {
+        if (keepAimingRoutine != null)
+        {
+            keepAimingTimer = keepAimingTime;
+        }
+
+        else
+        {
+            keepAimingRoutine = KeepAimingRoutine();
+
+            StartCoroutine(keepAimingRoutine);
+        }
+    }
+
+    protected IEnumerator keepAimingRoutine = null;
+
+    protected IEnumerator KeepAimingRoutine()
     {
         keepAimingTimer = keepAimingTime;
 
@@ -71,171 +156,79 @@ public abstract class Weapon : InventoryItem
 
         player.animator.SetBool("isAiming", false);
 
-        keepAiming = null;
+        keepAimingRoutine = null;
     }
 
-    public override IEnumerator Skill(int skillNumber)
+    protected void StopKeepAming()
     {
-        player.animator.SetBool("isAiming", true);
-
-        if (keepAiming != null)
+        if(keepAimingRoutine != null)
         {
-            StopCoroutine(keepAiming);
+            StopCoroutine(keepAimingRoutine);
 
-            keepAiming = null;
-        }
-
-        yield return new WaitForSeconds(0.05f);
-
-        if (skillRoutine == null)
-        {
-            skillRoutine = SkillRoutine(skillNumber);
-
-            StartCoroutine(skillRoutine);
-
-            while (skillRoutine != null) yield return null;
-        }
-    }
-
-    protected override IEnumerator SkillRoutine(int skillNumber)
-    {
-        isUsingSkill = itemInfo.autoAttack;
-
-        var rangedInfo = itemInfo.skillInfos[skillNumber].rangedInfo;
-
-        do
-        {
-            yield return null;
-
-            if (itemInfo.ammoCount > 0)
-            {
-                --itemInfo.ammoCount;
-
-                Projectile projectile;
-
-                int count = Mathf.FloorToInt(rangedInfo.division);
-
-                for (int index = 0; index < count; ++index)
-                {
-                    projectile = ObjectPool.instance.Pop(rangedInfo.projectileCode);
-
-                    projectile.transform.position = muzzle.position;
-
-                    projectile.transform.rotation = muzzle.rotation;
-
-                    if (rangedInfo.diffusion > 0f)
-                    {
-                        projectile.transform.rotation *= Quaternion.Euler(Random.insideUnitSphere * rangedInfo.diffusion);
-                    }
-
-                    projectile.Launch(player, rangedInfo.force, rangedInfo.lifeTime, rangedInfo.damage, rangedInfo.statusEffectInfos);
-                }
-
-                player.animator.SetFloat("skillMotionSpeed", skillMotionSpeeds[skillNumber]);
-
-                player.animator.SetBool("isUsingSkill", true);
-
-                player.animator.SetTrigger(skillMotionNames[skillNumber]);
-
-                while (player.animator.GetBool("isUsingSkill") == true) yield return null;
-            }
-        }
-        while (isUsingSkill == true);
-
-        skillRoutine = null;
-    }
-
-    public override IEnumerator StopSkill(bool keepAiming)
-    {
-        isUsingSkill = false;
-
-        while (skillRoutine != null) yield return null;
-
-        if (keepAiming == true)
-        {
-            if (this.keepAiming != null)
-            {
-                keepAimingTimer = keepAimingTime;
-            }
-
-            else
-            {
-                this.keepAiming = KeepAiming();
-
-                StartCoroutine(this.keepAiming);
-            }
-        }
-
-        else
-        {
-            if (this.keepAiming != null)
-            {
-                StopCoroutine(this.keepAiming);
-
-                keepAimingTimer = 0f;
-
-                this.keepAiming = null;
-            }
-
-            player.animator.SetBool("isAiming", false);
+            keepAimingRoutine = null;
         }
     }
 
     public override IEnumerator Reload()
     {
-        if (_reload == null)
+        if (reloadRoutine == null)
         {
-            _reload = _Reload();
+            yield return StopSkill(false);
 
-            StartCoroutine(_reload);
+            reloadRoutine = ReloadRoutine();
 
-            while (_reload != null) yield return null;
+            StartCoroutine(reloadRoutine);
+
+            while (reloadRoutine != null) yield return null;
         }
     }
 
-    protected IEnumerator _reload = null;
+    protected IEnumerator reloadRoutine = null;
 
-    protected virtual IEnumerator _Reload()
+    protected virtual IEnumerator ReloadRoutine()
     {
-        if (itemInfo.ammoCount < itemInfo.ammoCount_Max)
+        if (ammo != null)
         {
-            if (ammoItemInfo.stackCount > 0)
+            if (itemInfo.ammoCount < itemInfo.ammoCount_Max)
             {
-                player.animator.SetFloat("reloadingMotionSpeed", reloadingMotionSpeed);
-
-                player.animator.SetTrigger("reloadingMotion");
-
-                player.animator.SetBool("isReloading", true);
-
-                while (player.animator.GetBool("isReloading") == true) yield return null;
-
-                int magazine_ammoCount_Needs = itemInfo.ammoCount_Max - itemInfo.ammoCount;
-
-                ammoItemInfo.stackCount -= magazine_ammoCount_Needs;
-
-                if (ammoItemInfo.stackCount < 0)
+                if (ammo.stackCount > 0)
                 {
-                    magazine_ammoCount_Needs += ammoItemInfo.stackCount;
+                    player.animator.SetFloat("reloadingMotionSpeed", reloadingMotionSpeed);
 
-                    ammoItemInfo.stackCount = 0;
+                    player.animator.SetTrigger("reloadingMotion");
+
+                    player.animator.SetBool("isReloading", true);
+
+                    while (player.animator.GetBool("isReloading") == true) yield return null;
+
+                    float magazine_ammoCount_Needs = itemInfo.ammoCount_Max - itemInfo.ammoCount;
+
+                    ammo.stackCount -= magazine_ammoCount_Needs;
+
+                    if (ammo.stackCount < 0)
+                    {
+                        magazine_ammoCount_Needs += ammo.stackCount;
+
+                        ammo.stackCount = 0;
+                    }
+
+                    itemInfo.ammoCount += magazine_ammoCount_Needs;
                 }
-
-                itemInfo.ammoCount += magazine_ammoCount_Needs;
             }
         }
 
-        _reload = null;
+        reloadRoutine = null;
     }
 
-    public override void StopReload()
+    protected void StopReload()
     {
-        if (_reload != null)
+        if (reloadRoutine != null)
         {
-            StopCoroutine(_reload);
+            StopCoroutine(reloadRoutine);
 
             player.animator.SetBool("isReloading", false);
 
-            _reload = null;
+            reloadRoutine = null;
         }
     }
 }

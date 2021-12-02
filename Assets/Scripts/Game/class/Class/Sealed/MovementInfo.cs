@@ -3,147 +3,172 @@
 
 public sealed class MovementInfo
 {
-    public float movingSpeed_Walk { get; private set; } = 0;
+    public float movingSpeed_Walk
+    {
+        get => movingSpeed_Walk_Calculated;
 
-    public float movingSpeed_Run { get; private set; } = 0;
+        private set
+        {
+            movingSpeed_Walk_Origin = value;
 
-    public int jumpCount_Max { get; private set; } = 0;
+            movingSpeed_Walk_Calculated = movingSpeed_Walk_Origin * movingSpeed_Multiply;
+        }
+    }
 
-    public float jumpForce { get; private set; } = 0f;
+    private float movingSpeed_Walk_Origin;
 
-    private float _movingSpeed_Multiply = 1f;
+    private float movingSpeed_Walk_Calculated;
+
+    public float movingSpeed_Run
+    {
+        get => movingSpeed_Run_Calculated;
+
+        private set
+        {
+            movingSpeed_Run_Origin = value;
+
+            movingSpeed_Run_Calculated = movingSpeed_Run_Origin * movingSpeed_Multiply;
+        }
+    }
+
+    private float movingSpeed_Run_Origin;
+
+    private float movingSpeed_Run_Calculated;
 
     public float movingSpeed_Multiply
     {
-        get { return _movingSpeed_Multiply; }
+        get => movingSpeed_Multiply_Origin;
 
         set
         {
-            if (value > 0f)
-            {
-                movingSpeed_Walk /= _movingSpeed_Multiply;
+            movingSpeed_Multiply_Origin = value;
 
-                movingSpeed_Run /= _movingSpeed_Multiply;
+            movingSpeed_Walk = movingSpeed_Walk_Origin * movingSpeed_Multiply_Origin;
 
-                _movingSpeed_Multiply = value;
-
-                movingSpeed_Walk *= _movingSpeed_Multiply;
-
-                movingSpeed_Run *= _movingSpeed_Multiply;
-            }
+            movingSpeed_Run = movingSpeed_Run_Origin * movingSpeed_Multiply_Origin;
         }
     }
 
-    private int _jumpCount_Max_Extra = 0;
+    private float movingSpeed_Multiply_Origin;
+
+    public int jumpCount_Max
+    {
+        get => jumpCount_Max_Calculated;
+
+        private set
+        {
+            jumpCount_Max_Origin = value;
+
+            jumpCount_Max_Calculated = jumpCount_Max_Origin + jumpCount_Max_Extra_Origin;
+        }
+    }
+
+    private int jumpCount_Max_Origin;
+
+    private int jumpCount_Max_Calculated;
 
     public int jumpCount_Max_Extra
     {
-        get { return _jumpCount_Max_Extra; }
+        get => jumpCount_Max_Extra_Origin;
 
         set
         {
-            if (value > 0)
-            {
-                jumpCount_Max -= _jumpCount_Max_Extra;
+            jumpCount_Max_Extra_Origin = value;
 
-                _jumpCount_Max_Extra = value;
-
-                jumpCount_Max += _jumpCount_Max_Extra;
-            }
+            jumpCount_Max_Calculated = jumpCount_Max_Origin + jumpCount_Max_Extra_Origin;
         }
     }
 
-    private float _jumpForce_Multiply = 1f;
+    private int jumpCount_Max_Extra_Origin;
+
+    public float jumpForce
+    {
+        get => jumpForce_Calculated;
+
+        private set
+        {
+            jumpForce_Origin = value;
+
+            jumpForce_Calculated = jumpForce_Origin * jumpForce_Multiply_Origin;
+        }
+    }
+
+    private float jumpForce_Origin;
+
+    private float jumpForce_Calculated;
 
     public float jumpForce_Multiply
     {
-        get { return _jumpForce_Multiply; }
+        get => jumpForce_Multiply_Origin;
 
         set
         {
-            if (value > 0f)
-            {
-                jumpForce /= _jumpForce_Multiply;
+            jumpForce_Multiply_Origin = value;
 
-                _jumpForce_Multiply = value;
-
-                jumpForce *= _jumpForce_Multiply;
-            }
+            jumpForce_Calculated = jumpForce_Origin * jumpForce_Multiply_Origin;
         }
     }
+
+    private float jumpForce_Multiply_Origin;
 
     public int jumpCount { get; set; }
 
-    public sealed class LevelUpData
-    {
-        private int _level = 1;
-
-        public int level
-        {
-            get
-            {
-                return _level;
-            }
-
-            set
-            {
-                if (value > 0 && value != _level)
-                {
-                    movingSpeed_Multiply /= _level;
-
-                    _level = value;
-
-                    movingSpeed_Multiply *= _level;
-                }
-            }
-        }
-
-        public float movingSpeed_Multiply { get; set; }
-
-        public LevelUpData(float movingSpeed_Multiply)
-        {
-            this.movingSpeed_Multiply = movingSpeed_Multiply;
-        }
-
-        public LevelUpData(LevelUpData levelUpData)
-        {
-            _level = levelUpData._level;
-
-            movingSpeed_Multiply = levelUpData.movingSpeed_Multiply;
-        }
-    }
-
     public MovementInfo(MovementData movementData)
     {
-        movingSpeed_Walk = movementData.movingSpeed_Walk;
+        movingSpeed_Walk_Origin = movementData.movingSpeed_Walk;
 
-        movingSpeed_Run = movementData.movingSpeed_Run;
+        movingSpeed_Walk_Calculated = movementData.movingSpeed_Walk;
 
-        jumpCount_Max = movementData.jumpCount_Max;
+        movingSpeed_Run_Origin = movementData.movingSpeed_Run;
 
-        jumpForce = movementData.jumpForce;
+        movingSpeed_Run_Calculated = movementData.movingSpeed_Run;
+
+        movingSpeed_Multiply_Origin = 1f;
+
+        jumpCount_Max_Origin = movementData.jumpCount_Max;
+
+        jumpCount_Max_Calculated = movementData.jumpCount_Max;
+
+        jumpCount_Max_Extra_Origin = 0;
+
+        jumpForce_Origin = movementData.jumpForce;
+
+        jumpForce_Calculated = movementData.jumpForce;
+
+        jumpForce_Multiply_Origin = 1f;
 
         Initialize();
     }
 
     public MovementInfo(MovementInfo movementInfo)
     {
-        movingSpeed_Multiply = movementInfo.movingSpeed_Multiply;
+        movingSpeed_Walk_Origin = movementInfo.movingSpeed_Walk_Origin;
+
+        movingSpeed_Walk_Calculated = movementInfo.movingSpeed_Walk_Calculated;
+
+        movingSpeed_Run_Origin = movementInfo.movingSpeed_Run_Origin;
+
+        movingSpeed_Run_Calculated = movementInfo.movingSpeed_Run_Calculated;
+
+        movingSpeed_Multiply_Origin = movementInfo.movingSpeed_Multiply_Origin;
+
+        jumpCount_Max_Origin = movementInfo.jumpCount_Max_Origin;
+
+        jumpCount_Max_Calculated = movementInfo.jumpCount_Max_Calculated;
+
+        jumpCount_Max_Extra_Origin = movementInfo.jumpCount_Max_Extra_Origin;
+
+        jumpForce_Origin = movementInfo.jumpForce_Origin;
+
+        jumpForce_Calculated = movementInfo.jumpForce_Calculated;
+
+        jumpForce_Multiply_Origin = movementInfo.jumpForce_Multiply_Origin;
 
         jumpCount = movementInfo.jumpCount;
-
-        jumpCount_Max_Extra = movementInfo.jumpCount_Max_Extra;
-
-        jumpForce_Multiply = movementInfo.jumpForce_Multiply;
     }
 
     public void Initialize()
     {
         jumpCount = 0;
-    }
-
-    public void LevelUp(LevelUpData levelUpData)
-    {
-        movingSpeed_Multiply += levelUpData.movingSpeed_Multiply;
     }
 }

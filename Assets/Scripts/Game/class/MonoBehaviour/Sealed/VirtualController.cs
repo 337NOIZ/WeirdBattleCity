@@ -3,58 +3,68 @@ using UnityEngine;
 
 public sealed class VirtualController : MonoBehaviour
 {
-    public void OnMove(Vector2 moveDirection)
-    {
-        Player.instance.playerMovement.Move(moveDirection);
-    }
-
     public void OnLook(Vector2 lookDirection)
     {
-        Player.instance.playerMovement.Look(lookDirection);
+        Player.instance.Look(lookDirection);
+    }
+
+    public void OnMove(Vector2 moveDirection)
+    {
+        Player.instance.Move(moveDirection);
     }
 
     public void OnRun()
     {
-        Player.instance.playerMovement.Run();
+        Player.instance.Run();
     }
 
     public void OnJump()
     {
-        Player.instance.playerMovement.Jump();
+        Player.instance.Jump();
     }
 
-    public void OnConsumGrenade()
+    public void OnSelectWeaponNext()
     {
-        Player.instance.playerInventory.ConsumGrenade();
+        Player.instance.SelectWeaponNext();
     }
 
-    public void OnConsumMedikit()
+    public void OnSelectWeaponPrevious()
     {
-        Player.instance.playerInventory.ConsumMedikit();
+        Player.instance.SelectWeaponPrevious();
     }
 
-    public void OnSelectWeapon()
+    public void OnSwitchConsumableNext()
     {
-
+        Player.instance.SwitchConsumableNext();
     }
 
-    public void OnSwitchWeaponNext()
+    public void OnSwitchConsumablePrevious()
     {
-        Player.instance.playerInventory.SwitchWeaponNext();
+        Player.instance.SwitchConsumablePrevious();
     }
 
-    public void OnSwitchWeaponPrevious()
+    public void OnSwitchWeapon()
     {
-        Player.instance.playerInventory.SwitchWeaponPrevious();
+        Player.instance.SwitchWeapon();
     }
 
-    public void OnAttack(bool state)
+    public void OnConsumableSkill(int skillNumer)
     {
-        Player.instance.playerInventory.Attack(state);
+        Player.instance.ConsumableSkill(skillNumer);
+    }
+
+    public void OnWeaponSkill(int skillNumer)
+    {
+        Player.instance.WeaponSkill(skillNumer);
+    }
+
+    public void OnStopWeaponSkill()
+    {
+        Player.instance.StopWeaponSkill(true);
     }
 
     public void OnReload()
     {
-        Player.instance.playerInventory.Reload();
+        Player.instance.ReloadWeapon();
     }
 }

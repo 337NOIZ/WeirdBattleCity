@@ -1,4 +1,7 @@
 
+using System.Collections.Generic;
+
+
 using UnityEngine;
 
 public abstract class Item : MonoBehaviour
@@ -7,11 +10,13 @@ public abstract class Item : MonoBehaviour
 
     public abstract ItemCode itemCode { get; }
 
-    public ItemInfo itemInfo { get; set; }
+    protected ItemInfo itemInfo;
+
+    protected List<SkillInfo> skillInfos;
 
     public virtual void Initialize() { }
 
     public virtual void Initialize(ItemInfo itemInfo) { }
 
-    public virtual void Initialize(int itemLevel) { }
+    public virtual void Initialize(float stackCount) { }
 }

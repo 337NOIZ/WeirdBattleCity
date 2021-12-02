@@ -1,7 +1,7 @@
 
 public enum StatusEffectCode
 {
+    heal,
+
     slow,
-    
-    stun,
 }

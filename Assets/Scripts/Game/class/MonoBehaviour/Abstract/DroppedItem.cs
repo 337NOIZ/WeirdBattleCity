@@ -11,29 +11,29 @@ public abstract class DroppedItem : Item
     {
         Player player = collision.gameObject.GetComponent<Player>();
 
-        if (player.playerInventory.GetItem(itemInfo) == true)
+        if (player.GetItem(itemInfo) == true)
         {
-            RecoveryToPool();
+            Disable();
         }
     }
 
-    public override void Initialize()
+    public override void Initialize(float stackCount)
     {
-        itemInfo = new ItemInfo(GameMaster.instance.gameData.levelData.itemDatas[itemCode]);
+        itemInfo = new ItemInfo(GameMaster.instance.gameData.levelData.itemDatas[itemCode], stackCount);
 
         model.Spining(new Vector3(0f, 45f, 0f));
 
         model.Floating(new Vector3(0f, 0.25f, 0f), 2f);
     }
 
-    public void RecoveryToPool()
+    public void Disable()
     {
         model.StopFloating();
 
         model.StopSpining();
 
-        itemInfo = null;
-
         gameObject.SetActive(false);
+
+        ObjectPool.instance.Push(this);
     }
 }

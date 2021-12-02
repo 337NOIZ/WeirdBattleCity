@@ -5,16 +5,9 @@ using UnityEngine;
 
 public sealed class SpinAndFloat : MonoBehaviour
 {
-    private new Transform transform;
-
     private Vector3 originalLocalPosition;
 
     private Vector3 originalLocalEulerAngles;
-
-    private void Awake()
-    {
-        transform = GetComponent<Transform>();
-    }
 
     public void Floating(Vector3 delta, float speed)
     {
@@ -22,14 +15,14 @@ public sealed class SpinAndFloat : MonoBehaviour
 
         originalLocalPosition = transform.localPosition;
 
-        _floating = _Floating(delta, speed);
+        floatingRoutine = FloatingRoutine(delta, speed);
 
-        StartCoroutine(_floating);
+        StartCoroutine(floatingRoutine);
     }
 
-    private IEnumerator _floating = null;
+    private IEnumerator floatingRoutine = null;
 
-    private IEnumerator _Floating(Vector3 delta, float speed)
+    private IEnumerator FloatingRoutine(Vector3 delta, float speed)
     {
         while (true)
         {
@@ -41,11 +34,11 @@ public sealed class SpinAndFloat : MonoBehaviour
 
     public void StopFloating()
     {
-        if (_floating != null)
+        if (floatingRoutine != null)
         {
-            StopCoroutine(_floating);
+            StopCoroutine(floatingRoutine);
 
-            _floating = null;
+            floatingRoutine = null;
 
             transform.localPosition = originalLocalPosition;
         }
@@ -57,14 +50,14 @@ public sealed class SpinAndFloat : MonoBehaviour
 
         originalLocalEulerAngles = transform.localEulerAngles;
 
-        _spining = _Spining(direction);
+        spiningRoutine = SpiningRoutine(direction);
 
-        StartCoroutine(_spining);
+        StartCoroutine(spiningRoutine);
     }
 
-    private IEnumerator _spining = null;
+    private IEnumerator spiningRoutine = null;
 
-    private IEnumerator _Spining(Vector3 direction)
+    private IEnumerator SpiningRoutine(Vector3 direction)
     {
         while (true)
         {
@@ -76,11 +69,11 @@ public sealed class SpinAndFloat : MonoBehaviour
 
     public void StopSpining()
     {
-        if (_spining != null)
+        if (spiningRoutine != null)
         {
-            StopCoroutine(_spining);
+            StopCoroutine(spiningRoutine);
 
-            _spining = null;
+            spiningRoutine = null;
 
             transform.localEulerAngles = originalLocalEulerAngles;
         }

@@ -7,59 +7,53 @@ using UnityEngine;
 
 public abstract class Character : MonoBehaviour
 {
-    [Space]
+    public abstract CharacterType characterType { get; }
 
-    [SerializeField] private Transform _aim = null;
+    public abstract CharacterCode characterCode { get; }
 
-    [Space]
+    [SerializeField] private LayerMask _attackableLayer = default;
+
+    [SerializeField] protected Transform _aim = null;
 
     [SerializeField] private Transform _aimTarget = null;
 
-    [Space]
+    [SerializeField] protected TransformTools _model = null;
 
-    [SerializeField] private GameObject model = null;
-
-    [Space]
-
-    [SerializeField] private LayerMask _hostileLayer = default;
-
-    [Space]
+    [SerializeField] protected TransformTools _ragDoll = null;
 
     [SerializeField] protected ImageFillAmountController _healthPointBar = null;
 
     [SerializeField] protected ImageFillAmountController _experiencePointBar = null;
 
-    protected Transform aim { get; private set; }
+    public LayerMask attackableLayer { get; protected set; }
 
-    public Transform aimTarget { get; private set; }
+    public Transform aimTarget => _aimTarget;
 
     public Animator animator { get; private set; }
 
-    protected AnimationTools animationTools { get; private set; }
+    public AnimationTools animationTools { get; private set; }
 
-    public LayerMask hostileLayer { get; set; }
-
-    protected ImageFillAmountController healthPointBar { get; private set; }
-
-    protected ImageFillAmountController experiencePointBar { get; private set; }
-
-    protected new Rigidbody rigidbody { get; private set; }
-
-    public abstract CharacterType characterType { get; }
-
-    public abstract CharacterCode characterCode { get; }
+    protected new Rigidbody rigidbody;
 
     public CharacterData characterData { get; protected set; }
 
     public CharacterInfo characterInfo { get; protected set; }
 
-    protected int skillCount;
+    public DamageableInfo damageableInfo { get; protected set; } = null;
+
+    public ExperienceInfo experienceInfo { get; protected set; } = null;
+
+    public MovementInfo movementInfo { get; protected set; } = null;
+
+    public List<SkillInfo> skillInfos { get; protected set; } = null;
+
+    public TransformInfo transformInfo { get; protected set; } = null;
+
+    protected int skillCount = 0;
 
     protected List<float> skillMotionTimes;
 
     protected List<float> skillMotionSpeeds;
-
-    protected List<string> skillMotionNames;
 
     protected int skillNumber;
 
@@ -67,106 +61,113 @@ public abstract class Character : MonoBehaviour
 
     public virtual void Initialize()
     {
-        aim = _aim;
+        attackableLayer = _attackableLayer;
 
-        aimTarget = _aimTarget;
+        animator = _model.GetComponentInChildren<Animator>();
 
-        animator = model.GetComponentInChildren<Animator>();
-
-        animationTools = model.GetComponentInChildren<AnimationTools>();
-
-        hostileLayer = _hostileLayer;
-
-        healthPointBar = _healthPointBar;
-
-        experiencePointBar = _experiencePointBar;
+        animationTools = _model.GetComponentInChildren<AnimationTools>();
 
         rigidbody = GetComponent<Rigidbody>();
     }
 
-    public virtual void Initialize(int level) { }
+    public virtual void Initialize(int characterLevel) { }
 
-    public void LevelUp(int level)
+    public void LevelUp(int characterLevel)
     {
-        if(level == 1)
+        var characterInfo_LevelUpData = new CharacterInfo.LevelUpData(characterData.levelUpData);
+
+        if (characterLevel != 1)
         {
-            LevelUp();
+            characterInfo_LevelUpData.level = characterLevel;
         }
 
-        else
-        {
-            var characterInfo_LevelUpData = new CharacterInfo.LevelUpData(characterData.levelUpData);
-
-            characterInfo_LevelUpData.level = level;
-
-            LevelUp(characterInfo_LevelUpData);
-        }
-    }
-
-    public void LevelUp()
-    {
-        LevelUp(characterData.levelUpData);
-    }
-
-    protected virtual void LevelUp(CharacterInfo.LevelUpData characterInfo_LevelUpData)
-    {
         characterInfo.LevelUp(characterInfo_LevelUpData);
+
+        Caching();
+
+        StartCoroutine(RefreshHealthPointBar());
     }
 
     protected virtual void Caching()
     {
+        if (skillInfos != null)
+        {
+            skillCount = skillInfos.Count;
+        }
+
         for (int index = 0; index < skillCount; ++index)
         {
-            skillMotionSpeeds[index] = skillMotionTimes[index] / characterInfo.skillInfos[index].skillMotionTime;
+            skillMotionSpeeds[index] = skillMotionTimes[index] / skillInfos[index].skillMotionTime;
         }
     }
 
-    public void RefreshHealthPointBar()
+    public IEnumerator RefreshHealthPointBar()
     {
-        if (healthPointBar != null)
+        if (_healthPointBar != null)
         {
-            healthPointBar.Fill(characterInfo.damageableInfo.healthPoint / characterInfo.damageableInfo.healthPoint_Max, 0.1f);
+            yield return _healthPointBar.FillByLerp(1f - damageableInfo.healthPoint / damageableInfo.healthPoint_Max, 0.1f);
         }
     }
 
-    public void RefreshExperiencePointBar()
+    public IEnumerator RefreshExperiencePointBar()
     {
-        if (experiencePointBar != null)
+        if (_experiencePointBar != null && refreshExperiencePointBarRoutine != null)
         {
-            experiencePointBar.Fill(characterInfo.experienceInfo.experiencePoint / characterInfo.experienceInfo.experiencePoint_Max, 0.1f);
+            refreshExperiencePointBarRoutine = RefreshExperiencePointBarRoutine();
+
+            yield return refreshExperiencePointBarRoutine;
         }
+    }
+
+    private IEnumerator refreshExperiencePointBarRoutine = null;
+
+    private IEnumerator RefreshExperiencePointBarRoutine()
+    {
+        yield return _experiencePointBar.FillByLerp(1f - experienceInfo.experiencePoint / experienceInfo.experiencePoint_Max, 0.1f);
     }
 
     public void TakeAttack(Character attacker, float damage, List<StatusEffectInfo> statusEffectInfos)
     {
         this.attacker = attacker;
 
-        GainHealthPoint(-damage);
+        GetHealthPoint(-damage);
     }
 
-    public void GainHealthPoint(float healthPoint)
+    public void TakeForce(Vector3 position, float force)
     {
-        characterInfo.damageableInfo.healthPoint += healthPoint;
+        var velocity = (transform.position - position).normalized * force;
 
-        if (healthPoint > 0)
+        rigidbody.velocity += velocity;
+    }
+
+    public void TakeStatusEffect(StatusEffectInfo statusEffectInfo)
+    {
+
+    }
+
+    private Dictionary<StatusEffectCode, IEnumerator> statusEffect = new Dictionary<StatusEffectCode, IEnumerator>();
+
+    //private IEnumerator StatusEffect(StatusEffectInfo statusEffectInfo)
+    //{
+
+    //}
+
+    public void GetHealthPoint(float healthPoint)
+    {
+        if (healthPoint > 0f || Invincible() == false)
         {
-            if (characterInfo.damageableInfo.healthPoint > characterInfo.damageableInfo.healthPoint_Max)
-            {
-                characterInfo.damageableInfo.healthPoint = characterInfo.damageableInfo.healthPoint_Max;
-            }
-        }
+            damageableInfo.healthPoint += healthPoint;
 
-        else if (Invincible() == false)
-        {
-            if (characterInfo.damageableInfo.healthPoint <= 0)
+            if (damageableInfo.healthPoint == 0f)
             {
-                characterInfo.damageableInfo.healthPoint = 0;
-
                 Dead();
             }
-        }
 
-        RefreshHealthPointBar();
+            else
+            {
+                StartCoroutine(RefreshHealthPointBar());
+            }
+        }
     }
 
     protected virtual bool Invincible()
@@ -187,58 +188,63 @@ public abstract class Character : MonoBehaviour
 
     private IEnumerator _Invincible()
     {
-        characterInfo.damageableInfo.SetInvincibleTimer();
+        damageableInfo.SetInvincibleTimer();
 
-        while (characterInfo.damageableInfo.invincibleTimer > 0f)
+        while (damageableInfo.invincibleTimer > 0f)
         {
-            characterInfo.damageableInfo.invincibleTimer -= Time.deltaTime;
-
             yield return null;
+
+            damageableInfo.invincibleTimer -= Time.deltaTime;
         }
 
         _invincible = null;
     }
 
-    public virtual void GainExperiencePoint(float experiencePoint)
+    public void GetExperiencePoint(float experiencePoint)
     {
-        if(gainExperiencePointRoutine != null)
+        if (getExperiencePointRoutine != null)
         {
-            StopCoroutine(gainExperiencePointRoutine);
+            experienceInfo.experiencePoint += experiencePoint;
         }
 
-        gainExperiencePointRoutine = GainExperiencePointRoutine(experiencePoint);
+        else
+        {
+            getExperiencePointRoutine = GetExperiencePointRoutine(experiencePoint);
 
-        StartCoroutine(gainExperiencePointRoutine);
+            StartCoroutine(getExperiencePointRoutine);
+        }
     }
 
-    private IEnumerator gainExperiencePointRoutine = null;
+    private IEnumerator getExperiencePointRoutine = null;
 
-    private IEnumerator GainExperiencePointRoutine(float experiencePoint)
+    private IEnumerator GetExperiencePointRoutine(float experiencePoint)
     {
-        characterInfo.experienceInfo.experiencePoint += experiencePoint;
+        experienceInfo.experiencePoint += experiencePoint;
 
-        yield return experiencePointBar.FillRoutine(characterInfo.experienceInfo.experiencePoint / characterInfo.experienceInfo.experiencePoint_Max, 0.1f);
+        yield return RefreshExperiencePointBar();
 
-        while (characterInfo.experienceInfo.experiencePoint >= characterInfo.experienceInfo.experiencePoint_Max)
+        while (experienceInfo.experiencePoint >= experienceInfo.experiencePoint_Max)
         {
-            characterInfo.experienceInfo.experiencePoint -= characterInfo.experienceInfo.experiencePoint_Max;
+            experienceInfo.experiencePoint -= experienceInfo.experiencePoint_Max;
 
-            LevelUp();
+            LevelUp(1);
 
-            experiencePointBar.fillAmount = 0f;
+            _experiencePointBar.fillAmount = 1f;
 
-            if (characterInfo.experienceInfo.experiencePoint > 0f)
+            if (experienceInfo.experiencePoint > 0f)
             {
-                yield return experiencePointBar.FillRoutine(characterInfo.experienceInfo.experiencePoint / characterInfo.experienceInfo.experiencePoint_Max, 0.1f);
+                yield return RefreshExperiencePointBar();
             }
         }
 
-        gainExperiencePointRoutine = null;
+        getExperiencePointRoutine = null;
     }
+
+    public virtual void GetMoney(float moneyAmount) { }
 
     protected virtual IEnumerator SkillCooldown(int skillNumber)
     {
-        var skillInfo = characterInfo.skillInfos[skillNumber];
+        var skillInfo = skillInfos[skillNumber];
 
         skillInfo.SetCoolTimer();
 

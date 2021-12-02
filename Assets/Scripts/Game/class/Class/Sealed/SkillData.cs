@@ -66,17 +66,9 @@ public sealed class SkillData
 
         public float diffusion { get; private set; }
 
-        public float force { get; private set; }
-
-        public float lifeTime { get; private set; }
-
-        public int damage { get; private set; }
-
-        public ExplosionData explosionData { get; private set; } = null;
-
-        public List<StatusEffectData> statusEffectDatas { get; private set; } = null;
-
-        public RangedData(ProjectileCode projectileCode, float division, float diffusion, float force, float lifeTime, int damage, ExplosionData explosionData, List<StatusEffectData> statusEffectDatas)
+        public ProjectileData projectileData { get; private set; }
+        
+        public RangedData(ProjectileCode projectileCode, float division, float diffusion, ProjectileData projectileData)
         {
             this.projectileCode = projectileCode;
 
@@ -84,21 +76,7 @@ public sealed class SkillData
 
             this.diffusion = diffusion;
 
-            this.force = force;
-
-            this.lifeTime = lifeTime;
-
-            this.damage = damage;
-
-            if (explosionData != null)
-            {
-                this.explosionData = new ExplosionData(explosionData);
-            }
-
-            if (statusEffectDatas != null)
-            {
-                this.statusEffectDatas = new List<StatusEffectData>(statusEffectDatas);
-            }
+            this.projectileData = new ProjectileData(projectileData);
         }
 
         public RangedData(RangedData rangedData)
@@ -109,21 +87,7 @@ public sealed class SkillData
 
             diffusion = rangedData.diffusion;
 
-            force = rangedData.force;
-
-            lifeTime = rangedData.lifeTime;
-
-            damage = rangedData.damage;
-
-            if (rangedData.explosionData != null)
-            {
-                explosionData = new ExplosionData(rangedData.explosionData);
-            }
-
-            if (rangedData.statusEffectDatas != null)
-            {
-                statusEffectDatas = new List<StatusEffectData>(rangedData.statusEffectDatas);
-            }
+            projectileData = new ProjectileData(rangedData.projectileData);
         }
     }
 

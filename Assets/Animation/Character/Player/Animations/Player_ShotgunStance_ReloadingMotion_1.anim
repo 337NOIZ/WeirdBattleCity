@@ -1133,8 +1133,8 @@ AnimationClip:
   m_HasMotionFloatCurves: 0
   m_Events:
   - time: 0.5
-    functionName: SetParameterTrue
-    data: isBulletInTubular
+    functionName: InvokeEventAction
+    data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
     intParameter: 0

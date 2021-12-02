@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 public sealed class Pistol : Weapon
 {
-    public override ItemCode itemCode { get { return ItemCode.pistol; } }
+    public override ItemCode itemCode => ItemCode.pistol;
 
-    protected override ItemCode ammoItemCode { get { return ItemCode.pistolAmmo; } }
+    protected override ItemCode ammo_ItemCode => ItemCode.pistolAmmo;
 
     public override void Initialize()
     {
@@ -30,11 +30,6 @@ public sealed class Pistol : Weapon
         skillMotionSpeeds = new List<float>()
         {
             0f,
-        };
-
-        skillMotionNames = new List<string>()
-        {
-            "skillMotion_0",
         };
 
         Caching();

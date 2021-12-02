@@ -1,25 +1,28 @@
 
 using System.Collections.Generic;
 
-using UnityEngine;
-
 public sealed class LevelInfo
 {
-    public float levelPlayTime { get; set; }
-
     public PlayerInfo playerInfo { get; private set; }
 
     public Dictionary<SceneCode, StageInfo> stageInfos { get; private set; }
 
     public SceneCode stageSceneCode { get; set; }
 
+    public float levelPlayTime { get; set; }
+
     public LevelInfo(LevelData levelData)
     {
-        levelPlayTime = 0f;
-
         playerInfo = new PlayerInfo(levelData.playerData);
 
-        Dictionary<SceneCode, StageInfo> stageInfos;
+        stageInfos = new Dictionary<SceneCode, StageInfo>();
+
+        foreach (KeyValuePair<SceneCode, StageData> stageDatas in levelData.stageDatas)
+        {
+            stageInfos.Add(stageDatas.Key, new StageInfo(stageDatas.Value));
+        }
+
+        /*Dictionary<SceneCode, StageInfo> stageInfos;
 
         List<RoundInfo> roundInfos;
 
@@ -63,9 +66,9 @@ public sealed class LevelInfo
 
                         var spawnCount = waveSpawnEnemiesData.spawnCount;
 
-                        if (waveSpawnEnemiesData.waveData_SpawnEnemyDatas_Fixed != null)
+                        if (waveSpawnEnemiesData.spawnEnemyDatas_Fixed != null)
                         {
-                            var waveData_SpawnEnemyDatas_Fixed = waveSpawnEnemiesData.waveData_SpawnEnemyDatas_Fixed;
+                            var waveData_SpawnEnemyDatas_Fixed = waveSpawnEnemiesData.spawnEnemyDatas_Fixed;
 
                             var count_2 = waveData_SpawnEnemyDatas_Fixed.Count;
 
@@ -94,9 +97,9 @@ public sealed class LevelInfo
                             }
                         }
 
-                        if (waveSpawnEnemiesData.waveData_SpawnEnemyDatas_Random != null)
+                        if (waveSpawnEnemiesData.spawnEnemyDatas_Random != null)
                         {
-                            var waveData_SpawnEnemyDatas_Random = waveSpawnEnemiesData.waveData_SpawnEnemyDatas_Random;
+                            var waveData_SpawnEnemyDatas_Random = waveSpawnEnemiesData.spawnEnemyDatas_Random;
 
                             while (spawnCount > 0)
                             {
@@ -138,9 +141,9 @@ public sealed class LevelInfo
 
                         var spawnCount = waveSpawnDroppedItemsData.spawnCount;
 
-                        if (waveSpawnDroppedItemsData.waveData_SpawnDroppedItemDatas_Fixed != null)
+                        if (waveSpawnDroppedItemsData.spawnDroppedItemDatas_Fixed != null)
                         {
-                            var waveData_SpawnDroppedItemDatas_Fixed = waveSpawnDroppedItemsData.waveData_SpawnDroppedItemDatas_Fixed;
+                            var waveData_SpawnDroppedItemDatas_Fixed = waveSpawnDroppedItemsData.spawnDroppedItemDatas_Fixed;
 
                             var count_2 = waveData_SpawnDroppedItemDatas_Fixed.Count;
 
@@ -169,9 +172,9 @@ public sealed class LevelInfo
                             }
                         }
 
-                        if (waveSpawnDroppedItemsData.waveData_SpawnDroppedItemDatas_Random != null)
+                        if (waveSpawnDroppedItemsData.spawnDroppedItemDatas_Random != null)
                         {
-                            var waveData_SpawnDroppedItemDatas_Random = waveSpawnDroppedItemsData.waveData_SpawnDroppedItemDatas_Random;
+                            var waveData_SpawnDroppedItemDatas_Random = waveSpawnDroppedItemsData.spawnDroppedItemDatas_Random;
 
                             while (spawnCount > 0)
                             {
@@ -212,19 +215,21 @@ public sealed class LevelInfo
             stageInfos.Add(stageDatas.Key, new StageInfo(roundInfos));
         }
 
-        this.stageInfos = new Dictionary<SceneCode, StageInfo>(stageInfos);
+        this.stageInfos = new Dictionary<SceneCode, StageInfo>(stageInfos);*/
 
         stageSceneCode = SceneCode.city;
+
+        levelPlayTime = 0f;
     }
 
     public LevelInfo(LevelInfo levelInfo)
     {
-        levelPlayTime = levelInfo.levelPlayTime;
-
         playerInfo = new PlayerInfo(levelInfo.playerInfo);
 
         stageInfos = new Dictionary<SceneCode, StageInfo>(levelInfo.stageInfos);
 
         stageSceneCode = levelInfo.stageSceneCode;
+
+        levelPlayTime = levelInfo.levelPlayTime;
     }
 }

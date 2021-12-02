@@ -3,119 +3,159 @@
 
 public sealed class StatusEffectInfo
 {
-    public float power { get; private set; }
+    public float power
+    {
+        get => power_Calculated;
 
-    public float duration { get; private set; }
+        private set
+        {
+            power_Origin = value;
 
-    private float _power_Multiple = 1f;
+            power_Calculated = power_Origin * power_Multiple_Origin;
+        }
+    }
+
+    private float power_Origin;
+
+    private float power_Calculated;
 
     public float power_Multiple
     {
-        get { return _power_Multiple; }
+        get => power_Multiple_Origin;
 
         set
         {
-            if (value > 0f)
-            {
-                power /= _power_Multiple;
+            power_Multiple_Origin = value;
 
-                _power_Multiple = value;
-
-                power *= _power_Multiple;
-            }
+            power_Calculated = power_Origin * power_Multiple_Origin;
         }
     }
 
-    private float _duration_Multiple = 1f;
+    private float power_Multiple_Origin;
 
-    public float duration_Multiple
+    public float durationTime
     {
-        get { return _duration_Multiple; }
+        get => durationTime_Calculated;
+
+        private set
+        {
+            durationTime_Origin = value;
+
+            durationTime_Calculated = durationTime_Origin * durationTime_Multiple_Origin;
+        }
+    }
+
+    private float durationTime_Origin;
+
+    private float durationTime_Calculated;
+
+    public float durationTime_Multiple
+    {
+        get => durationTime_Multiple_Origin;
 
         set
         {
-            if (value > 0f)
-            {
-                duration /= _duration_Multiple;
+            durationTime_Multiple_Origin = value;
 
-                _duration_Multiple = value;
-
-                duration *= _duration_Multiple;
-            }
+            durationTime_Calculated = durationTime_Origin * durationTime_Multiple_Origin;
         }
     }
 
-    public sealed class LevelUpData
-    {
-        private int _level = 1;
+    private float durationTime_Multiple_Origin;
 
-        public int level
-        {
-            get
-            {
-                return _level;
-            }
-
-            set
-            {
-                if (value > 0 && value != _level)
-                {
-                    power_Multiple /= _level;
-
-                    duration_Multiple /= _level;
-
-                    _level = value;
-
-                    power_Multiple *= _level;
-
-                    duration_Multiple *= _level;
-                }
-            }
-        }
-
-        public float power_Multiple { get; set; }
-
-        public float duration_Multiple { get; set; }
-
-        public LevelUpData(float power_Multiple, float duration_Multiple)
-        {
-            this.power_Multiple = power_Multiple;
-
-            this.duration_Multiple = duration_Multiple;
-        }
-
-        public LevelUpData(LevelUpData levelUpData)
-        {
-            _level = levelUpData._level;
-
-            power_Multiple = levelUpData.power_Multiple;
-
-            duration_Multiple = levelUpData.duration_Multiple;
-        }
-    }
+    public float durationTimer { get; set; }
 
     public StatusEffectInfo(StatusEffectData statusEffectData)
     {
-        power = statusEffectData.power;
+        power_Origin = statusEffectData.power;
 
-        duration = statusEffectData.duration;
+        power_Calculated = statusEffectData.power;
+
+        power_Multiple_Origin = 1f;
+
+        durationTime_Origin = statusEffectData.duration;
+
+        durationTime_Calculated = statusEffectData.duration;
+
+        durationTime_Multiple_Origin = 1f;
+
+        durationTimer = 0f;
     }
 
     public StatusEffectInfo(StatusEffectInfo statusEffectInfo)
     {
-        power = statusEffectInfo.power;
+        power_Origin = statusEffectInfo.power_Origin;
 
-        duration = statusEffectInfo.duration;
+        power_Calculated = statusEffectInfo.power_Calculated;
 
-        power_Multiple = statusEffectInfo.power_Multiple;
+        power_Multiple_Origin = statusEffectInfo.power_Multiple_Origin;
 
-        duration_Multiple = statusEffectInfo.duration_Multiple;
+        durationTime_Origin = statusEffectInfo.durationTime_Origin;
+
+        durationTime_Calculated = statusEffectInfo.durationTime_Calculated;
+
+        durationTime_Multiple_Origin = statusEffectInfo.durationTime_Multiple_Origin;
+
+        durationTimer = statusEffectInfo.durationTimer;
+    }
+
+    public sealed class LevelUpData
+    {
+        public int level
+        {
+            get => level_Origin;
+
+            set
+            {
+                level_Origin = value;
+
+                power = power_Origin * level_Origin;
+
+                durationTime = durationTime_Origin * level_Origin;
+            }
+        }
+
+        private int level_Origin;
+
+        public float power { get; private set; }
+
+        private float power_Origin;
+
+        public float durationTime { get; private set; }
+
+        private float durationTime_Origin;
+
+        public LevelUpData(float power, float durationTime)
+        {
+            level_Origin = 1;
+
+            this.power = power;
+
+            power_Origin = power;
+
+            this.durationTime = durationTime;
+
+            durationTime_Origin = durationTime;
+        }
+
+        public LevelUpData(LevelUpData levelUpData)
+        {
+            level_Origin = levelUpData.level_Origin;
+
+            power = levelUpData.power;
+
+            power_Origin = levelUpData.power_Origin;
+
+            durationTime = levelUpData.durationTime;
+
+            durationTime_Origin = levelUpData.durationTime_Origin;
+        }
     }
 
     public void LevelUp(LevelUpData levelUpData)
     {
-        power_Multiple += levelUpData.power_Multiple;
+        power += levelUpData.power;
 
-        duration_Multiple += levelUpData.duration_Multiple;
+        durationTime += levelUpData.durationTime;
     }
 }

@@ -15,9 +15,9 @@ TagManager:
   - Enemy
   - Friendly
   - Neutrality
-  - Item
   - Projectile
-  - 
+  - Item
+  - RagDoll
   - 
   - 
   - 
@@ -40,4 +40,13 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: EnemyUI
+    uniqueID: 440459041
+    locked: 0
+  - name: PlayerUI
+    uniqueID: 4173437467
+    locked: 0
+  - name: ScreenEffect
+    uniqueID: 2921918263
     locked: 0

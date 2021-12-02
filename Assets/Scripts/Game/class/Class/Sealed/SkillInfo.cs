@@ -3,251 +3,209 @@ using System.Collections.Generic;
 
 public sealed class SkillInfo
 {
-    public float range { get; private set; }
+    public float range
+    {
+        get => range_Calculated;
 
-    public float cooldownTime { get; private set; }
+        private set
+        {
+            range_Origin = value;
 
-    public float castingMotionTime { get; private set; }
+            range_Calculated = range_Origin * range_Multiple_Origin;
+        }
+    }
 
-    public float skillMotionTime { get; private set; }
+    private float range_Origin;
 
-    private float _range_Multiple = 1;
+    private float range_Calculated;
 
     public float range_Multiple
     {
-        get { return _range_Multiple; }
+        get => range_Multiple_Origin;
 
         set
         {
-            if (value > 0f)
-            {
-                range /= _range_Multiple;
+            range_Multiple_Origin = value;
 
-                _range_Multiple = value;
-
-                range *= _range_Multiple;
-            }
+            range_Calculated = range_Origin * range_Multiple_Origin;
         }
     }
 
-    private float _cooldownSpeed = 1;
+    private float range_Multiple_Origin;
+
+    public float cooldownTime
+    {
+        get => cooldownTime_Calculated;
+
+        private set
+        {
+            cooldownTime_Origin = value;
+
+            cooldownTime_Calculated = cooldownTime_Origin / cooldownSpeed_Origin;
+        }
+    }
+
+    private float cooldownTime_Origin;
+
+    private float cooldownTime_Calculated;
 
     public float cooldownSpeed
     {
-        get { return _cooldownSpeed; }
+        get => cooldownSpeed_Origin;
 
         set
         {
-            if (value > 0f)
-            {
-                cooldownTime *= _cooldownSpeed;
+            cooldownSpeed_Origin = value;
 
-                _cooldownSpeed = value;
-
-                cooldownTime /= _cooldownSpeed;
-            }
+            cooldownTime_Calculated = cooldownTime_Origin / cooldownSpeed_Origin;
         }
     }
 
-    private float _castingSpeed = 1;
+    private float cooldownSpeed_Origin;
 
-    public float castingSpeed
+    public float castingMotionTime
     {
-        get { return _castingSpeed; }
+        get => castingMotionTime_Calculated;
 
-        set
+        private set
         {
-            if (value > 0f)
-            {
-                castingMotionTime *= _castingSpeed;
+            castingMotionTime_Origin = value;
 
-                _castingSpeed = value;
-
-                castingMotionTime /= _castingSpeed;
-            }
+            castingMotionTime_Calculated = castingMotionTime_Origin / castingMotionSpeed_Origin;
         }
     }
 
-    private float _motionSpeed = 1;
+    private float castingMotionTime_Origin;
 
-    public float motionSpeed
+    private float castingMotionTime_Calculated;
+
+    public float castingMotionSpeed
     {
-        get { return _motionSpeed; }
+        get => castingMotionSpeed_Origin;
 
         set
         {
-            if (value > 0f)
-            {
-                skillMotionTime *= _motionSpeed;
+            castingMotionSpeed_Origin = value;
 
-                _motionSpeed = value;
-
-                skillMotionTime /= _motionSpeed;
-            }
+            castingMotionTime_Calculated = castingMotionTime_Origin / castingMotionSpeed_Origin;
         }
     }
 
-    public float cooldownTimer { get; set; } = 0f;
+    private float castingMotionSpeed_Origin;
+
+    public float skillMotionTime
+    {
+        get => skillMotionTime_Calculated;
+
+        private set
+        {
+            skillMotionTime_Origin = value;
+
+            skillMotionTime_Calculated = skillMotionTime_Origin / skillMotionSpeed_Origin;
+        }
+    }
+
+    private float skillMotionTime_Origin;
+
+    private float skillMotionTime_Calculated;
+
+    public float skillMotionSpeed
+    {
+        get => skillMotionSpeed_Origin;
+
+        set
+        {
+            skillMotionSpeed_Origin = value;
+
+            skillMotionTime_Calculated = skillMotionTime_Origin / skillMotionSpeed_Origin;
+        }
+    }
+
+    private float skillMotionSpeed_Origin;
+
+    public float cooldownTimer { get; set; }
 
     public sealed class MeleeInfo
     {
-        public float range { get; private set; }
-
-        public float damage { get; private set; }
-
-        private float _range_Extra = 1;
-
-        public float range_Extra
+        public float range
         {
-            get { return _range_Extra; }
+            get => range_Calculated;
 
-            set
+            private set
             {
-                range /= _range_Extra;
+                range_Origin = value;
 
-                _range_Extra = value;
-
-                _range_Multiple *= _range_Extra;
+                range_Calculated = range_Origin * range_Multiple_Origin;
             }
         }
 
-        private float _range_Multiple = 1;
+        private float range_Origin;
+
+        private float range_Calculated;
 
         public float range_Multiple
         {
-            get { return _range_Multiple; }
+            get => range_Multiple_Origin;
 
             set
             {
-                range /= _range_Multiple;
+                range_Multiple_Origin = value;
 
-                _range_Multiple = value;
-
-                _range_Multiple *= _range_Multiple;
+                range_Calculated = range_Origin * range_Multiple_Origin;
             }
         }
 
-        private float _damage_Extra = 1;
+        private float range_Multiple_Origin;
 
-        public float damage_Extra
+        public float damage
         {
-            get { return _damage_Extra; }
+            get => damage_Calculated;
 
-            set
+            private set
             {
-                damage /= _damage_Extra;
+                damage_Origin = value;
 
-                _damage_Extra = value;
-
-                damage *= _damage_Extra;
+                damage_Calculated = damage_Origin * damage_Multiple_Origin;
             }
         }
 
-        private float _damage_Multiple = 1;
+        private float damage_Origin;
+
+        private float damage_Calculated;
 
         public float damage_Multiple
         {
-            get { return _damage_Multiple; }
+            get => damage_Multiple_Origin;
 
             set
             {
-                damage /= _damage_Multiple;
+                damage_Multiple_Origin = value;
 
-                _damage_Multiple = value;
-
-                damage *= _damage_Multiple;
+                damage_Calculated = damage_Origin * damage_Multiple_Origin;
             }
         }
+
+        private float damage_Multiple_Origin;
 
         public ExplosionInfo explosionInfo { get; private set; } = null;
 
         public List<StatusEffectInfo> statusEffectInfos { get; private set; } = null;
 
-        public sealed class LevelUpData
-        {
-            private int _level = 1;
-
-            public int level
-            {
-                get
-                {
-                    return _level;
-                }
-
-                set
-                {
-                    if (value > 0 && value != _level)
-                    {
-                        damage_Extra /= _level;
-
-                        _level = value;
-
-                        damage_Extra *= _level;
-
-                        if (explosionInfo != null)
-                        {
-                            explosionInfo.level = _level;
-                        }
-
-                        if (statusEffectInfos != null)
-                        {
-                            int count = statusEffectInfos.Count;
-
-                            for (int index = 0; index < count; ++index)
-                            {
-                                statusEffectInfos[index].level = _level;
-                            }
-                        }
-                    }
-                }
-            }
-
-            public float damage_Extra { get; private set; }
-
-            public ExplosionInfo.LevelUpData explosionInfo { get; private set; }
-
-            public List<StatusEffectInfo.LevelUpData> statusEffectInfos { get; private set; } = null;
-
-            public LevelUpData(float damage_Extra, ExplosionInfo.LevelUpData explosionInfo, List<StatusEffectInfo.LevelUpData> statusEffectInfos)
-            {
-                this.damage_Extra = damage_Extra;
-
-                if (explosionInfo != null)
-                {
-                    this.explosionInfo = new ExplosionInfo.LevelUpData(explosionInfo);
-                }
-
-                if (statusEffectInfos != null)
-                {
-                    this.statusEffectInfos = new List<StatusEffectInfo.LevelUpData>(statusEffectInfos);
-                }
-            }
-
-            public LevelUpData(LevelUpData levelUpData)
-            {
-                _level = levelUpData._level;
-
-                damage_Extra = levelUpData.damage_Extra;
-
-                if (levelUpData.explosionInfo != null)
-                {
-                    explosionInfo = new ExplosionInfo.LevelUpData(levelUpData.explosionInfo);
-                }
-
-                if (levelUpData.statusEffectInfos != null)
-                {
-                    statusEffectInfos = new List<StatusEffectInfo.LevelUpData>(levelUpData.statusEffectInfos);
-                }
-            }
-        }
-
         public MeleeInfo(SkillData.MeleeData meleeData)
         {
-            range = meleeData.range;
+            range_Origin = meleeData.range;
 
-            damage = meleeData.damage;
+            range_Calculated = meleeData.range;
 
-            if(meleeData.explosionData != null)
+            range_Multiple_Origin = 1f;
+
+            damage_Origin = meleeData.damage;
+
+            damage_Calculated = meleeData.damage;
+
+            damage_Multiple_Origin = 1f;
+
+            if (meleeData.explosionData != null)
             {
                 explosionInfo = new ExplosionInfo(meleeData.explosionData);
             }
@@ -267,17 +225,17 @@ public sealed class SkillInfo
 
         public MeleeInfo(MeleeInfo meleeInfo)
         {
-            range = meleeInfo.range;
+            range_Origin = meleeInfo.range_Origin;
 
-            damage = meleeInfo.damage;
+            range_Calculated = meleeInfo.range_Calculated;
 
-            _range_Extra = meleeInfo._range_Extra;
+            range_Multiple_Origin = meleeInfo.range_Multiple_Origin;
 
-            _range_Multiple = meleeInfo._range_Multiple;
+            damage_Origin = meleeInfo.damage_Origin;
 
-            _damage_Extra = meleeInfo._damage_Extra;
+            damage_Calculated = meleeInfo.damage_Calculated;
 
-            _damage_Multiple = meleeInfo._damage_Multiple;
+            damage_Multiple_Origin = meleeInfo.damage_Multiple_Origin;
 
             if (meleeInfo.explosionInfo != null)
             {
@@ -290,9 +248,87 @@ public sealed class SkillInfo
             }
         }
 
+        public sealed class LevelUpData
+        {
+            public int level
+            {
+                get => level_Origin;
+
+                set
+                {
+                    level_Origin = value;
+
+                    damage = damage_Origin * level_Origin;
+
+                    if (explosionInfo != null)
+                    {
+                        explosionInfo.level = level_Origin;
+                    }
+
+                    if (statusEffectInfos != null)
+                    {
+                        int count = statusEffectInfos.Count;
+
+                        for (int index = 0; index < count; ++index)
+                        {
+                            statusEffectInfos[index].level = level_Origin;
+                        }
+                    }
+                }
+            }
+
+            private int level_Origin;
+
+            public float damage { get; private set; }
+
+            private float damage_Origin;
+
+            public ExplosionInfo.LevelUpData explosionInfo { get; private set; }
+
+            public List<StatusEffectInfo.LevelUpData> statusEffectInfos { get; private set; } = null;
+
+            public LevelUpData(float damage, ExplosionInfo.LevelUpData explosionInfo, List<StatusEffectInfo.LevelUpData> statusEffectInfos)
+            {
+                level_Origin = 1;
+
+                this.damage = damage;
+
+                damage_Origin = damage;
+
+                if (explosionInfo != null)
+                {
+                    this.explosionInfo = new ExplosionInfo.LevelUpData(explosionInfo);
+                }
+
+                if (statusEffectInfos != null)
+                {
+                    this.statusEffectInfos = new List<StatusEffectInfo.LevelUpData>(statusEffectInfos);
+                }
+            }
+
+            public LevelUpData(LevelUpData levelUpData)
+            {
+                level_Origin = levelUpData.level_Origin;
+
+                damage = levelUpData.damage;
+
+                damage_Origin = levelUpData.damage_Origin;
+
+                if (levelUpData.explosionInfo != null)
+                {
+                    explosionInfo = new ExplosionInfo.LevelUpData(levelUpData.explosionInfo);
+                }
+
+                if (levelUpData.statusEffectInfos != null)
+                {
+                    statusEffectInfos = new List<StatusEffectInfo.LevelUpData>(levelUpData.statusEffectInfos);
+                }
+            }
+        }
+
         public void LevelUp(LevelUpData levelUpData)
         {
-            damage_Extra += levelUpData.damage_Extra;
+            damage += levelUpData.damage;
 
             if (levelUpData.explosionInfo != null)
             {
@@ -319,301 +355,142 @@ public sealed class SkillInfo
     {
         public ProjectileCode projectileCode { get; private set; }
 
-        public float division { get; private set; }
+        public float division
+        {
+            get => division_Calculated;
 
-        public float diffusion { get; private set; }
+            private set
+            {
+                division_Origin = value;
 
-        public float force { get; private set; }
+                division_Calculated = division_Origin * division_Multiple_Origin;
+            }
+        }
 
-        public float lifeTime { get; private set; }
+        private float division_Origin;
 
-        public float damage { get; private set; }
-
-        private float _division_Multiple = 1f;
+        private float division_Calculated;
 
         public float division_Multiple
         {
-            get { return _division_Multiple; }
+            get => division_Multiple_Origin;
 
             set
             {
-                if (value > 0f)
-                {
-                    division /= _diffusion_Multiple;
+                division_Multiple_Origin = value;
 
-                    _diffusion_Multiple = value;
-
-                    division *= _diffusion_Multiple;
-                }
+                division_Calculated = division_Origin * division_Multiple_Origin;
             }
         }
 
-        private float _diffusion_Multiple = 1f;
+        private float division_Multiple_Origin;
+
+        public float diffusion
+        {
+            get => diffusion_Calculated;
+
+            private set
+            {
+                diffusion_Origin = value;
+
+                diffusion_Calculated = diffusion_Origin * diffusion_Multiple_Origin;
+            }
+        }
+
+        private float diffusion_Origin;
+
+        private float diffusion_Calculated;
 
         public float diffusion_Multiple
         {
-            get { return _diffusion_Multiple; }
+            get => diffusion_Multiple_Origin;
 
             set
             {
-                if (value > 0f)
-                {
-                    diffusion /= _diffusion_Multiple;
+                diffusion_Multiple_Origin = value;
 
-                    _diffusion_Multiple = value;
-
-                    diffusion *= _diffusion_Multiple;
-                }
+                diffusion_Calculated = diffusion_Origin * diffusion_Multiple_Origin;
             }
         }
 
-        private float _force_Multiple = 1f;
+        private float diffusion_Multiple_Origin;
 
-        public float force_Multiple
-        {
-            get { return _force_Multiple; }
-
-            set
-            {
-                if (value > 0f)
-                {
-                    force /= _force_Multiple;
-
-                    _force_Multiple = value;
-
-                    force *= _force_Multiple;
-                }
-            }
-        }
-
-        private float _lifeTime_Multiple = 1f;
-
-        public float lifeTime_Multiple
-        {
-            get { return _lifeTime_Multiple; }
-
-            set
-            {
-                if (value > 0f)
-                {
-                    lifeTime /= _lifeTime_Multiple;
-
-                    _lifeTime_Multiple = value;
-
-                    lifeTime *= _lifeTime_Multiple;
-                }
-            }
-        }
-
-        private float _damage_Extra = 1f;
-
-        public float damage_Extra
-        {
-            get { return _damage_Extra; }
-
-            set
-            {
-                if (value > 0f)
-                {
-                    damage -= _damage_Extra;
-
-                    _damage_Extra = value;
-
-                    damage += _damage_Extra;
-                }
-            }
-        }
-
-        private float _damage_Multiple = 1f;
-
-        public float damage_Multiple
-        {
-            get { return _damage_Multiple; }
-
-            set
-            {
-                if (value > 0f)
-                {
-                    damage /= _damage_Multiple;
-
-                    _damage_Multiple = value;
-
-                    damage *= _damage_Multiple;
-                }
-            }
-        }
-
-        public ExplosionInfo explosionInfo { get; private set; } = null;
-
-        public List<StatusEffectInfo> statusEffectInfos { get; private set; } = null;
-
-        public sealed class LevelUpData
-        {
-            private int _level = 1;
-
-            public int level
-            {
-                get
-                {
-                    return _level;
-                }
-
-                set
-                {
-                    if (value > 0 && value != _level)
-                    {
-                        damage_Extra /= _level;
-
-                        _level = value;
-
-                        damage_Extra *= _level;
-
-                        if (explosionInfo != null)
-                        {
-                            explosionInfo.level = _level;
-                        }
-
-                        if (statusEffectInfos != null)
-                        {
-                            int count = statusEffectInfos.Count;
-
-                            for (int index = 0; index < count; ++index)
-                            {
-                                statusEffectInfos[index].level = _level;
-                            }
-                        }
-                    }
-                }
-            }
-
-            public float damage_Extra { get; private set; }
-
-            public ExplosionInfo.LevelUpData explosionInfo { get; private set; }
-
-            public List<StatusEffectInfo.LevelUpData> statusEffectInfos { get; private set; } = null;
-
-            public LevelUpData(float damage_Extra, ExplosionInfo.LevelUpData explosionInfo, List<StatusEffectInfo.LevelUpData> statusEffectInfos)
-            {
-                this.damage_Extra = damage_Extra;
-
-                if (explosionInfo != null)
-                {
-                    this.explosionInfo = new ExplosionInfo.LevelUpData(explosionInfo);
-                }
-
-                if (statusEffectInfos != null)
-                {
-                    this.statusEffectInfos = new List<StatusEffectInfo.LevelUpData>(statusEffectInfos);
-                }
-            }
-
-            public LevelUpData(LevelUpData levelUpData)
-            {
-                _level = levelUpData.level;
-
-                damage_Extra = levelUpData.damage_Extra;
-
-                if (levelUpData.explosionInfo != null)
-                {
-                    explosionInfo = new ExplosionInfo.LevelUpData(levelUpData.explosionInfo);
-                }
-
-                if (levelUpData.statusEffectInfos != null)
-                {
-                    statusEffectInfos = new List<StatusEffectInfo.LevelUpData>(levelUpData.statusEffectInfos);
-                }
-            }
-        }
+        public ProjectileInfo projectileInfo { get; private set; }
 
         public RangedInfo(SkillData.RangedData rangedData)
         {
             projectileCode = rangedData.projectileCode;
 
-            division = rangedData.division;
+            division_Origin = rangedData.division;
 
-            diffusion = rangedData.diffusion;
+            division_Calculated = rangedData.division;
 
-            force = rangedData.force;
+            division_Multiple_Origin = 1f;
 
-            lifeTime = rangedData.lifeTime;
+            diffusion_Origin = rangedData.diffusion;
 
-            damage = rangedData.damage;
+            diffusion_Calculated = rangedData.diffusion;
 
-            if(rangedData.explosionData != null)
-            {
-                explosionInfo = new ExplosionInfo(rangedData.explosionData);
-            }
+            diffusion_Multiple_Origin = 1f;
 
-            var statusEffectDatas = rangedData.statusEffectDatas;
-
-            if (statusEffectDatas != null)
-            {
-                statusEffectInfos = new List<StatusEffectInfo>();
-
-                int count = statusEffectDatas.Count;
-
-                for (int index = 0; index < count; ++index)
-                {
-                    statusEffectInfos.Add(new StatusEffectInfo(statusEffectDatas[index]));
-                }
-            }
+            projectileInfo = new ProjectileInfo(rangedData.projectileData);
         }
 
         public RangedInfo(RangedInfo rangedInfo)
         {
-            division = rangedInfo.division;
+            projectileCode = rangedInfo.projectileCode;
 
-            diffusion = rangedInfo.diffusion;
+            division_Origin = rangedInfo.division;
 
-            force = rangedInfo.force;
+            division_Calculated = rangedInfo.division;
 
-            lifeTime = rangedInfo.lifeTime;
+            division_Multiple_Origin = rangedInfo.division_Multiple_Origin;
 
-            damage = rangedInfo.damage;
+            diffusion_Origin = rangedInfo.diffusion;
 
-            _division_Multiple = rangedInfo._division_Multiple;
+            diffusion_Calculated = rangedInfo.diffusion;
 
-            _diffusion_Multiple = rangedInfo._diffusion_Multiple;
+            diffusion_Multiple_Origin = rangedInfo.diffusion_Multiple_Origin;
 
-            _force_Multiple = rangedInfo._force_Multiple;
+            projectileInfo = new ProjectileInfo(rangedInfo.projectileInfo);
+        }
 
-            _lifeTime_Multiple = rangedInfo._lifeTime_Multiple;
-
-            _damage_Extra = rangedInfo._damage_Extra;
-
-            _damage_Multiple = rangedInfo._damage_Multiple;
-
-            if (rangedInfo.explosionInfo != null)
+        public sealed class LevelUpData
+        {
+            public int level
             {
-                explosionInfo = new ExplosionInfo(rangedInfo.explosionInfo);
+                get => level_Origin;
+
+                set
+                {
+                    level_Origin = value;
+
+                    projectileInfo.level = level_Origin;
+                }
             }
 
-            if (rangedInfo.statusEffectInfos != null)
+            private int level_Origin;
+
+            public ProjectileInfo.LevelUpData projectileInfo { get; private set; }
+
+            public LevelUpData(ProjectileInfo.LevelUpData projectileInfo)
             {
-                statusEffectInfos = new List<StatusEffectInfo>(rangedInfo.statusEffectInfos);
+                level_Origin = 1;
+
+                this.projectileInfo = new ProjectileInfo.LevelUpData(projectileInfo);
+            }
+
+            public LevelUpData(LevelUpData levelUpData)
+            {
+                level_Origin = levelUpData.level;
+
+                projectileInfo = new ProjectileInfo.LevelUpData(levelUpData.projectileInfo);
             }
         }
 
         public void LevelUp(LevelUpData levelUpData)
         {
-            damage_Extra += levelUpData.damage_Extra;
-
-            if (levelUpData.explosionInfo != null)
-            {
-                explosionInfo.LevelUp(levelUpData.explosionInfo);
-            }
-
-            var statusEffectInfos = levelUpData.statusEffectInfos;
-
-            if (statusEffectInfos != null)
-            {
-                int count = statusEffectInfos.Count;
-
-                for (int index = 0; index < count; ++index)
-                {
-                    this.statusEffectInfos[index].LevelUp(statusEffectInfos[index]);
-                }
-            }
+            projectileInfo.LevelUp(levelUpData.projectileInfo);
         }
     }
 
@@ -621,100 +498,31 @@ public sealed class SkillInfo
 
     public List<StatusEffectInfo> statusEffectInfos { get; private set; } = null;
 
-    public sealed class LevelUpData
-    {
-        private int _level = 1;
-
-        public int level
-        {
-            get
-            {
-                return _level;
-            }
-
-            set
-            {
-                if (value > 0 && value != _level)
-                {
-                    _level = value;
-
-                    if (meleeInfo != null)
-                    {
-                        meleeInfo.level = _level;
-                    }
-
-                    if (rangedInfo != null)
-                    {
-                        rangedInfo.level = _level;
-                    }
-
-                    if (statusEffectInfos != null)
-                    {
-                        int count = statusEffectInfos.Count;
-
-                        for (int index = 0; index < count; ++index)
-                        {
-                            statusEffectInfos[index].level = _level;
-                        }
-                    }
-                }
-            }
-        }
-
-        public MeleeInfo.LevelUpData meleeInfo { get; private set; } = null;
-
-        public RangedInfo.LevelUpData rangedInfo { get; private set; } = null;
-
-        public List<StatusEffectInfo.LevelUpData> statusEffectInfos { get; private set; } = null;
-
-        public LevelUpData(MeleeInfo.LevelUpData meleeInfo, RangedInfo.LevelUpData rangedInfo, List<StatusEffectInfo.LevelUpData> statusEffectInfos)
-        {
-            if (meleeInfo != null)
-            {
-                this.meleeInfo = new MeleeInfo.LevelUpData(meleeInfo);
-            }
-
-            if (rangedInfo != null)
-            {
-                this.rangedInfo = new RangedInfo.LevelUpData(rangedInfo);
-            }
-
-            if (statusEffectInfos != null)
-            {
-                this.statusEffectInfos = new List<StatusEffectInfo.LevelUpData>(statusEffectInfos);
-            }
-        }
-
-        public LevelUpData(LevelUpData levelUpData)
-        {
-            _level = levelUpData._level;
-
-            if (levelUpData.meleeInfo != null)
-            {
-                meleeInfo = new MeleeInfo.LevelUpData(levelUpData.meleeInfo);
-            }
-
-            if (levelUpData.rangedInfo != null)
-            {
-                rangedInfo = new RangedInfo.LevelUpData(levelUpData.rangedInfo);
-            }
-
-            if (levelUpData.statusEffectInfos != null)
-            {
-                statusEffectInfos = new List<StatusEffectInfo.LevelUpData>(levelUpData.statusEffectInfos);
-            }
-        }
-    }
-
     public SkillInfo(SkillData skillData)
     {
-        range = skillData.range;
+        range_Origin = skillData.range;
 
-        cooldownTime = skillData.cooldownTime;
+        range_Calculated = skillData.range;
 
-        castingMotionTime = skillData.castingMotionTime;
+        range_Multiple_Origin = 1f;
 
-        skillMotionTime = skillData.skillMotionTime;
+        cooldownTime_Origin = skillData.cooldownTime;
+
+        cooldownTime_Calculated = skillData.cooldownTime;
+
+        cooldownSpeed_Origin = 1f;
+
+        castingMotionTime_Origin = skillData.castingMotionTime;
+
+        castingMotionTime_Calculated = skillData.castingMotionTime;
+
+        castingMotionSpeed_Origin = 1f;
+
+        skillMotionTime_Origin = skillData.skillMotionTime;
+
+        skillMotionTime_Calculated = skillData.skillMotionTime;
+
+        skillMotionSpeed_Origin = 1f;
 
         if (skillData.meleeData != null)
         {
@@ -737,57 +545,143 @@ public sealed class SkillInfo
                 statusEffectInfos[index] = new StatusEffectInfo(statusEffectDatas[index]);
             }
         }
+
+        Initialize();
     }
 
-    public SkillInfo(MeleeInfo meleeInfo, RangedInfo rangedInfo, List<StatusEffectInfo> statusEffectInfos)
+    public SkillInfo(SkillInfo skillInfo)
     {
-        if (meleeInfo != null)
+        range_Origin = skillInfo.range_Origin;
+
+        range_Calculated = skillInfo.range_Calculated;
+
+        range_Multiple_Origin = skillInfo.range_Multiple_Origin;
+
+        cooldownTime_Origin = skillInfo.cooldownTime_Origin;
+
+        cooldownTime_Calculated = skillInfo.cooldownTime_Calculated;
+
+        cooldownSpeed_Origin = skillInfo.cooldownSpeed_Origin;
+
+        castingMotionTime_Origin = skillInfo.castingMotionTime_Origin;
+
+        castingMotionTime_Calculated = skillInfo.castingMotionTime_Calculated;
+
+        castingMotionSpeed_Origin = skillInfo.castingMotionSpeed_Origin;
+
+        skillMotionTime_Origin = skillInfo.skillMotionTime_Origin;
+
+        skillMotionTime_Calculated = skillInfo.skillMotionTime_Calculated;
+
+        skillMotionSpeed_Origin = skillInfo.skillMotionSpeed_Origin;
+
+        if (skillInfo.meleeInfo != null)
         {
-            this.meleeInfo = new MeleeInfo(meleeInfo);
+            meleeInfo = new MeleeInfo(skillInfo.meleeInfo);
         }
 
-        if (rangedInfo != null)
+        if (skillInfo.rangedInfo != null)
         {
-            this.rangedInfo = new RangedInfo(rangedInfo);
+            rangedInfo = new RangedInfo(skillInfo.rangedInfo);
         }
 
-        if (statusEffectInfos != null)
+        if (skillInfo.statusEffectInfos != null)
         {
-            this.statusEffectInfos = new List<StatusEffectInfo>(statusEffectInfos);
-        }
-    }
-
-    public SkillInfo(SkillInfo skillData)
-    {
-        range_Multiple = skillData.range_Multiple;
-
-        cooldownTimer = skillData.cooldownTimer;
-
-        cooldownSpeed = skillData.cooldownSpeed;
-
-        castingSpeed = skillData.castingSpeed;
-
-        motionSpeed = skillData.motionSpeed;
-
-        if (skillData.meleeInfo != null)
-        {
-            meleeInfo = new MeleeInfo(skillData.meleeInfo);
+            statusEffectInfos = new List<StatusEffectInfo>(skillInfo.statusEffectInfos);
         }
 
-        if (skillData.rangedInfo != null)
-        {
-            rangedInfo = new RangedInfo(skillData.rangedInfo);
-        }
-
-        if (skillData.statusEffectInfos != null)
-        {
-            statusEffectInfos = new List<StatusEffectInfo>(skillData.statusEffectInfos);
-        }
+        cooldownTimer = skillInfo.cooldownTimer;
     }
 
     public void Initialize()
     {
         cooldownTimer = 0f;
+    }
+
+    public void SetCoolTimer()
+    {
+        cooldownTimer = cooldownTime_Calculated;
+    }
+
+    public sealed class LevelUpData
+    {
+        public int level
+        {
+            get => level_Origin;
+
+            set
+            {
+                level_Origin = value;
+
+                if (meleeInfo != null)
+                {
+                    meleeInfo.level = level_Origin;
+                }
+
+                if (rangedInfo != null)
+                {
+                    rangedInfo.level = level_Origin;
+                }
+
+                if (statusEffectInfos != null)
+                {
+                    int count = statusEffectInfos.Count;
+
+                    for (int index = 0; index < count; ++index)
+                    {
+                        statusEffectInfos[index].level = level_Origin;
+                    }
+                }
+            }
+        }
+
+        private int level_Origin;
+
+        public MeleeInfo.LevelUpData meleeInfo { get; private set; } = null;
+
+        public RangedInfo.LevelUpData rangedInfo { get; private set; } = null;
+
+        public List<StatusEffectInfo.LevelUpData> statusEffectInfos { get; private set; } = null;
+
+        public LevelUpData(MeleeInfo.LevelUpData meleeInfo, RangedInfo.LevelUpData rangedInfo, List<StatusEffectInfo.LevelUpData> statusEffectInfos)
+        {
+            level_Origin = 1;
+
+            if (meleeInfo != null)
+            {
+                this.meleeInfo = new MeleeInfo.LevelUpData(meleeInfo);
+            }
+
+            if (rangedInfo != null)
+            {
+                this.rangedInfo = new RangedInfo.LevelUpData(rangedInfo);
+            }
+
+            if (statusEffectInfos != null)
+            {
+                this.statusEffectInfos = new List<StatusEffectInfo.LevelUpData>(statusEffectInfos);
+            }
+        }
+
+        public LevelUpData(LevelUpData levelUpData)
+        {
+            level_Origin = levelUpData.level_Origin;
+
+            if (levelUpData.meleeInfo != null)
+            {
+                meleeInfo = new MeleeInfo.LevelUpData(levelUpData.meleeInfo);
+            }
+
+            if (levelUpData.rangedInfo != null)
+            {
+                rangedInfo = new RangedInfo.LevelUpData(levelUpData.rangedInfo);
+            }
+
+            if (levelUpData.statusEffectInfos != null)
+            {
+                statusEffectInfos = new List<StatusEffectInfo.LevelUpData>(levelUpData.statusEffectInfos);
+            }
+        }
     }
 
     public void LevelUp(LevelUpData levelUpData)
@@ -801,8 +695,8 @@ public sealed class SkillInfo
         {
             rangedInfo.LevelUp(levelUpData.rangedInfo);
         }
-
-        List<StatusEffectInfo.LevelUpData> statusEffectInfos = levelUpData.statusEffectInfos;
+        
+        var statusEffectInfos = levelUpData.statusEffectInfos;
 
         if (statusEffectInfos != null)
         {
@@ -813,10 +707,5 @@ public sealed class SkillInfo
                 this.statusEffectInfos[index].LevelUp(statusEffectInfos[index]);
             }
         }
-    }
-
-    public void SetCoolTimer()
-    {
-        cooldownTimer = cooldownTime;
     }
 }

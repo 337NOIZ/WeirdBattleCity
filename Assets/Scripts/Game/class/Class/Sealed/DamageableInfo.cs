@@ -1,168 +1,186 @@
 
 public sealed class DamageableInfo
 {
-    public float healthPoint_Max { get; private set; }
-
-    public float invincibleTime { get; private set; }
-
-    private float _healthPoint_Max_Extra = 0f;
-
-    public float healthPoint_Max_Extra
+    public float healthPoint_Max
     {
-        get { return _healthPoint_Max_Extra; }
+        get => healthPoint_Max_Calculated;
 
-        set
+        private set
         {
-            if (value > 0)
-            {
-                healthPoint_Max -= _healthPoint_Max_Extra;
+            healthPoint_Max_Origin = value;
 
-                _healthPoint_Max_Extra = value;
-
-                healthPoint_Max += _healthPoint_Max_Extra;
-            }
+            healthPoint_Max_Calculated = healthPoint_Max_Origin * healthPoint_Max_Multiple_Origin;
         }
     }
 
-    private float _healthPoint_Max_Multiple = 1f;
+    private float healthPoint_Max_Origin;
+
+    private float healthPoint_Max_Calculated;
 
     public float healthPoint_Max_Multiple
     {
-        get { return _healthPoint_Max_Multiple; }
+        get => healthPoint_Max_Multiple_Origin;
 
         set
         {
-            if (value > 0f)
-            {
-                healthPoint_Max /= _healthPoint_Max_Multiple;
+            healthPoint_Max_Multiple_Origin = value;
 
-                _healthPoint_Max_Multiple = value;
-
-                healthPoint_Max *= _healthPoint_Max_Multiple;
-            }
+            healthPoint_Max_Calculated = healthPoint_Max_Origin * healthPoint_Max_Multiple_Origin;
         }
     }
 
-    private float _invincibleTime_Extra = 1f;
+    private float healthPoint_Max_Multiple_Origin;
 
-    public float invincibleTime_Extra
+    public float invincibleTime
     {
-        get { return _invincibleTime_Extra; }
+        get => invincibleTime_Calculated;
 
-        set
+        private set
         {
-            if (value > 0)
-            {
-                invincibleTime -= _invincibleTime_Extra;
+            invincibleTime_Origin = value;
 
-                _invincibleTime_Extra = value;
-
-                invincibleTime += _invincibleTime_Extra;
-            }
+            invincibleTime_Calculated = invincibleTime_Origin * invincibleTime_Multiple_Origin;
         }
     }
 
-    private float _invincibleTime_Multiple = 1f;
+    private float invincibleTime_Origin;
+
+    private float invincibleTime_Calculated;
 
     public float invincibleTime_Multiple
     {
-        get { return _invincibleTime_Multiple; }
+        get => invincibleTime_Multiple_Origin;
 
         set
         {
-            if (value > 0f)
+            invincibleTime_Multiple_Origin = value;
+
+            invincibleTime_Calculated = invincibleTime_Origin * invincibleTime_Multiple_Origin;
+        }
+    }
+
+    private float invincibleTime_Multiple_Origin;
+
+    public float healthPoint
+    {
+        get => healthPoint_Origin;
+
+        set
+        {
+            if(value > healthPoint_Max_Calculated)
             {
-                invincibleTime /= _invincibleTime_Multiple;
+                healthPoint_Origin = healthPoint_Max_Calculated;
+                
+            }
 
-                _invincibleTime_Multiple = value;
+            if (value < 0f)
+            {
+                healthPoint_Origin = 0f;
 
-                invincibleTime *= _invincibleTime_Multiple;
+            }
+
+            else
+            {
+                healthPoint_Origin = value;
             }
         }
     }
 
-    public float healthPoint { get; set; }
+    private float healthPoint_Origin;
 
     public float invincibleTimer { get; set; }
 
-    public class LevelUpData
-    {
-        private int _level = 1;
-
-        public int level
-        {
-            get { return _level; }
-
-            set
-            {
-                if (value > 0 && value != _level)
-                {
-                    healthPoint_Max_Extra /= _level;
-
-                    _level = value;
-
-                    healthPoint_Max_Extra *= _level;
-                }
-            }
-        }
-
-        public float healthPoint_Max_Extra { get; private set; }
-
-        public LevelUpData(float healthPoint_Max_Extra)
-        {
-            this.healthPoint_Max_Extra = healthPoint_Max_Extra;
-        }
-
-        public LevelUpData(LevelUpData levelUpData)
-        {
-            _level = levelUpData._level;
-
-            healthPoint_Max_Extra = levelUpData.healthPoint_Max_Extra;
-        }
-    }
-
     public DamageableInfo(DamageableData damageableData)
     {
-        healthPoint_Max = damageableData.healthPoint_Max;
+        healthPoint_Max_Origin = damageableData.healthPoint_Max;
 
-        invincibleTime = damageableData.invincibleTime;
+        healthPoint_Max_Calculated = damageableData.healthPoint_Max;
+
+        healthPoint_Max_Multiple_Origin = 1f;
+
+        invincibleTime_Origin = damageableData.invincibleTime;
+
+        invincibleTime_Calculated = damageableData.invincibleTime;
+
+        invincibleTime_Multiple_Origin = 1f;
 
         Initialize();
     }
 
     public DamageableInfo(DamageableInfo damageableInfo)
     {
-        healthPoint_Max = damageableInfo.healthPoint_Max;
+        healthPoint_Max_Origin = damageableInfo.healthPoint_Max_Origin;
 
-        invincibleTime = damageableInfo.invincibleTime;
+        healthPoint_Max_Calculated = damageableInfo.healthPoint_Max_Calculated;
 
-        healthPoint_Max_Extra = damageableInfo._healthPoint_Max_Extra;
+        healthPoint_Max_Multiple_Origin = damageableInfo.healthPoint_Max_Multiple_Origin;
 
-        healthPoint_Max_Multiple = damageableInfo._healthPoint_Max_Multiple;
+        invincibleTime_Origin = damageableInfo.invincibleTime_Origin;
 
-        invincibleTime_Extra = damageableInfo._invincibleTime_Extra;
+        invincibleTime_Calculated = damageableInfo.invincibleTime_Calculated;
 
-        invincibleTime_Multiple = damageableInfo._invincibleTime_Multiple;
+        invincibleTime_Multiple_Origin = damageableInfo.invincibleTime_Multiple_Origin;
 
-        healthPoint = damageableInfo.healthPoint;
+        healthPoint_Origin = damageableInfo.healthPoint_Origin;
 
         invincibleTimer = damageableInfo.invincibleTimer;
     }
 
     public void Initialize()
     {
-        healthPoint = healthPoint_Max;
+        healthPoint_Origin = healthPoint_Max_Calculated;
 
         invincibleTimer = 0f;
     }
 
-    public void LevelUp(LevelUpData levelUpData)
-    {
-        healthPoint_Max_Multiple += levelUpData.healthPoint_Max_Extra;
-    }
-
     public void SetInvincibleTimer()
     {
-        invincibleTimer = invincibleTime;
+        invincibleTimer = invincibleTime_Calculated;
+    }
+
+    public class LevelUpData
+    {
+        public int level
+        {
+            get => level_Origin;
+
+            set
+            {
+                level_Origin = value;
+
+                healthPoint_Max = healthPoint_Max_Origin * level_Origin;
+            }
+        }
+
+        private int level_Origin;
+
+        public float healthPoint_Max { get; private set; }
+
+        private float healthPoint_Max_Origin;
+
+        public LevelUpData(float healthPoint_Max)
+        {
+            level_Origin = 1;
+
+            this.healthPoint_Max = healthPoint_Max;
+
+            healthPoint_Max_Origin = healthPoint_Max;
+        }
+
+        public LevelUpData(LevelUpData levelUpData)
+        {
+            level_Origin = levelUpData.level_Origin;
+
+            healthPoint_Max = levelUpData.healthPoint_Max;
+
+            healthPoint_Max_Origin = levelUpData.healthPoint_Max_Origin;
+        }
+    }
+
+    public void LevelUp(LevelUpData levelUpData)
+    {
+        healthPoint_Max_Origin += levelUpData.healthPoint_Max;
+
+        healthPoint_Origin += levelUpData.healthPoint_Max;
     }
 }

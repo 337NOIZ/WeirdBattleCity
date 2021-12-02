@@ -1,15 +1,13 @@
 
 using System.Collections;
 
-using System.Collections.Generic;
-
 using UnityEngine;
 
 public abstract class Projectile : MonoBehaviour
 {
     public virtual ProjectileCode projectileCode { get; }
 
-    private new Rigidbody rigidbody;
+    protected new Rigidbody rigidbody;
 
     private TrailRenderer trailRenderer;
 
@@ -24,22 +22,24 @@ public abstract class Projectile : MonoBehaviour
         trailRenderer = GetComponent<TrailRenderer>();
     }
 
-    public void Launch(Character shooter, float force, float lifeTime, float damage, List<StatusEffectInfo> statusEffectInfos)
+    public void Launch(Character attacker, ProjectileInfo projectileInfo)
     {
-        lauchRoutine = LauchRoutine(shooter, force, lifeTime, damage, statusEffectInfos);
+        lauchRoutine = LauchRoutine(attacker, projectileInfo);
 
         StartCoroutine(lauchRoutine);
     }
 
     private IEnumerator lauchRoutine = null;
 
-    private IEnumerator LauchRoutine(Character attacker, float force, float lifeTimer, float damage, List<StatusEffectInfo> statusEffectInfos)
+    protected virtual IEnumerator LauchRoutine(Character attacker, ProjectileInfo projectileInfo)
     {
-        var hostileLayer = attacker.hostileLayer;
+        var hostileLayer = attacker.attackableLayer;
 
         yield return null;
 
-        rigidbody.velocity = transform.forward * force;
+        rigidbody.velocity = transform.forward * projectileInfo.force;
+
+        var lifeTimer = projectileInfo.lifeTime;
 
         while (lifeTimer > 0f)
         {
@@ -49,11 +49,11 @@ public abstract class Projectile : MonoBehaviour
 
             if (Physics.Linecast(rigidbody_Position_Previous, rigidbody.position, out raycastHit, hostileLayer) == true)
             {
-                Character victim = raycastHit.collider.GetComponent<Character>();
+                Character victim = raycastHit.collider.GetComponentInParent<Character>();
 
                 if (victim != null)
                 {
-                    victim.TakeAttack(attacker, damage, statusEffectInfos);
+                    victim.TakeAttack(attacker, projectileInfo.damage, projectileInfo.statusEffectInfos);
                 }
 
                 break;
@@ -65,20 +65,20 @@ public abstract class Projectile : MonoBehaviour
         Disable();
     }
 
-    private void Disable()
+    protected void Disable()
     {
         if (lauchRoutine != null)
         {
             StopCoroutine(lauchRoutine);
         }
 
-        transform.position = Vector3.zero;
-
         transform.rotation = Quaternion.identity;
 
         rigidbody.Sleep();
 
         trailRenderer.Clear();
+
+        gameObject.SetActive(false);
 
         ObjectPool.instance.Push(this);
     }

@@ -1,7 +1,7 @@
 
 public sealed class GarbageBag : Neutrality
 {
-    public override CharacterCode characterCode { get { return CharacterCode.garbageBag; } }
+    public override CharacterCode characterCode => CharacterCode.garbageBag;
 
     protected override void Dead()
     {

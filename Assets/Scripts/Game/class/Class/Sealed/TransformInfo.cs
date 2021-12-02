@@ -3,11 +3,16 @@ using UnityEngine;
 
 public sealed class TransformInfo
 {
-    public Vector3 position { get; set; } = Vector3.zero;
+    public Vector3 position { get; set; }
 
-    public Vector3 eulerAngles { get; set; } = Vector3.zero;
+    public Vector3 eulerAngles { get; set; }
 
-    public TransformInfo() { }
+    public TransformInfo()
+    {
+        position = Vector3.zero;
+
+        eulerAngles = Vector3.zero;
+    }
 
     public TransformInfo(TransformInfo transformInfo)
     {

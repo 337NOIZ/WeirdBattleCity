@@ -7,22 +7,15 @@ using UnityEngine.AI;
 
 public abstract class Enemy : Character
 {
-    public override CharacterType characterType { get { return CharacterType.enemy; } }
+    public override CharacterType characterType => CharacterType.enemy;
+
+    [SerializeField] private Canvas _canvas = null;
 
     public NavMeshAgent navMeshAgent { get; private set; }
 
-    protected Transform destinationTarget { get; private set; }
+    protected Character skillTarget { get; private set; } = null;
 
-    public override void Initialize()
-    {
-        base.Initialize();
-
-        characterData = GameMaster.instance.gameData.levelData.characterDatas[characterCode];
-
-        navMeshAgent = GetComponent<NavMeshAgent>();
-
-        navMeshAgent.updateRotation = false;
-    }
+    protected Transform destination { get; private set; } = null;
 
     private void FixedUpdate()
     {
@@ -31,33 +24,42 @@ public abstract class Enemy : Character
         rigidbody.angularVelocity = Vector3.zero;
     }
 
-    public override void Initialize(int level)
+    public override void Initialize()
     {
-        if (characterInfo != null && characterInfo.level == level)
+        base.Initialize();
+
+        _canvas.worldCamera = Camera.main;
+
+        navMeshAgent = GetComponent<NavMeshAgent>();
+
+        navMeshAgent.updateRotation = false;
+
+        characterData = GameMaster.instance.gameData.levelData.characterDatas[characterCode];
+    }
+
+    public override void Initialize(int characterLevel)
+    {
+        if (characterInfo == null)
         {
-            characterInfo.Initialize();
+            characterInfo = new CharacterInfo(characterData, null);
+
+            damageableInfo = characterInfo.damageableInfo;
+
+            experienceInfo = characterInfo.experienceInfo;
+
+            skillInfos = characterInfo.skillInfos;
+
+            movementInfo = characterInfo.movementInfo;
         }
 
         else
         {
-            characterInfo = new CharacterInfo(GameMaster.instance.gameData.levelData.characterDatas[characterCode], null);
-
-            if (level > 1)
-            {
-                LevelUp(level - 1);
-            }
-
-            if (characterInfo.skillInfos != null)
-            {
-                skillCount = characterInfo.skillInfos.Count;
-            }
-
-            Caching();
+            characterInfo.Initialize();
         }
 
-        animator.SetFloat("movingMotionSpeed", characterInfo.movementInfo.movingSpeed_Multiply);
+        _healthPointBar.fillAmount = 1f;
 
-        RefreshHealthPointBar();
+        LevelUp(characterLevel - characterInfo.characterLevel);
 
         StartCoroutine(Thinking());
     }
@@ -66,12 +68,12 @@ public abstract class Enemy : Character
     {
         base.Caching();
 
-        navMeshAgent.speed = characterData.movementData.movingSpeed_Walk;
+        animator.SetFloat("movingMotionSpeed", characterInfo.movementInfo.movingSpeed_Multiply);
+
+        navMeshAgent.speed = characterInfo.movementInfo.movingSpeed_Walk;
     }
 
     protected override bool Invincible() { return false; }
-
-    public override void GainExperiencePoint(float experiencePoint) { }
 
     protected override IEnumerator SkillCooldown(int skillNumber)
     {
@@ -79,89 +81,157 @@ public abstract class Enemy : Character
 
         if (skillNumber < this.skillNumber)
         {
-            if (targetingRoutine != null && skillRoutine == null)
+            if (orderSkillRoutine != null && skillMotionRoutine == null)
             {
-                StopCoroutine(targetingRoutine);
+                StopCoroutine(orderSkillRoutine);
 
-                targetingRoutine = null;
+                orderSkillRoutine = null;
             }
         }
     }
 
     protected override void Dead()
     {
-        if (attacker != null && characterInfo.experienceInfo != null)
-        {
-            attacker.GainExperiencePoint(characterInfo.experienceInfo.experiencePoint_Gain);
-        }
-
         StopAllCoroutines();
+
+        StartCoroutine(_Dead());
+    }
+
+    private IEnumerator _Dead()
+    {
+        --EnemySpawner.instance.spawnCount;
+
+        _ragDoll.AlignTransforms(_model);
+
+        _model.gameObject.SetActive(false);
+
+        _ragDoll.gameObject.SetActive(true);
 
         animator.Rebind();
 
-        --EnemySpawner.instance.spawnCount;
+        navMeshAgent.isStopped = true;
+
+        if (attacker != null)
+        {
+            if (experienceInfo != null)
+            {
+                attacker.GetExperiencePoint(experienceInfo.experiencePoint_Drop);
+            }
+
+            attacker.GetMoney(characterInfo.moneyAmount);
+        }
+
+        yield return RefreshHealthPointBar();
+
+        _canvas.gameObject.SetActive(false);
+
+        yield return new WaitForSeconds(5f);
+
+        gameObject.SetActive(false);
+
+        _ragDoll.gameObject.SetActive(false);
+
+        _model.gameObject.SetActive(true);
+
+        _canvas.gameObject.SetActive(true);
 
         ObjectPool.instance.Push(this);
     }
 
     protected virtual IEnumerator Thinking() { yield return null; }
 
-    protected IEnumerator RepeatSetDestination(Transform destinationTarget)
+    protected void Tracking()
     {
-        this.destinationTarget = destinationTarget;
+        if (_tracking == null)
+        {
+            _tracking = _Tracking();
+        }
 
+        StartCoroutine(_tracking);
+    }
+
+    private IEnumerator _tracking = null;
+
+    private IEnumerator _Tracking()
+    {
         while (true)
         {
-            navMeshAgent.SetDestination(destinationTarget.position);
-
-            if (navMeshAgent.desiredVelocity != Vector3.zero)
+            if (destination != null)
             {
-                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(navMeshAgent.desiredVelocity), Time.deltaTime * 2f);
-            }
+                Debug.DrawLine(transform.position, skillTarget.aimTarget.position, Color.red);
 
-            aim.position = destinationTarget.position;
+                navMeshAgent.SetDestination(destination.position);
+
+                if (navMeshAgent.desiredVelocity != Vector3.zero)
+                {
+                    transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(navMeshAgent.desiredVelocity), Time.deltaTime * 2f);
+                }
+
+                _aim.position = destination.position;
+            }
 
             yield return null;
         }
     }
 
-    protected IEnumerator targetingRoutine = null;
+    protected void SetSkillTarget()
+    {
+        skillTarget = Player.instance;
 
-    protected IEnumerator TargetingRoutine(int skillNumber)
+        destination = skillTarget.aimTarget;
+    }
+
+    protected IEnumerator orderSkillRoutine = null;
+
+    protected IEnumerator OrderSkillRoutine(int skillNumber)
     {
         var range = characterInfo.skillInfos[skillNumber].range;
 
-        if (Vector3.Distance(transform.position, destinationTarget.position) > range)
+        RaycastHit raycastHit;
+
+        if (Physics.Linecast(transform.position, skillTarget.aimTarget.position, out raycastHit, attackableLayer) == true)
         {
-            animator.SetBool("isMoving", true);
-
-            do
+            if (raycastHit.collider.gameObject != skillTarget.gameObject || raycastHit.distance > range)
             {
-                yield return null;
-            }
-            while (Vector3.Distance(transform.position, destinationTarget.position) > range);
+                animator.SetBool("isMoving", true);
 
-            animator.SetBool("isMoving", false);
+                while (true)
+                {
+                    yield return null;
+
+                    if (Physics.Linecast(transform.position, skillTarget.aimTarget.position, out raycastHit, attackableLayer) == true)
+                    {
+                        if (raycastHit.collider.gameObject == skillTarget.gameObject && raycastHit.distance <= range)
+                        {
+                            break;
+                        }
+                    }
+                }
+
+                animator.SetBool("isMoving", false);
+            }
         }
 
-        skillRoutine = SkillRoutine(skillNumber);
+        skillMotionRoutine = SkillMotionRoutine(skillNumber);
 
-        yield return skillRoutine;
+        yield return skillMotionRoutine;
 
-        targetingRoutine = null;
+        orderSkillRoutine = null;
     }
 
-    protected IEnumerator skillRoutine = null;
+    protected IEnumerator skillMotionRoutine = null;
 
-    protected IEnumerator SkillRoutine(int skillNumber)
+    protected IEnumerator SkillMotionRoutine(int skillNumber)
     {
         animator.SetFloat("skillMotionSpeed", skillMotionSpeeds[skillNumber]);
 
         animator.SetBool("isUsingSkill", true);
 
-        animator.SetTrigger(skillMotionNames[skillNumber]);
+        animator.SetInteger("skillNumber", skillNumber);
 
-        animationTools.SetEventAction(Skill);
+        animator.SetTrigger("skillMotion");
+
+        animationTools.SetEventAction(SkillEffect);
 
         while (animator.GetBool("isUsingSkill") == true)
         {
@@ -172,8 +242,8 @@ public abstract class Enemy : Character
 
         StartCoroutine(SkillCooldown(skillNumber));
 
-        skillRoutine = null;
+        skillMotionRoutine = null;
     }
 
-    protected virtual void Skill() { }
+    protected virtual void SkillEffect() { }
 }

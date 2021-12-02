@@ -1,7 +1,7 @@
 
 public sealed class DroppedMedikit : DroppedItem
 {
-    public override ItemType itemType { get { return ItemType.consumable; } }
+    public override ItemType itemType => ItemType.consumable;
 
-    public override ItemCode itemCode { get { return ItemCode.medikit; } }
+    public override ItemCode itemCode => ItemCode.medikit;
 }

@@ -7,49 +7,41 @@ using UnityEngine.UI;
 
 public class ImageFillAmountController : MonoBehaviour
 {
-    [Space]
+    [SerializeField] private Image _image = null;
 
-    [SerializeField] private Image image = null;
-
-    [Space]
-
-    [SerializeField, Range(0f, 1f)] private float _fillAmount = 0f;
+    private float _fillAmount;
 
     public float fillAmount
     {
-        get
-        {
-            return image.fillAmount;
-        }
-
         set
         {
             _fillAmount = value;
 
-            image.fillAmount = _fillAmount;
+            _image.fillAmount = _fillAmount;
         }
     }
 
-    private void Awake()
+    public IEnumerator FillByLerp(float targetFillAmount, float fillSpeed)
     {
-        fillAmount = _fillAmount;
-    }
-
-    public void Fill(float targetFillAmount, float fillSpeed)
-    {
-        if(fillRoutine != null)
+        if(_fillByLerp != null)
         {
-            StopCoroutine(fillRoutine);
+            StopCoroutine(_fillByLerp);
+
+            _fillByLerp = null;
+
+            yield return null;
         }
 
-        fillRoutine = FillRoutine(targetFillAmount, fillSpeed);
+        _fillByLerp = _FillByLerp(targetFillAmount, fillSpeed);
 
-        StartCoroutine(fillRoutine);
+        StartCoroutine(_fillByLerp);
+
+        while (_fillByLerp != null) yield return null;
     }
 
-    public IEnumerator fillRoutine = null;
+    private IEnumerator _fillByLerp = null;
 
-    public IEnumerator FillRoutine(float targetFillAmount, float fillSpeed)
+    private IEnumerator _FillByLerp(float targetFillAmount, float fillSpeed)
     {
         if(targetFillAmount > 1f)
         {
@@ -65,22 +57,34 @@ public class ImageFillAmountController : MonoBehaviour
         {
             float time = 0f;
 
-            while (_fillAmount != targetFillAmount)
+            IEnumerator Fill()
             {
                 time += Time.deltaTime;
 
                 fillAmount = Mathf.Lerp(_fillAmount, targetFillAmount, time * fillSpeed);
 
-                Debug.Log(_fillAmount);
-
-                //fillAmount = Mathf.SmoothStep(_fillAmount, targetFillAmount, (Time.time - time) * fillSpeed);
-
                 yield return null;
+            }
+
+            float targetFillAmount_Adjusted = targetFillAmount;
+
+            if (_fillAmount < targetFillAmount)
+            {
+                targetFillAmount_Adjusted -= 0.001f;
+
+                while (_fillAmount < targetFillAmount_Adjusted) yield return Fill();
+            }
+
+            else if(_fillAmount > targetFillAmount)
+            {
+                targetFillAmount_Adjusted += 0.001f;
+
+                while (_fillAmount > targetFillAmount_Adjusted) yield return Fill();
             }
         }
 
         fillAmount = targetFillAmount;
 
-        fillRoutine = null;
+        _fillByLerp = null;
     }
 }

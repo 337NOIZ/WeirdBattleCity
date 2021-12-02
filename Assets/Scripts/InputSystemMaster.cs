@@ -9,46 +9,51 @@ public sealed class InputSystemMaster : MonoBehaviour
 
     public void OnMove(InputValue inputValue)
     {
-        Player.instance.playerMovement.Move(inputValue.Get<Vector2>());
+        Player.instance.Move(inputValue.Get<Vector2>());
     }
+
     public void OnLook(InputValue inputValue)
     {
-        Player.instance.playerMovement.Look(inputValue.Get<Vector2>());
+        Player.instance.Look(inputValue.Get<Vector2>());
     }
+
     public void OnRun(InputValue inputValue)
     {
-        Player.instance.playerMovement.Run();
+        Player.instance.Run();
     }
+
     public void OnJump(InputValue inputValue)
     {
-        Player.instance.playerMovement.Jump();
+        Player.instance.Jump();
     }
-    public void OnConsumGrenade(InputValue inputValue)
-    {
-        Player.instance.playerInventory.ConsumGrenade();
-    }
-    public void OnConsumMedikit(InputValue inputValue)
-    {
-        Player.instance.playerInventory.ConsumMedikit();
-    }
-    public void OnSelectWeapon(InputValue inputValue)
-    {
 
-    }
-    public void OnSwitchWeaponNext(InputValue inputValue)
+    public void OnSelectWeaponNext(InputValue inputValue)
     {
-        Player.instance.playerInventory.SwitchWeaponNext();
+        Player.instance.SelectWeaponNext();
     }
-    public void OnSwitchWeaponPrevious(InputValue inputValue)
+
+    public void OnSelectWeaponPrevious(InputValue inputValue)
     {
-        Player.instance.playerInventory.SwitchWeaponPrevious();
+        Player.instance.SelectWeaponPrevious();
     }
-    public void OnAttack(InputValue inputValue)
+
+    public void OnSwitchConsumableNext(InputValue inputValue)
     {
-        Player.instance.playerInventory.Attack(inputValue.isPressed);
+        Player.instance.SwitchConsumableNext();
     }
-    public void OnReload(InputValue inputValue)
+
+    public void OnSwitchConsumablePrevious(InputValue inputValue)
     {
-        Player.instance.playerInventory.Reload();
+        Player.instance.SwitchConsumablePrevious();
+    }
+
+    public void OnSwitchWeapon(InputValue inputValue)
+    {
+        Player.instance.SwitchWeapon();
+    }
+
+    public void OnReload()
+    {
+        Player.instance.ReloadWeapon();
     }
 }

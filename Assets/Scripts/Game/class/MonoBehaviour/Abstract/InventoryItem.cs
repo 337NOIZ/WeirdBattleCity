@@ -5,11 +5,19 @@ using System.Collections.Generic;
 
 using UnityEngine;
 
+using UnityEngine.Animations.Rigging;
+
 public abstract class InventoryItem : Item
 {
     [Space]
 
     [SerializeField] protected GameObject model = null;
+
+    [Space]
+
+    [SerializeField] protected Transform muzzle = null;
+
+    protected MultiAimConstraint multiAimConstraint;
 
     protected Player player;
 
@@ -29,10 +37,10 @@ public abstract class InventoryItem : Item
 
     protected List<float> skillMotionSpeeds;
 
-    protected List<string> skillMotionNames;
-
     public override void Initialize()
     {
+        multiAimConstraint = GetComponent<MultiAimConstraint>();
+
         player = Player.instance;
     }
 
@@ -40,40 +48,46 @@ public abstract class InventoryItem : Item
     {
         this.itemInfo = itemInfo;
 
-        if (itemInfo.skillInfos != null)
-        {
-            skillCount = itemInfo.skillInfos.Count;
-        }
+        skillInfos = itemInfo.skillInfos;
     }
 
     protected virtual void Caching()
     {
-        drawingMotionSpeed = drawingMotionTime / itemInfo.drawingMotionTime;
+        if (itemInfo.drawingMotionTime > 0f)
+        {
+            drawingMotionSpeed = drawingMotionTime / itemInfo.drawingMotionTime;
+        }
 
-        reloadingMotionSpeed = reloadingMotionTime / itemInfo.reloadingMotionTime;
+        if (itemInfo.reloadingMotionTime > 0f)
+        {
+            reloadingMotionSpeed = reloadingMotionTime / itemInfo.reloadingMotionTime;
+        }
+
+        if (skillInfos != null)
+        {
+            skillCount = skillInfos.Count;
+        }
 
         for (int index = 0; index < skillCount; ++index)
         {
-            skillMotionSpeeds[index] = skillMotionTimes[index] / itemInfo.skillInfos[index].skillMotionTime;
+            skillMotionSpeeds[index] = skillMotionTimes[index] / skillInfos[index].skillMotionTime;
         }
     }
 
-    protected IEnumerator cooldown = null;
-
-    protected IEnumerator Cooldown(int skillNumber)
+    protected IEnumerator SkillCooldown(int skillNumber)
     {
-        itemInfo.skillInfos[skillNumber].SetCoolTimer();
+        var skillInfo = itemInfo.skillInfos[skillNumber];
 
-        while (itemInfo.skillInfos[skillNumber].cooldownTimer > 0f)
+        skillInfo.SetCoolTimer();
+
+        while (skillInfo.cooldownTimer > 0f)
         {
             yield return null;
 
-            itemInfo.skillInfos[skillNumber].cooldownTimer -= Time.deltaTime;
+            skillInfo.cooldownTimer -= Time.deltaTime;
         }
 
-        itemInfo.skillInfos[skillNumber].cooldownTimer = 0f;
-
-        cooldown = null;
+        skillInfo.cooldownTimer = 0f;
     }
 
     public virtual IEnumerator Draw() { yield return null; }
@@ -90,7 +104,30 @@ public abstract class InventoryItem : Item
 
     public virtual IEnumerator StopSkill(bool keepAiming) { yield return null; }
 
-    public virtual IEnumerator Reload() { yield return null; }
+    protected void LaunchProjectile(int skillNumber)
+    {
+        Projectile projectile;
 
-    public virtual void StopReload() { }
+        var rangedInfo = itemInfo.skillInfos[skillNumber].rangedInfo;
+
+        int count = Mathf.FloorToInt(rangedInfo.division);
+
+        for (int index = 0; index < count; ++index)
+        {
+            projectile = ObjectPool.instance.Pop(rangedInfo.projectileCode);
+
+            projectile.transform.position = muzzle.position;
+
+            projectile.transform.rotation = muzzle.rotation;
+
+            if (rangedInfo.diffusion > 0f)
+            {
+                projectile.transform.rotation *= Quaternion.Euler(Random.insideUnitSphere * rangedInfo.diffusion);
+            }
+
+            projectile.Launch(player, rangedInfo.projectileInfo);
+        }
+    }
+
+    public virtual IEnumerator Reload() { yield return null; }
 }

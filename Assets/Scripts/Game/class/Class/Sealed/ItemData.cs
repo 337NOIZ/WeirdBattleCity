@@ -7,19 +7,19 @@ public sealed class ItemData
 
     public ItemCode itemCode { get; private set; }
 
-    public int stackCount_Max { get; private set; }
+    public float stackCount_Max { get; private set; }
 
-    public int ammoCount_Max { get; private set; }
+    public float ammoCount_Max { get; private set; }
 
-    public float drawingTime { get; private set; }
+    public float drawingMotionTime { get; private set; }
 
-    public float reloadingTime { get; private set; }
+    public float reloadingMotionTime { get; private set; }
 
-    public bool autoAttack { get; private set; }
+    public bool autoSkill { get; private set; }
 
     public List<SkillData> skillDatas { get; private set; } = null;
 
-    public ItemData(ItemType itemType, ItemCode itemCode, int stackCount_Max, int ammoCount_Max, float drawingTime, float reloadingTime, bool autoAttack, List<SkillData> skillDatas)
+    public ItemData(ItemType itemType, ItemCode itemCode, float stackCount_Max, float ammoCount_Max, float drawingMotionTime, float reloadingMotionTime, bool autoSkill, List<SkillData> skillDatas)
     {
         this.itemType = itemType;
 
@@ -29,11 +29,11 @@ public sealed class ItemData
 
         this.ammoCount_Max = ammoCount_Max;
 
-        this.drawingTime = drawingTime;
+        this.drawingMotionTime = drawingMotionTime;
 
-        this.reloadingTime = reloadingTime;
+        this.reloadingMotionTime = reloadingMotionTime;
 
-        this.autoAttack = autoAttack;
+        this.autoSkill = autoSkill;
 
         if(skillDatas != null)
         {
@@ -51,11 +51,11 @@ public sealed class ItemData
 
         ammoCount_Max = itemData.ammoCount_Max;
 
-        drawingTime = itemData.drawingTime;
+        drawingMotionTime = itemData.drawingMotionTime;
 
-        reloadingTime = itemData.reloadingTime;
+        reloadingMotionTime = itemData.reloadingMotionTime;
 
-        autoAttack = itemData.autoAttack;
+        autoSkill = itemData.autoSkill;
 
         if (itemData.skillDatas != null)
         {

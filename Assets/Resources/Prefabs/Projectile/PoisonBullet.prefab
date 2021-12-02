@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 9172466206967894867}
   - component: {fileID: 2704848954425907105}
   - component: {fileID: 3558933046284750296}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: PoisonBullet
   m_TagString: Untagged
   m_Icon: {fileID: 0}

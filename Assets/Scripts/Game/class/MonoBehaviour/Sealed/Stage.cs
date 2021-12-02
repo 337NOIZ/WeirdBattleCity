@@ -46,19 +46,42 @@ public sealed class Stage : MonoBehaviour
             {
                 var waveInfo = roundInfo.waveInfos[roundInfo.waveNumber];
 
-                if (waveInfo.enemySpawnSpots != null)
+
+                if (waveInfo.enemySpawnData != null)
                 {
-                    foreach (KeyValuePair<int, CharacterCode> enemySpawnSpots in waveInfo.enemySpawnSpots)
+                    var spawnEnemyInfos = waveInfo.enemySpawnData.spawnEnemyInfos;
+
+                    int count_0 = spawnEnemyInfos.Count;
+
+                    for(int index_0 = 0; index_0 < count_0; ++index_0)
                     {
-                        EnemySpawner.instance.Spawn(enemySpawnSpots.Value, enemySpawnSpots.Key, stageInfo.roundNumber + 1);
+                        var spotNumbers = spawnEnemyInfos[index_0].spotNumbers;
+
+                        int count_1 = spotNumbers.Count;
+
+                        for (int index_1 = 0; index_1 < count_1; ++index_1)
+                        {
+                            EnemySpawner.instance.Spawn(spawnEnemyInfos[index_0].characterCode, spawnEnemyInfos[index_0].characterLevel, spotNumbers[index_1]);
+                        }
                     }
                 }
 
-                if (waveInfo.droppedItemSpawnSpots != null)
+                if (waveInfo.droppedItemSpawnData != null)
                 {
-                    foreach (KeyValuePair<int, ItemCode> enemySpawnSpots in waveInfo.droppedItemSpawnSpots)
+                    var spawnDroppedItemInfos = waveInfo.droppedItemSpawnData.spawnDroppedItemInfos;
+
+                    int count_0 = spawnDroppedItemInfos.Count;
+
+                    for (int index_0 = 0; index_0 < count_0; ++index_0)
                     {
-                        DroppedItemSpawner.instance.Spawn(enemySpawnSpots.Value, enemySpawnSpots.Key, 1);
+                        var spotNumbers = spawnDroppedItemInfos[index_0].spotNumbers;
+
+                        int count_1 = spotNumbers.Count;
+
+                        for (int index_1 = 0; index_1 < count_1; ++index_1)
+                        {
+                            DroppedItemSpawner.instance.Spawn(spawnDroppedItemInfos[index_0].itemCode, spawnDroppedItemInfos[index_0].itemLevel, spotNumbers[index_1]);
+                        }
                     }
                 }
 
@@ -76,18 +99,26 @@ public sealed class Stage : MonoBehaviour
                 yield return null;
             }
 
-            turnRoundButton.gameObject.SetActive(true);
-
-            stageTimer.SetTimer("NEXT ROUND", roundInfo.roundTimer);
-
-            while (roundInfo.roundTimer > 0f)
+            if(stageInfo.roundNumber + 1 < roundCount)
             {
-                roundInfo.roundTimer = stageTimer.timer;
+                turnRoundButton.gameObject.SetActive(true);
 
-                yield return null;
+                stageTimer.SetTimer("NEXT ROUND", roundInfo.roundTimer);
+
+                while (roundInfo.roundTimer > 0f)
+                {
+                    roundInfo.roundTimer = stageTimer.timer;
+
+                    yield return null;
+                }
+
+                turnRoundButton.gameObject.SetActive(false);
             }
-
-            turnRoundButton.gameObject.SetActive(false);
+            
+            else
+            {
+                stageTimer.gameObject.SetActive(false);
+            }
 
             ++stageInfo.roundNumber;
 
