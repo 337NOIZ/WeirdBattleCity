@@ -9,12 +9,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 321748647817146079}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Car_Bus_School
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 29
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &321748647817146079
 Transform:
@@ -40,12 +40,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1969362229350403643}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 29
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &1969362229350403643
 Transform:
@@ -79,7 +79,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 29
+  m_StaticEditorFlags: 15
   m_IsActive: 1
 --- !u!4 &5566802679253556423
 Transform:

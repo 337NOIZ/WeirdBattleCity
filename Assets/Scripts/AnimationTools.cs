@@ -5,7 +5,9 @@ using UnityEngine.Events;
 
 public sealed class AnimationTools : MonoBehaviour
 {
-    public static float FrameCountToSeconds(int frameCount) { return 1f / 60 * frameCount; }
+    public static readonly float secondsPerFrame = 0.01666667f;
+
+    public static float FrameCountToSeconds(int frameCount) { return secondsPerFrame * frameCount; }
 
     public Animator animator { get; private set; }
 
@@ -24,6 +26,11 @@ public sealed class AnimationTools : MonoBehaviour
     public void SetParameterFalse(string name)
     {
         animator.SetBool(name, false);
+    }
+
+    public void SetTrigger(string name)
+    {
+        animator.SetTrigger(name);
     }
 
     public void SetEventAction(UnityAction action)

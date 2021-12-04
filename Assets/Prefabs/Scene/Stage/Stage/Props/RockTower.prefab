@@ -106,12 +106,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1169162356571537713}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 29
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &1169162356571537713
 Transform:
@@ -137,12 +137,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6895918139828644980}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: RockTower
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 29
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &6895918139828644980
 Transform:

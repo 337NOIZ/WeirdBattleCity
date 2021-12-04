@@ -33,7 +33,7 @@ public abstract class Projectile : MonoBehaviour
 
     protected virtual IEnumerator LauchRoutine(Character attacker, ProjectileInfo projectileInfo)
     {
-        var hostileLayer = attacker.attackableLayer;
+        var hostileLayer = attacker.attackable;
 
         yield return null;
 

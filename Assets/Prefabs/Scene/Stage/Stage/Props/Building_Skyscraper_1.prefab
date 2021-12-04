@@ -9,12 +9,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2172633507281764168}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Building_Skyscraper_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 15
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &2172633507281764168
 Transform:
@@ -145,7 +145,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 15
+  m_StaticEditorFlags: 21
   m_IsActive: 1
 --- !u!4 &867162127103226389
 Transform:
@@ -220,12 +220,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1836146013399638844}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 15
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &1836146013399638844
 Transform:

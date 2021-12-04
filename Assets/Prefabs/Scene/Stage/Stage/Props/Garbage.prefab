@@ -11,12 +11,12 @@ GameObject:
   - component: {fileID: 9036475735806773743}
   - component: {fileID: 2087733451888095420}
   - component: {fileID: 6903649527169267953}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Bottle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 29
+  m_StaticEditorFlags: 21
   m_IsActive: 1
 --- !u!4 &9036475735806773743
 Transform:
@@ -93,12 +93,12 @@ GameObject:
   - component: {fileID: 2026521158845128646}
   - component: {fileID: 5626756899685581980}
   - component: {fileID: 2497265133406563353}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Fish
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 29
+  m_StaticEditorFlags: 21
   m_IsActive: 1
 --- !u!4 &2026521158845128646
 Transform:
@@ -175,12 +175,12 @@ GameObject:
   - component: {fileID: 5182852835350169593}
   - component: {fileID: 3209228148663540310}
   - component: {fileID: 2185454600305637508}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Watermelon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 29
+  m_StaticEditorFlags: 21
   m_IsActive: 1
 --- !u!4 &5182852835350169593
 Transform:
@@ -260,12 +260,12 @@ GameObject:
   - component: {fileID: 4449602113714367668}
   - component: {fileID: 3873761967037648346}
   - component: {fileID: 7550968050257717955}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Can01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 29
+  m_StaticEditorFlags: 21
   m_IsActive: 1
 --- !u!4 &4449602113714367668
 Transform:
@@ -344,12 +344,12 @@ GameObject:
   - component: {fileID: 1162095958759372907}
   - component: {fileID: 8377849601246815957}
   - component: {fileID: 4040501598111161462}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Cylinder005
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 29
+  m_StaticEditorFlags: 21
   m_IsActive: 1
 --- !u!4 &1162095958759372907
 Transform:
@@ -426,12 +426,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4148546600243529521}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Garbage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 29
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &4148546600243529521
 Transform:
@@ -459,12 +459,12 @@ GameObject:
   - component: {fileID: 2927520051611024843}
   - component: {fileID: 4258827148474340666}
   - component: {fileID: 6864042234478735068}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Banana
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 29
+  m_StaticEditorFlags: 21
   m_IsActive: 1
 --- !u!4 &2927520051611024843
 Transform:
@@ -540,12 +540,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6722075703520003921}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Garbage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 29
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &6722075703520003921
 Transform:
@@ -578,12 +578,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6954988863024698539}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 29
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &6954988863024698539
 Transform:
@@ -611,12 +611,12 @@ GameObject:
   - component: {fileID: 5472291829271612526}
   - component: {fileID: 7467280627525427322}
   - component: {fileID: 6031688136379530264}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Can02
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 29
+  m_StaticEditorFlags: 21
   m_IsActive: 1
 --- !u!4 &5472291829271612526
 Transform:
@@ -695,12 +695,12 @@ GameObject:
   - component: {fileID: 7156850885746306464}
   - component: {fileID: 2341505245362402322}
   - component: {fileID: 6924384721161893477}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Apple
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 29
+  m_StaticEditorFlags: 21
   m_IsActive: 1
 --- !u!4 &7156850885746306464
 Transform:

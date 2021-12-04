@@ -3,11 +3,7 @@ using UnityEngine;
 
 public class ThirdPersonCamera : MonoBehaviour
 {
-    [Space]
-
     [SerializeField] private LayerMask _collisionable = default;
-
-    [Space]
 
     [SerializeField] private Transform _cameraFollower_Right_Pivot = null;
 
@@ -19,11 +15,16 @@ public class ThirdPersonCamera : MonoBehaviour
 
     [SerializeField] private Transform _cameraFollower = null;
 
-    public Transform cameraFollower => _cameraFollower;
+    public Transform cameraFollower { get; private set; }
 
     private RaycastHit raycastHit;
 
     private Ray ray;
+
+    private void Awake()
+    {
+        cameraFollower = _cameraFollower;
+    }
 
     private void Update()
     {

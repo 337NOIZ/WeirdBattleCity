@@ -3,7 +3,7 @@ using System.Collections;
 
 public sealed class DesertSeceneMaster : SceneMaster
 {
-    protected override IEnumerator StartRoutine()
+    protected override IEnumerator Opening()
     {
         if (GameMaster.instance.gameInfo.levelInfo == null)
         {
@@ -12,7 +12,7 @@ public sealed class DesertSeceneMaster : SceneMaster
 
         Player.instance.Initialize();
 
-        yield return base.StartRoutine();
+        yield return base.Opening();
 
         yield return Stage.instance.Routine(SceneCode.desert);
     }

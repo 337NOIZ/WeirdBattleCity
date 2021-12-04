@@ -9,12 +9,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 497651052775011275}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 29
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &497651052775011275
 Transform:
@@ -40,12 +40,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4885643733697293850}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Rock_0_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 29
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &4885643733697293850
 Transform:

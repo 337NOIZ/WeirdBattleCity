@@ -5,7 +5,12 @@ public class TransformTools : MonoBehaviour
 {
     [SerializeField] private Transform[] _transforms = null;
 
-    public Transform[] transforms { get => _transforms; }
+    public Transform[] transforms { get; private set; }
+
+    private void Awake()
+    {
+        transforms = _transforms;   
+    }
 
     public void AlignTransforms(TransformTools transformTools)
     {

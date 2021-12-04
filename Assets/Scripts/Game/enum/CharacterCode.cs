@@ -1,4 +1,12 @@
 public enum CharacterCode
 {
-    crazyBird, crazySpider, crazyCow, dummy, garbageBag, player,
+    bird,
+
+    rabbit,
+    
+    spider,
+    
+    minotauros,
+    
+    player,
 }

@@ -9,12 +9,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 681733408679453358}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Wirefence_Door
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 29
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &681733408679453358
 Transform:
@@ -42,12 +42,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8241196683150043758}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Fence_Wire_Door
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 29
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &8241196683150043758
 Transform:
@@ -75,12 +75,12 @@ GameObject:
   - component: {fileID: 6031983694173025441}
   - component: {fileID: 3213141662073009954}
   - component: {fileID: 3735102574066648839}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Box002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 29
+  m_StaticEditorFlags: 21
   m_IsActive: 1
 --- !u!4 &6031983694173025441
 Transform:
@@ -252,12 +252,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3522003368791043407}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 29
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &3522003368791043407
 Transform:
@@ -285,12 +285,12 @@ GameObject:
   - component: {fileID: 8510621301530664397}
   - component: {fileID: 6057572011534447117}
   - component: {fileID: 8796915206822435572}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Box001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 29
+  m_StaticEditorFlags: 21
   m_IsActive: 1
 --- !u!4 &8510621301530664397
 Transform:

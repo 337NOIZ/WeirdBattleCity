@@ -9,12 +9,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8202457788425570479}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Car_Sedan
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 29
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &8202457788425570479
 Transform:
@@ -140,12 +140,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7538323939714041698}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 29
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &7538323939714041698
 Transform:

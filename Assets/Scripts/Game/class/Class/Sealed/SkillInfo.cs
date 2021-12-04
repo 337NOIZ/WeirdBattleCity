@@ -3,6 +3,8 @@ using System.Collections.Generic;
 
 public sealed class SkillInfo
 {
+    public int priority;
+
     public float range
     {
         get => range_Calculated;
@@ -63,6 +65,8 @@ public sealed class SkillInfo
 
     private float cooldownSpeed_Origin;
 
+    public int castingMotionNumber { get; private set; }
+
     public float castingMotionTime
     {
         get => castingMotionTime_Calculated;
@@ -92,6 +96,8 @@ public sealed class SkillInfo
     }
 
     private float castingMotionSpeed_Origin;
+
+    public int skillMotionNumber { get; private set; }
 
     public float skillMotionTime
     {
@@ -123,7 +129,9 @@ public sealed class SkillInfo
 
     private float skillMotionSpeed_Origin;
 
-    public float cooldownTimer { get; set; }
+    public float skillMotionDuration { get; private set; }
+
+    public bool movable { get; private set; }
 
     public sealed class MeleeInfo
     {
@@ -498,8 +506,12 @@ public sealed class SkillInfo
 
     public List<StatusEffectInfo> statusEffectInfos { get; private set; } = null;
 
+    public float cooldownTimer { get; set; }
+
     public SkillInfo(SkillData skillData)
     {
+        priority = skillData.priority;
+
         range_Origin = skillData.range;
 
         range_Calculated = skillData.range;
@@ -512,17 +524,23 @@ public sealed class SkillInfo
 
         cooldownSpeed_Origin = 1f;
 
+        castingMotionNumber = skillData.castingMotionNumber;
+
         castingMotionTime_Origin = skillData.castingMotionTime;
 
         castingMotionTime_Calculated = skillData.castingMotionTime;
 
         castingMotionSpeed_Origin = 1f;
 
+        skillMotionNumber = skillData.skillMotionNumber;
+
         skillMotionTime_Origin = skillData.skillMotionTime;
 
         skillMotionTime_Calculated = skillData.skillMotionTime;
 
         skillMotionSpeed_Origin = 1f;
+
+        skillMotionDuration = skillData.skillMotionDuration;
 
         if (skillData.meleeData != null)
         {
@@ -551,6 +569,8 @@ public sealed class SkillInfo
 
     public SkillInfo(SkillInfo skillInfo)
     {
+        priority = skillInfo.priority;
+
         range_Origin = skillInfo.range_Origin;
 
         range_Calculated = skillInfo.range_Calculated;
@@ -563,17 +583,23 @@ public sealed class SkillInfo
 
         cooldownSpeed_Origin = skillInfo.cooldownSpeed_Origin;
 
+        castingMotionNumber = skillInfo.castingMotionNumber;
+
         castingMotionTime_Origin = skillInfo.castingMotionTime_Origin;
 
         castingMotionTime_Calculated = skillInfo.castingMotionTime_Calculated;
 
         castingMotionSpeed_Origin = skillInfo.castingMotionSpeed_Origin;
 
+        skillMotionNumber = skillInfo.skillMotionNumber;
+
         skillMotionTime_Origin = skillInfo.skillMotionTime_Origin;
 
         skillMotionTime_Calculated = skillInfo.skillMotionTime_Calculated;
 
         skillMotionSpeed_Origin = skillInfo.skillMotionSpeed_Origin;
+
+        skillMotionDuration = skillInfo.skillMotionDuration;
 
         if (skillInfo.meleeInfo != null)
         {

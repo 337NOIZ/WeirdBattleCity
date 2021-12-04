@@ -22,19 +22,21 @@ public class MoneyBox : MonoBehaviour
 
     public void SetMoneyAmountWithDirect(float moneyAmount, float movingTime)
     {
-        if (_setMoneyAmountWithDirect != null)
+        if (_moneyAmount != moneyAmount)
+
+        if (_setMoneyAmountWithDirect_ != null)
         {
-            StopCoroutine(_setMoneyAmountWithDirect);
+            StopCoroutine(_setMoneyAmountWithDirect_);
         }
 
-        _setMoneyAmountWithDirect = _SetMoneyAmountWithDirect(moneyAmount, movingTime);
+        _setMoneyAmountWithDirect_ = _SetMoneyAmountWithDirect_(moneyAmount, movingTime);
 
-        StartCoroutine(_setMoneyAmountWithDirect);
+        StartCoroutine(_setMoneyAmountWithDirect_);
     }
 
-    private IEnumerator _setMoneyAmountWithDirect = null;
+    private IEnumerator _setMoneyAmountWithDirect_ = null;
 
-    private IEnumerator _SetMoneyAmountWithDirect(float moneyAmount, float movingTime)
+    private IEnumerator _SetMoneyAmountWithDirect_(float moneyAmount, float movingTime)
     {
         if (movingTime > 0f)
         {
@@ -48,6 +50,6 @@ public class MoneyBox : MonoBehaviour
             }
         }
 
-        _setMoneyAmountWithDirect = null;
+        _setMoneyAmountWithDirect_ = null;
     }
 }

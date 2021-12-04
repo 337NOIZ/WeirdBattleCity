@@ -126,10 +126,7 @@ public sealed class CharacterInfo
     {
         public int level
         {
-            get
-            {
-                return level_Origin;
-            }
+            get => level_Origin;
 
             set
             {

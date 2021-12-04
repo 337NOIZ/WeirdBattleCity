@@ -9,14 +9,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1713891865847915532}
-  - component: {fileID: 7765950423717014150}
-  - component: {fileID: 8071675829014837933}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Garbage_Bag_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 29
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &1713891865847915532
 Transform:
@@ -33,39 +31,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!135 &7765950423717014150
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2054529005976796854}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.125
-  m_Center: {x: 0, y: 0.125, z: 0}
---- !u!114 &8071675829014837933
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2054529005976796854}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a7806e64e069ec34183824a28b731d22, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _aim: {fileID: 0}
-  _aimTarget: {fileID: 0}
-  model: {fileID: 0}
-  _hostileLayer:
-    serializedVersion: 2
-    m_Bits: 0
-  _healthPointBar: {fileID: 0}
-  _experiencePointBar: {fileID: 0}
 --- !u!1 &3562750959063420368
 GameObject:
   m_ObjectHideFlags: 0
@@ -75,12 +40,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1409169867291858020}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 29
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &1409169867291858020
 Transform:
@@ -108,12 +73,12 @@ GameObject:
   - component: {fileID: 8191679136207585253}
   - component: {fileID: 380011747455424737}
   - component: {fileID: 4981808629084729691}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Garbage_Bag_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 29
+  m_StaticEditorFlags: 21
   m_IsActive: 1
 --- !u!4 &8191679136207585253
 Transform:

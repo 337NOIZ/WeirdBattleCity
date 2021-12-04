@@ -11,14 +11,14 @@ public sealed class TitleSceneMaster : SceneMaster
 
     [SerializeField] private Button continueGameButton = null;
 
-    protected override IEnumerator StartRoutine()
+    protected override IEnumerator Opening()
     {
         if(GameMaster.instance.gameInfo.levelInfo == null)
         {
             continueGameButton.interactable = false;
         }
 
-        yield return base.StartRoutine();
+        yield return base.Opening();
     }
 
     public void NewGame()

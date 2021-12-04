@@ -41,10 +41,10 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: EnemyUI
+  - name: EnemyCanvas
     uniqueID: 440459041
     locked: 0
-  - name: PlayerUI
+  - name: PlayerCanvas
     uniqueID: 4173437467
     locked: 0
   - name: ScreenEffect

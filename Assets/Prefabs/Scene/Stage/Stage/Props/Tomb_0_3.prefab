@@ -9,12 +9,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6489467638198461057}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 29
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &6489467638198461057
 Transform:
@@ -137,12 +137,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4981850645296383463}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Tomb_0_3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 29
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &4981850645296383463
 Transform:

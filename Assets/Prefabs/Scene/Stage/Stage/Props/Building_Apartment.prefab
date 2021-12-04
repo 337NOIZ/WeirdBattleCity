@@ -9,12 +9,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4659615866781794276}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 15
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &4659615866781794276
 Transform:
@@ -40,12 +40,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8865897974290055015}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Building_Apartment
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 15
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &8865897974290055015
 Transform:

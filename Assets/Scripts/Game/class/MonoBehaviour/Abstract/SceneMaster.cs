@@ -9,10 +9,10 @@ public abstract class SceneMaster : MonoBehaviour
 {
     private void Start()
     {
-        StartCoroutine(StartRoutine());
+        StartCoroutine(Opening());
     }
 
-    protected virtual IEnumerator StartRoutine()
+    protected virtual IEnumerator Opening()
     {
         yield return ScreenEffecter.instance.primaryFadeScreen.Fade(2f, 0f, 1f, 2f);
 
@@ -23,10 +23,10 @@ public abstract class SceneMaster : MonoBehaviour
 
     public void LoadScene(string sceneName)
     {
-        StartCoroutine(_LoadScene(sceneName));
+        StartCoroutine(_LoadScene_(sceneName));
     }
 
-    private IEnumerator _LoadScene(string sceneName)
+    private IEnumerator _LoadScene_(string sceneName)
     {
         AudioMaster.instance.FadeAudioListenerVolume(0f, 2f);
 

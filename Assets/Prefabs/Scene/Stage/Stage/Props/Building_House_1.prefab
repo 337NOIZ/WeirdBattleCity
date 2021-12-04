@@ -9,12 +9,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1049942573326623681}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 15
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &1049942573326623681
 Transform:
@@ -146,12 +146,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2242102867528583149}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Building_House_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 15
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &2242102867528583149
 Transform:

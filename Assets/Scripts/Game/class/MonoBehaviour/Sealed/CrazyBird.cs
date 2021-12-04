@@ -1,5 +1,5 @@
 
 public sealed class CrazyBird : Enemy
 {
-    public override CharacterCode characterCode => CharacterCode.crazyBird;
+    public override CharacterCode characterCode => CharacterCode.bird;
 }

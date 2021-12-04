@@ -323,7 +323,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
-  m_SortingLayerID: 0
+  m_SortingLayerID: -121529829
   m_SortingOrder: 0
   m_TargetDisplay: 0
 --- !u!114 &8165318036766024594
@@ -544,7 +544,7 @@ PrefabInstance:
       objectReference: {fileID: 6704491621622522691}
     - target: {fileID: 2084464207059596959, guid: 88a2000f6083ca64a9a62067416c96de, type: 3}
       propertyPath: m_Lens.m_SensorSize.x
-      value: 1.7777778
+      value: 1.3333334
       objectReference: {fileID: 0}
     - target: {fileID: 2084464208598947307, guid: 88a2000f6083ca64a9a62067416c96de, type: 3}
       propertyPath: m_Name

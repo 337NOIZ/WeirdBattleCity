@@ -9,12 +9,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2248057679512705173}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Tomb_1_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 29
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &2248057679512705173
 Transform:
@@ -125,7 +125,7 @@ MeshCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 4
-  m_Convex: 1
+  m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -8827310847188684849, guid: 7b0db9513a3e21444a122ee1904ac5cd, type: 3}
 --- !u!1 &8631504124666152831
@@ -137,12 +137,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7783685062107481404}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 29
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &7783685062107481404
 Transform:

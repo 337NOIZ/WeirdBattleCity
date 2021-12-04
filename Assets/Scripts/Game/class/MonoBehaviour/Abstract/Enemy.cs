@@ -9,30 +9,60 @@ public abstract class Enemy : Character
 {
     public override CharacterType characterType => CharacterType.enemy;
 
+    [SerializeField] private Transform[] _muzzles = null;
+
     [SerializeField] private Canvas _canvas = null;
 
-    public NavMeshAgent navMeshAgent { get; private set; }
+    private NavMeshAgent _navMeshAgent;
 
-    protected Character skillTarget { get; private set; } = null;
+    private Character target_Skill = null;
 
-    protected Transform destination { get; private set; } = null;
+    private Transform target_Skill_transform = null;
+
+    private Transform target_Skill_target_Aim = null;
+
+    private bool _isMoving;
+
+    private bool isMoving
+    {
+        set
+        {
+            _isMoving = value;
+
+            if (_isMoving == true)
+            {
+                animator.SetBool("isMoving", true);
+            }
+
+            else
+            {
+                animator.SetBool("isMoving", false);
+            }
+        }
+    }
 
     private void FixedUpdate()
     {
-        rigidbody.velocity = Vector3.zero;
+        _rigidbody.velocity = Vector3.zero;
 
-        rigidbody.angularVelocity = Vector3.zero;
+        _rigidbody.angularVelocity = Vector3.zero;
     }
 
     public override void Initialize()
     {
         base.Initialize();
 
-        _canvas.worldCamera = Camera.main;
+        if (_canvas != null)
+        {
+            _canvas.worldCamera = Camera.main;
+        }
 
-        navMeshAgent = GetComponent<NavMeshAgent>();
+        _navMeshAgent = GetComponent<NavMeshAgent>();
 
-        navMeshAgent.updateRotation = false;
+        if (_navMeshAgent != null)
+        {
+            _navMeshAgent.updateRotation = false;
+        }
 
         characterData = GameMaster.instance.gameData.levelData.characterDatas[characterCode];
     }
@@ -49,6 +79,11 @@ public abstract class Enemy : Character
 
             skillInfos = characterInfo.skillInfos;
 
+            if(skillInfos != null)
+            {
+                skillInfos_Count = skillInfos.Count;
+            }
+
             movementInfo = characterInfo.movementInfo;
         }
 
@@ -57,36 +92,29 @@ public abstract class Enemy : Character
             characterInfo.Initialize();
         }
 
+        if (characterLevel != characterInfo.characterLevel)
+        {
+            LevelUp(characterLevel - characterInfo.characterLevel);
+        }
+
+        animator.SetFloat("movingMotionSpeed", characterInfo.movementInfo.movingSpeed_Multiply);
+
+        _navMeshAgent.speed = characterInfo.movementInfo.movingSpeed_Walk;
+
         _healthPointBar.fillAmount = 1f;
 
-        LevelUp(characterLevel - characterInfo.characterLevel);
+        StartCoroutine(_healthPointBar.FillByLerp(1f - damageableInfo.healthPoint / damageableInfo.healthPoint_Max, 0.1f));
 
         StartCoroutine(Thinking());
     }
 
-    protected override void Caching()
+    protected override IEnumerator SkillCooldown(SkillInfo skillInfo)
     {
-        base.Caching();
+        yield return base.SkillCooldown(skillInfo);
 
-        animator.SetFloat("movingMotionSpeed", characterInfo.movementInfo.movingSpeed_Multiply);
-
-        navMeshAgent.speed = characterInfo.movementInfo.movingSpeed_Walk;
-    }
-
-    protected override bool Invincible() { return false; }
-
-    protected override IEnumerator SkillCooldown(int skillNumber)
-    {
-        yield return base.SkillCooldown(skillNumber);
-
-        if (skillNumber < this.skillNumber)
+        if (skillInfo.priority > this.skillInfo.priority)
         {
-            if (orderSkillRoutine != null && skillMotionRoutine == null)
-            {
-                StopCoroutine(orderSkillRoutine);
-
-                orderSkillRoutine = null;
-            }
+            OrderSkill(skillInfo);
         }
     }
 
@@ -94,10 +122,10 @@ public abstract class Enemy : Character
     {
         StopAllCoroutines();
 
-        StartCoroutine(_Dead());
+        StartCoroutine(_Dead_());
     }
 
-    private IEnumerator _Dead()
+    private IEnumerator _Dead_()
     {
         --EnemySpawner.instance.spawnCount;
 
@@ -106,10 +134,6 @@ public abstract class Enemy : Character
         _model.gameObject.SetActive(false);
 
         _ragDoll.gameObject.SetActive(true);
-
-        animator.Rebind();
-
-        navMeshAgent.isStopped = true;
 
         if (attacker != null)
         {
@@ -121,7 +145,7 @@ public abstract class Enemy : Character
             attacker.GetMoney(characterInfo.moneyAmount);
         }
 
-        yield return RefreshHealthPointBar();
+        yield return _healthPointBar.FillByLerp(1f - damageableInfo.healthPoint / damageableInfo.healthPoint_Max, 0.1f);
 
         _canvas.gameObject.SetActive(false);
 
@@ -135,114 +159,198 @@ public abstract class Enemy : Character
 
         _canvas.gameObject.SetActive(true);
 
+        animator.Rebind();
+
+        target_Skill = null;
+
+        target_Skill_transform = null;
+
+        target_Skill_target_Aim = null;
+
+        _isMoving = false;
+
         ObjectPool.instance.Push(this);
     }
 
-    protected virtual IEnumerator Thinking() { yield return null; }
-
-    protected void Tracking()
+    private IEnumerator Thinking()
     {
-        if (_tracking == null)
-        {
-            _tracking = _Tracking();
-        }
+        StartCoroutine(Tracking());
 
-        StartCoroutine(_tracking);
+        int index = 0;
+
+        while (true)
+        {
+            if (skillInfos[index].cooldownTimer == 0f)
+            {
+                skillInfo = skillInfos[index];
+
+                _orderSkill_ = _OrderSkill_();
+
+                StartCoroutine(_orderSkill_);
+
+                while (_orderSkill_ != null) yield return null;
+
+                index = 0;
+            }
+
+            else if(++index >= skillInfos_Count)
+            {
+                index = 0;
+            }
+
+            yield return null;
+        }
     }
 
-    private IEnumerator _tracking = null;
-
-    private IEnumerator _Tracking()
+    private IEnumerator Tracking()
     {
         while (true)
         {
-            if (destination != null)
+            if (target_Skill != null)
             {
-                Debug.DrawLine(transform.position, skillTarget.aimTarget.position, Color.red);
+                _navMeshAgent.SetDestination(target_Skill_transform.position);
 
-                navMeshAgent.SetDestination(destination.position);
-
-                if (navMeshAgent.desiredVelocity != Vector3.zero)
+                if(_isMoving == false)
                 {
-                    transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(navMeshAgent.desiredVelocity), Time.deltaTime * 2f);
+                    _navMeshAgent.velocity = Vector3.zero;
                 }
 
-                _aim.position = destination.position;
+                if (_navMeshAgent.desiredVelocity != Vector3.zero)
+                {
+                    transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(_navMeshAgent.desiredVelocity), Time.deltaTime * 2f);
+                }
+
+                _aim.position = target_Skill_target_Aim.position;
             }
 
             yield return null;
         }
     }
 
-    protected void SetSkillTarget()
+    private void SetSkillTarget(Character target_Skill)
     {
-        skillTarget = Player.instance;
+        this.target_Skill = target_Skill;
 
-        destination = skillTarget.aimTarget;
+        target_Skill_transform = target_Skill.transform;
+
+        target_Skill_target_Aim = target_Skill.target_Aim;
     }
 
-    protected IEnumerator orderSkillRoutine = null;
-
-    protected IEnumerator OrderSkillRoutine(int skillNumber)
+    private void OrderSkill(SkillInfo skillInfo)
     {
-        var range = characterInfo.skillInfos[skillNumber].range;
+        if (StopOrderSkill() == true)
+        {
+            this.skillInfo = skillInfo;
 
+            _orderSkill_ = _OrderSkill_();
+
+            StartCoroutine(_orderSkill_);
+        }
+    }
+
+    private IEnumerator _orderSkill_ = null;
+
+    private IEnumerator _OrderSkill_()
+    {
+        var range = skillInfo.range;
+
+        if(SkillValidityCheck() == false)
+        {
+            isMoving = true;
+
+            do
+            {
+                yield return null;
+            }
+            while (SkillValidityCheck() == true);
+
+            isMoving = false;
+        }
+
+        if (skillInfo.castingMotionTime > 0f)
+        {
+            castingMotionRoutine = CastingMotionRoutine();
+
+            yield return castingMotionRoutine;
+        }
+
+        skillMotion = SkillMotion();
+
+        yield return skillMotion;
+
+        _orderSkill_ = null;
+    }
+
+    protected virtual bool SkillValidityCheck()
+    {
         RaycastHit raycastHit;
 
-        if (Physics.Linecast(transform.position, skillTarget.aimTarget.position, out raycastHit, attackableLayer) == true)
+        if (Physics.Raycast(_target_Aim.position, target_Skill_target_Aim.position, out raycastHit, skillInfo.range, attackable) == true)
         {
-            if (raycastHit.collider.gameObject != skillTarget.gameObject || raycastHit.distance > range)
+            if (raycastHit.collider.gameObject == target_Skill.gameObject)
             {
-                animator.SetBool("isMoving", true);
-
-                while (true)
-                {
-                    yield return null;
-
-                    if (Physics.Linecast(transform.position, skillTarget.aimTarget.position, out raycastHit, attackableLayer) == true)
-                    {
-                        if (raycastHit.collider.gameObject == skillTarget.gameObject && raycastHit.distance <= range)
-                        {
-                            break;
-                        }
-                    }
-                }
-
-                animator.SetBool("isMoving", false);
+                return true;
             }
         }
 
-        skillMotionRoutine = SkillMotionRoutine(skillNumber);
-
-        yield return skillMotionRoutine;
-
-        orderSkillRoutine = null;
+        return false;
     }
 
-    protected IEnumerator skillMotionRoutine = null;
-
-    protected IEnumerator SkillMotionRoutine(int skillNumber)
+    private bool StopOrderSkill()
     {
-        animator.SetFloat("skillMotionSpeed", skillMotionSpeeds[skillNumber]);
+        if (_orderSkill_ == null)
+        {
+            return true;
+        }
 
-        animator.SetBool("isUsingSkill", true);
+        else if (castingMotionRoutine == null && skillMotion == null)
+        {
+            StopCoroutine(_orderSkill_);
 
-        animator.SetInteger("skillNumber", skillNumber);
+            return true;
+        }
+
+        return false;
+    }
+
+    private IEnumerator castingMotionRoutine = null;
+
+    private IEnumerator CastingMotionRoutine()
+    {
+        animator.SetFloat("castingMotionSpeed", skillInfo.castingMotionSpeed);
+
+        animator.SetInteger("castingMotionNumber", skillInfo.castingMotionNumber);
+
+        animator.SetTrigger("castingMotion");
+
+        animator.SetBool("isCasting", true);
+
+        while (animator.GetBool("isCasting") == true) yield return null;
+
+        castingMotionRoutine = null;
+    }
+
+    private IEnumerator skillMotion = null;
+
+    private IEnumerator SkillMotion()
+    {
+        animator.SetFloat("skillMotionSpeed", skillInfo.skillMotionSpeed);
+
+        animator.SetInteger("skillMotionNumber", skillInfo.skillMotionNumber);
 
         animator.SetTrigger("skillMotion");
 
+        animator.SetBool("isUsingSkill", true);
+
         animationTools.SetEventAction(SkillEffect);
 
-        while (animator.GetBool("isUsingSkill") == true)
-        {
-            navMeshAgent.velocity = Vector3.zero;
+        while (animator.GetBool("isUsingSkill") == true) yield return null;
 
-            yield return null;
-        }
+        StartCoroutine(SkillCooldown(skillInfo));
 
-        StartCoroutine(SkillCooldown(skillNumber));
+        target_Skill = null;
 
-        skillMotionRoutine = null;
+        skillMotion = null;
     }
 
     protected virtual void SkillEffect() { }

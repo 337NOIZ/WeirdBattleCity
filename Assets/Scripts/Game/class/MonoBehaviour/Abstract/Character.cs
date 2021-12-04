@@ -11,11 +11,11 @@ public abstract class Character : MonoBehaviour
 
     public abstract CharacterCode characterCode { get; }
 
-    [SerializeField] private LayerMask _attackableLayer = default;
+    [SerializeField] protected LayerMask _attackable = default;
+
+    [SerializeField] protected Transform _target_Aim = null;
 
     [SerializeField] protected Transform _aim = null;
-
-    [SerializeField] private Transform _aimTarget = null;
 
     [SerializeField] protected TransformTools _model = null;
 
@@ -25,15 +25,15 @@ public abstract class Character : MonoBehaviour
 
     [SerializeField] protected ImageFillAmountController _experiencePointBar = null;
 
-    public LayerMask attackableLayer { get; protected set; }
+    public LayerMask attackable { get; protected set; }
 
-    public Transform aimTarget => _aimTarget;
+    public Transform target_Aim { get; private set; }
 
     public Animator animator { get; private set; }
 
     public AnimationTools animationTools { get; private set; }
 
-    protected new Rigidbody rigidbody;
+    protected Rigidbody _rigidbody { get; private set; }
 
     public CharacterData characterData { get; protected set; }
 
@@ -47,32 +47,30 @@ public abstract class Character : MonoBehaviour
 
     public List<SkillInfo> skillInfos { get; protected set; } = null;
 
+    protected int skillInfos_Count;
+
     public TransformInfo transformInfo { get; protected set; } = null;
 
-    protected int skillCount = 0;
-
-    protected List<float> skillMotionTimes;
-
-    protected List<float> skillMotionSpeeds;
-
-    protected int skillNumber;
+    protected SkillInfo skillInfo = null;
 
     protected Character attacker = null;
 
     public virtual void Initialize()
     {
-        attackableLayer = _attackableLayer;
+        attackable = _attackable;
+
+        target_Aim = _target_Aim;
 
         animator = _model.GetComponentInChildren<Animator>();
 
         animationTools = _model.GetComponentInChildren<AnimationTools>();
 
-        rigidbody = GetComponent<Rigidbody>();
+        _rigidbody = GetComponent<Rigidbody>();
     }
 
     public virtual void Initialize(int characterLevel) { }
 
-    public void LevelUp(int characterLevel)
+    public virtual void LevelUp(int characterLevel)
     {
         var characterInfo_LevelUpData = new CharacterInfo.LevelUpData(characterData.levelUpData);
 
@@ -82,54 +80,12 @@ public abstract class Character : MonoBehaviour
         }
 
         characterInfo.LevelUp(characterInfo_LevelUpData);
-
-        Caching();
-
-        StartCoroutine(RefreshHealthPointBar());
-    }
-
-    protected virtual void Caching()
-    {
-        if (skillInfos != null)
-        {
-            skillCount = skillInfos.Count;
-        }
-
-        for (int index = 0; index < skillCount; ++index)
-        {
-            skillMotionSpeeds[index] = skillMotionTimes[index] / skillInfos[index].skillMotionTime;
-        }
-    }
-
-    public IEnumerator RefreshHealthPointBar()
-    {
-        if (_healthPointBar != null)
-        {
-            yield return _healthPointBar.FillByLerp(1f - damageableInfo.healthPoint / damageableInfo.healthPoint_Max, 0.1f);
-        }
-    }
-
-    public IEnumerator RefreshExperiencePointBar()
-    {
-        if (_experiencePointBar != null && refreshExperiencePointBarRoutine != null)
-        {
-            refreshExperiencePointBarRoutine = RefreshExperiencePointBarRoutine();
-
-            yield return refreshExperiencePointBarRoutine;
-        }
-    }
-
-    private IEnumerator refreshExperiencePointBarRoutine = null;
-
-    private IEnumerator RefreshExperiencePointBarRoutine()
-    {
-        yield return _experiencePointBar.FillByLerp(1f - experienceInfo.experiencePoint / experienceInfo.experiencePoint_Max, 0.1f);
     }
 
     public void TakeAttack(Character attacker, float damage, List<StatusEffectInfo> statusEffectInfos)
     {
         this.attacker = attacker;
-
+        
         GetHealthPoint(-damage);
     }
 
@@ -137,7 +93,7 @@ public abstract class Character : MonoBehaviour
     {
         var velocity = (transform.position - position).normalized * force;
 
-        rigidbody.velocity += velocity;
+        _rigidbody.velocity += velocity;
     }
 
     public void TakeStatusEffect(StatusEffectInfo statusEffectInfo)
@@ -154,18 +110,21 @@ public abstract class Character : MonoBehaviour
 
     public void GetHealthPoint(float healthPoint)
     {
-        if (healthPoint > 0f || Invincible() == false)
+        if (healthPoint != 0f)
         {
-            damageableInfo.healthPoint += healthPoint;
-
-            if (damageableInfo.healthPoint == 0f)
+            if (healthPoint > 0f || Invincible() == false)
             {
-                Dead();
-            }
+                damageableInfo.healthPoint += healthPoint;
 
-            else
-            {
-                StartCoroutine(RefreshHealthPointBar());
+                if (damageableInfo.healthPoint == 0f)
+                {
+                    Dead();
+                }
+
+                else
+                {
+                    StartCoroutine(_healthPointBar.FillByLerp(1f - damageableInfo.healthPoint / damageableInfo.healthPoint_Max, 0.1f));
+                }
             }
         }
     }
@@ -202,26 +161,26 @@ public abstract class Character : MonoBehaviour
 
     public void GetExperiencePoint(float experiencePoint)
     {
-        if (getExperiencePointRoutine != null)
+        if (_getExperiencePoint_ != null)
         {
             experienceInfo.experiencePoint += experiencePoint;
         }
 
         else
         {
-            getExperiencePointRoutine = GetExperiencePointRoutine(experiencePoint);
+            _getExperiencePoint_ = _GetExperiencePointRoutine_(experiencePoint);
 
-            StartCoroutine(getExperiencePointRoutine);
+            StartCoroutine(_getExperiencePoint_);
         }
     }
 
-    private IEnumerator getExperiencePointRoutine = null;
+    protected IEnumerator _getExperiencePoint_ { get; private set; } = null;
 
-    private IEnumerator GetExperiencePointRoutine(float experiencePoint)
+    private IEnumerator _GetExperiencePointRoutine_(float experiencePoint)
     {
         experienceInfo.experiencePoint += experiencePoint;
 
-        yield return RefreshExperiencePointBar();
+        yield return _experiencePointBar.FillByLerp(1f - experienceInfo.experiencePoint / experienceInfo.experiencePoint_Max, 0.1f);
 
         while (experienceInfo.experiencePoint >= experienceInfo.experiencePoint_Max)
         {
@@ -233,19 +192,17 @@ public abstract class Character : MonoBehaviour
 
             if (experienceInfo.experiencePoint > 0f)
             {
-                yield return RefreshExperiencePointBar();
+                yield return _experiencePointBar.FillByLerp(1f - experienceInfo.experiencePoint / experienceInfo.experiencePoint_Max, 0.1f);
             }
         }
 
-        getExperiencePointRoutine = null;
+        _getExperiencePoint_ = null;
     }
 
     public virtual void GetMoney(float moneyAmount) { }
 
-    protected virtual IEnumerator SkillCooldown(int skillNumber)
+    protected virtual IEnumerator SkillCooldown(SkillInfo skillInfo)
     {
-        var skillInfo = skillInfos[skillNumber];
-
         skillInfo.SetCoolTimer();
 
         while (skillInfo.cooldownTimer > 0f)

@@ -1,4 +1,10 @@
 public enum CharacterType
 {
-    enemy, friendly, neutrality, player,
+    enemy,
+    
+    friendly,
+    
+    neutrality,
+    
+    player,
 }

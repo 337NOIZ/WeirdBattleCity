@@ -106,12 +106,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6029216590838517430}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 29
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &6029216590838517430
 Transform:
@@ -137,12 +137,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1848011386049962616}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Road_Straight_Crosswalk
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 29
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &1848011386049962616
 Transform:

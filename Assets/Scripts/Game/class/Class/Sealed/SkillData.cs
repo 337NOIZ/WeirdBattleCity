@@ -3,13 +3,25 @@ using System.Collections.Generic;
 
 public sealed class SkillData
 {
+    public int number { get; private set; }
+
+    public int priority { get; private set; }
+
     public float range { get; private set; }
 
     public float cooldownTime { get; private set; }
 
+    public int castingMotionNumber { get; private set; }
+
     public float castingMotionTime { get; private set; }
 
+    public float castingMotionDuration { get; private set; }
+
+    public int skillMotionNumber { get; private set; }
+
     public float skillMotionTime { get; private set; }
+
+    public float skillMotionDuration { get; private set; }
 
     public sealed class MeleeData
     {
@@ -95,15 +107,41 @@ public sealed class SkillData
 
     public List<StatusEffectData> statusEffectDatas { get; private set; } = null;
 
-    public SkillData(float range, float cooldownTime, float castingMotionTime, float skillMotionTime, MeleeData meleeData, RangedData rangedData, List<StatusEffectData> statusEffectDatas)
+    public SkillData(int priority, float range, float cooldownTime, int castingMotionNumber, float castingMotionTime, float castingMotionDuration, int skillMotionNumber, float skillMotionTime, float skillMotionDuration, MeleeData meleeData, RangedData rangedData, List<StatusEffectData> statusEffectDatas)
     {
+        this.priority = priority;
+
         this.range = range;
 
         this.cooldownTime = cooldownTime;
 
+        this.castingMotionNumber = castingMotionNumber;
+
         this.castingMotionTime = castingMotionTime;
 
+        if(castingMotionDuration > 0f)
+        {
+            this.castingMotionDuration = castingMotionDuration;
+        }
+
+        else
+        {
+            this.castingMotionDuration = castingMotionTime;
+        }
+
+        this.skillMotionNumber = skillMotionNumber;
+
         this.skillMotionTime = skillMotionTime;
+
+        if (skillMotionDuration > 0f)
+        {
+            this.skillMotionDuration = skillMotionDuration;
+        }
+
+        else
+        {
+            this.skillMotionDuration = skillMotionTime;
+        }
 
         if (meleeData != null)
         {
@@ -123,13 +161,21 @@ public sealed class SkillData
 
     public SkillData(SkillData skillData)
     {
+        priority = skillData.priority;
+
         range = skillData.range;
 
         cooldownTime = skillData.cooldownTime;
 
         castingMotionTime = skillData.castingMotionTime;
 
+        castingMotionDuration = skillData.castingMotionDuration;
+
         skillMotionTime = skillData.skillMotionTime;
+
+        skillMotionNumber = skillData.skillMotionNumber;
+
+        skillMotionDuration = skillData.skillMotionDuration;
 
         if (skillData.meleeData != null)
         {

@@ -82,15 +82,15 @@ public sealed class Player : Character
 
         _healthPointBar.fillAmount = 1f;
 
-        StartCoroutine(RefreshHealthPointBar());
+        StartCoroutine(_healthPointBar.FillByLerp(1f - damageableInfo.healthPoint / damageableInfo.healthPoint_Max, 0.1f));
 
         _experiencePointBar.fillAmount = 1f;
 
-        StartCoroutine(RefreshExperiencePointBar());
+        StartCoroutine(_experiencePointBar.FillByLerp(1f - experienceInfo.experiencePoint / experienceInfo.experiencePoint_Max, 0.1f));
 
         _moneyBox.moneyAmount = 0f;
 
-        RefreshMoneyBox();
+        _moneyBox.SetMoneyAmountWithDirect(characterInfo.moneyAmount, 1f);
 
         var items = _items.GetComponentsInChildren<InventoryItem>();
 
@@ -132,14 +132,16 @@ public sealed class Player : Character
         StartCoroutine(currentItems[ItemType.weapon].Draw());
     }
 
+    public override void LevelUp(int characterLevel)
+    {
+        base.LevelUp(characterLevel);
+
+        StartCoroutine(_healthPointBar.FillByLerp(1f - damageableInfo.healthPoint / damageableInfo.healthPoint_Max, 0.1f));
+    }
+
     protected override void Dead()
     {
         Debug.Log("YOU DIED");
-    }
-
-    private void RefreshMoneyBox()
-    {
-        _moneyBox.SetMoneyAmountWithDirect(characterInfo.moneyAmount, 1f);
     }
 
     private void GroundedCheck()
@@ -253,9 +255,9 @@ public sealed class Player : Character
         {
             ++movementInfo.jumpCount;
 
-            rigidbody.velocity = Vector3.zero;
+            _rigidbody.velocity = Vector3.zero;
 
-            rigidbody.AddForce(new Vector3(0f, movementInfo.jumpForce, 0f), ForceMode.Impulse);
+            _rigidbody.AddForce(new Vector3(0f, movementInfo.jumpForce, 0f), ForceMode.Impulse);
 
             animator.SetBool("isGrounded", false);
 
@@ -312,7 +314,7 @@ public sealed class Player : Character
     {
         characterInfo.moneyAmount += moneyAmount;
 
-        RefreshMoneyBox();
+        _moneyBox.SetMoneyAmountWithDirect(characterInfo.moneyAmount, 1f);
     }
 
     public void SelectWeaponNext()

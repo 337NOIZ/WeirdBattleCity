@@ -1,35 +1,38 @@
 
-using System.Collections;
+using System.Collections.Generic;
 
 using UnityEngine;
 
-public sealed class CoroutineTools : MonoBehaviour
+internal static class CoroutineTools
 {
-    public static IEnumerator WaitOrNot(float waitTime)
+    private class FloatComparer : IEqualityComparer<float>
     {
-        while (true)
+        bool IEqualityComparer<float>.Equals(float x, float y)
         {
-            if (waitTime <= 0f || Input.anyKeyDown == true)
-            {
-                break;
-            }
+            return x == y;
+        }
 
-            waitTime -= Time.deltaTime;
-
-            yield return null;
+        int IEqualityComparer<float>.GetHashCode(float obj)
+        {
+            return obj.GetHashCode();
         }
     }
 
-    public static IEnumerator WaitOrNot()
-    {
-        while (true)
-        {
-            if (Input.anyKeyDown == true)
-            {
-                break;
-            }
+    public static readonly WaitForEndOfFrame WaitForEndOfFrame = new WaitForEndOfFrame();
 
-            yield return null;
+    public static readonly WaitForFixedUpdate WaitForFixedUpdate = new WaitForFixedUpdate();
+
+    private static readonly Dictionary<float, WaitForSeconds> timeInterval = new Dictionary<float, WaitForSeconds>(new FloatComparer());
+
+    public static WaitForSeconds WaitForSeconds(float seconds)
+    {
+        WaitForSeconds waitforSeconds;
+
+        if (!timeInterval.TryGetValue(seconds, out waitforSeconds))
+        {
+            timeInterval.Add(seconds, waitforSeconds = new WaitForSeconds(seconds));
         }
+
+        return waitforSeconds;
     }
 }

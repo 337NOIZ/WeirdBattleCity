@@ -5,13 +5,7 @@ public sealed class ScreenEffecter : MonoBehaviour
 {
     public static ScreenEffecter instance { get; private set; }
 
-    [Space]
-
     [SerializeField] private FadeScreen _primaryFadeScreen = null;
-
-    [Space]
-
-    [Space]
 
     [SerializeField] private FadeScreen _secondaryFadeScreen = null;
 

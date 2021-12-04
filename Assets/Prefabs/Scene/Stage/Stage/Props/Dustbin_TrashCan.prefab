@@ -106,12 +106,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5823007434253495110}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Dustbin_TrashCan
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 29
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &5823007434253495110
 Transform:
@@ -137,12 +137,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8561416815337630217}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 29
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &8561416815337630217
 Transform:
