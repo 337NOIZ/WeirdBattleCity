@@ -37,6 +37,8 @@ public abstract class Weapon : InventoryItem
         yield return CoroutineWizard.WaitForSeconds(_itemInfo.drawingMotionTime);
 
         _animator.SetBool("isDrawing", false);
+
+        _animator.SetBool(_animatorStance, false);
     }
 
     public override IEnumerator Store()
@@ -46,8 +48,6 @@ public abstract class Weapon : InventoryItem
         StopReload();
 
         _model.SetActive(false);
-
-        _animator.SetBool(_animatorStance, false);
     }
 
     public override void StartSkill(int skillNumber)
@@ -100,15 +100,17 @@ public abstract class Weapon : InventoryItem
             {
                 if (_ammo.stackCount > 0)
                 {
+                    _animator.SetTrigger(_animatorStance);
+
                     _animator.SetBool("isReloading", true);
 
                     _animator.SetFloat("reloadingMotionSpeed", _itemInfo.reloadingMotionSpeed);
 
-                    _animator.SetTrigger("reloadingMotion");
-
                     yield return CoroutineWizard.WaitForSeconds(_itemInfo.reloadingMotionTime);
 
                     _animator.SetBool("isReloading", false);
+
+                    _animator.SetBool(_animatorStance, false);
 
                     float magazine_ammoCount_Needs = _itemInfo.ammoCount_Max - _itemInfo.ammoCount;
 

@@ -32,7 +32,11 @@ public sealed class Shotgun : Weapon
                 {
                     --_itemInfo.ammoCount;
 
+                    _skillInfo = _skillInfos[skillNumber];
+
                     _muzzle.LaunchProjectile(_character, _skillInfo.rangedInfo);
+
+                    _skillWizard.TrySetSkill(_skillInfo);
 
                     _skillWizard.StartSkill(_animatorStance);
 
@@ -57,13 +61,13 @@ public sealed class Shotgun : Weapon
             {
                 if (_ammo.stackCount > 0)
                 {
-                    _animatorWizard.AddEventAction(_animatorStance, ReloadingEventAction);
-
-                    _animator.SetBool("isReloading", true);
+                    _animator.SetTrigger(_animatorStance);
 
                     _animator.SetFloat("reloadingMotionSpeed", _itemInfo.reloadingMotionSpeed);
 
-                    _animator.SetTrigger("reloadingMotion");
+                    _animatorWizard.AddEventAction(_animatorStance, ReloadingEventAction);
+
+                    _animator.SetBool("isReloading", true);
 
                     yield return CoroutineWizard.WaitForSeconds(_itemInfo.reloadingMotionTime);
 
@@ -84,6 +88,8 @@ public sealed class Shotgun : Weapon
         if (_ammo.stackCount == 0 || _itemInfo.ammoCount == _itemInfo.ammoCount_Max)
         {
             _animator.SetTrigger("finishReloading");
+
+            _animatorWizard.RemoveEventAction(_animatorStance);
         }
     }
 }

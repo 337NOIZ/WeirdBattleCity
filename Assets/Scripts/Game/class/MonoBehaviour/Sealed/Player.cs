@@ -1,6 +1,7 @@
 
-using UnityEngine;
+using System.Collections.Generic;
 
+using UnityEngine;
 public sealed class Player : Character
 {
     public override CharacterType characterType { get => CharacterType.player; }
@@ -24,6 +25,8 @@ public sealed class Player : Character
     private Vector2 _moveDirection = Vector2.zero;
 
     private bool _isRunKeyPressed = false;
+
+    public bool[] Item_unlock = new bool[3];
 
     private void Awake()
     {
