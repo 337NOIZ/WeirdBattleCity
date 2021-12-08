@@ -13,81 +13,202 @@ public abstract class Character : MonoBehaviour
 
     [SerializeField] protected LayerMask _attackable = default;
 
-    [SerializeField] protected Transform _target_Aim = null;
+    [SerializeField] protected Transform _aimTarget = null;
 
     [SerializeField] protected Transform _aim = null;
 
-    [SerializeField] protected TransformTools _model = null;
+    [SerializeField] protected TransformWizard _model = null;
 
-    [SerializeField] protected TransformTools _ragDoll = null;
+    [SerializeField] protected TransformWizard _ragDoll = null;
+
+    [SerializeField] protected GameObject _items = null;
+
+    [SerializeField] protected Canvas _canvas = null;
 
     [SerializeField] protected ImageFillAmountController _healthPointBar = null;
 
     [SerializeField] protected ImageFillAmountController _experiencePointBar = null;
 
-    public LayerMask attackable { get; protected set; }
+    public LayerMask attackable { get => _attackable; }
 
-    public Transform target_Aim { get; private set; }
+    public Transform aimTarget { get => _aimTarget; }
 
-    public Animator animator { get; private set; }
+    protected Rigidbody _rigidbody;
 
-    public AnimationTools animationTools { get; private set; }
+    public Animator animator { get; protected set; } = null;
 
-    protected Rigidbody _rigidbody { get; private set; }
+    public AnimatorWizard animatorWizard { get; protected set; } = null;
 
-    public CharacterData characterData { get; protected set; }
+    public SkillWizard skillWizard { get; protected set; } = null;
 
-    public CharacterInfo characterInfo { get; protected set; }
+    public CharacterData _characterData;
+
+    protected CharacterInfo _characterInfo;
+
+    protected MovementInfo _movementInfo  = null;
 
     public DamageableInfo damageableInfo { get; protected set; } = null;
 
-    public ExperienceInfo experienceInfo { get; protected set; } = null;
+    protected ExperienceInfo _experienceInfo = null;
 
-    public MovementInfo movementInfo { get; protected set; } = null;
+    protected List<SkillInfo> _skillInfos = null;
 
-    public List<SkillInfo> skillInfos { get; protected set; } = null;
+    protected InventoryInfo _inventoryInfo = null;
 
-    protected int skillInfos_Count;
+    protected TransformInfo _transformInfo = null;
 
-    public TransformInfo transformInfo { get; protected set; } = null;
+    protected int _skillInfos_Count = 0;
 
-    protected SkillInfo skillInfo = null;
+    protected string _animatorStance = "characterStance";
 
-    protected Character attacker = null;
+    protected SkillInfo _skillInfo = null;
+
+    protected Character _skillTarget = null;
+
+    protected Transform _skillTarget_transform = null;
+
+    protected Transform _skillTarget_aimTarget = null;
+
+    protected Character skillTarget
+    {
+        set
+        {
+            _skillTarget = value;
+
+            if (_skillTarget != null)
+            {
+                _skillTarget_transform = _skillTarget.transform;
+
+                _skillTarget_aimTarget = _skillTarget.aimTarget;
+            }
+
+            else
+            {
+                _skillTarget_transform = null;
+
+                _skillTarget_aimTarget = null;
+            }
+        }
+    }
+
+    protected Dictionary<ItemCode, InventoryItem> items = new Dictionary<ItemCode, InventoryItem>();
+
+    protected Dictionary<ItemType, int> selectedItemNumbers;
+
+    protected Dictionary<ItemType, InventoryItem> currentItems;
+
+    protected Character _attacker = null;
+
+    public virtual void Awaken()
+    {
+        _rigidbody = GetComponent<Rigidbody>();
+
+        skillWizard = GetComponentInChildren<SkillWizard>();
+
+        skillWizard.Awaken();
+
+        animatorWizard = skillWizard.animatorWizard;
+
+        animator = skillWizard.animator;
+    }
 
     public virtual void Initialize()
     {
-        attackable = _attackable;
+        _movementInfo = _characterInfo.movementInfo;
 
-        target_Aim = _target_Aim;
+        damageableInfo = _characterInfo.damageableInfo;
 
-        animator = _model.GetComponentInChildren<Animator>();
+        _experienceInfo = _characterInfo.experienceInfo;
 
-        animationTools = _model.GetComponentInChildren<AnimationTools>();
+        _skillInfos = _characterInfo.skillInfos;
 
-        _rigidbody = GetComponent<Rigidbody>();
+        if(_skillInfos != null)
+        {
+            _skillInfos_Count = _skillInfos.Count;
+        }
+
+        _inventoryInfo = _characterInfo.inventoryInfo;
+
+        if (_items != null)
+        {
+            var items = _items.GetComponentsInChildren<InventoryItem>();
+
+            if (items != null)
+            {
+                int index_Max = items.Length;
+
+                for (int index = 0; index < index_Max; ++index)
+                {
+                    this.items.Add(items[index].itemCode, items[index]);
+
+                    items[index].Awaken(this);
+                }
+
+                selectedItemNumbers = new Dictionary<ItemType, int>()
+                {
+                    { ItemType.consumable, 0 },
+                    
+                    { ItemType.weapon, 0 },
+                };
+
+                currentItems = new Dictionary<ItemType, InventoryItem>()
+                {
+                    { ItemType.consumable, null },
+                    
+                    { ItemType.weapon, null },
+                };
+
+                int number = _inventoryInfo.currentItemNumbers[ItemType.consumable];
+
+                SelectItem(ItemType.consumable, number);
+
+                SetCurrentItem(ItemType.consumable, number);
+
+                number = _inventoryInfo.currentItemNumbers[ItemType.weapon];
+
+                SelectItem(ItemType.weapon, number);
+
+                SetCurrentItem(ItemType.weapon, number);
+
+                StartCoroutine(currentItems[ItemType.weapon].Draw());
+            }
+        }
+
+        _transformInfo = _characterInfo.transformInfo;
     }
 
-    public virtual void Initialize(int characterLevel) { }
+    public virtual void SetLevel(int characterLevel) { }
 
     public virtual void LevelUp(int characterLevel)
     {
-        var characterInfo_LevelUpData = new CharacterInfo.LevelUpData(characterData.levelUpData);
+        var characterInfo_LevelUpData = new CharacterInfo.LevelUpData(_characterData.levelUpData);
 
         if (characterLevel != 1)
         {
             characterInfo_LevelUpData.level = characterLevel;
         }
 
-        characterInfo.LevelUp(characterInfo_LevelUpData);
+        _characterInfo.LevelUp(characterInfo_LevelUpData);
     }
 
     public void TakeAttack(Character attacker, float damage, List<StatusEffectInfo> statusEffectInfos)
     {
-        this.attacker = attacker;
+        _attacker = attacker;
         
         GetHealthPoint(-damage);
     }
+
+    public void TakeStatusEffect(StatusEffectInfo statusEffectInfo)
+    {
+
+    }
+
+    protected Dictionary<StatusEffectCode, IEnumerator> statusEffect = new Dictionary<StatusEffectCode, IEnumerator>();
+
+    //protected IEnumerator StatusEffect(StatusEffectInfo statusEffectInfo)
+    //{
+
+    //}
 
     public void TakeForce(Vector3 position, float force)
     {
@@ -96,23 +217,11 @@ public abstract class Character : MonoBehaviour
         _rigidbody.velocity += velocity;
     }
 
-    public void TakeStatusEffect(StatusEffectInfo statusEffectInfo)
-    {
-
-    }
-
-    private Dictionary<StatusEffectCode, IEnumerator> statusEffect = new Dictionary<StatusEffectCode, IEnumerator>();
-
-    //private IEnumerator StatusEffect(StatusEffectInfo statusEffectInfo)
-    //{
-
-    //}
-
     public void GetHealthPoint(float healthPoint)
     {
         if (healthPoint != 0f)
         {
-            if (healthPoint > 0f || Invincible() == false)
+            if (healthPoint > 0f || IsInvincible() == false)
             {
                 damageableInfo.healthPoint += healthPoint;
 
@@ -123,19 +232,19 @@ public abstract class Character : MonoBehaviour
 
                 else
                 {
-                    StartCoroutine(_healthPointBar.FillByLerp(1f - damageableInfo.healthPoint / damageableInfo.healthPoint_Max, 0.1f));
+                    _healthPointBar.StartFillByLerp(1f - damageableInfo.healthPoint / damageableInfo.healthPoint_Max, 0.1f);
                 }
             }
         }
     }
 
-    protected virtual bool Invincible()
+    protected virtual bool IsInvincible()
     {
-        if(_invincible == null)
+        if(invincible == null)
         {
-            _invincible = _Invincible();
+            invincible = Invincible();
 
-            StartCoroutine(_invincible);
+            StartCoroutine(invincible);
 
             return false;
         }
@@ -143,9 +252,9 @@ public abstract class Character : MonoBehaviour
         return true;
     }
 
-    private IEnumerator _invincible = null;
+    protected IEnumerator invincible = null;
 
-    private IEnumerator _Invincible()
+    protected IEnumerator Invincible()
     {
         damageableInfo.SetInvincibleTimer();
 
@@ -156,64 +265,159 @@ public abstract class Character : MonoBehaviour
             damageableInfo.invincibleTimer -= Time.deltaTime;
         }
 
-        _invincible = null;
+        invincible = null;
     }
+
+    protected virtual void Dead() { }
 
     public void GetExperiencePoint(float experiencePoint)
     {
-        if (_getExperiencePoint_ != null)
+        if (_getExperiencePoint != null)
         {
-            experienceInfo.experiencePoint += experiencePoint;
+            _experienceInfo.experiencePoint += experiencePoint;
         }
 
         else
         {
-            _getExperiencePoint_ = _GetExperiencePointRoutine_(experiencePoint);
+            _getExperiencePoint = GetExperiencePointRoutine_(experiencePoint);
 
-            StartCoroutine(_getExperiencePoint_);
+            StartCoroutine(_getExperiencePoint);
         }
     }
 
-    protected IEnumerator _getExperiencePoint_ { get; private set; } = null;
+    protected IEnumerator _getExperiencePoint = null;
 
-    private IEnumerator _GetExperiencePointRoutine_(float experiencePoint)
+    protected IEnumerator GetExperiencePointRoutine_(float experiencePoint)
     {
-        experienceInfo.experiencePoint += experiencePoint;
+        _experienceInfo.experiencePoint += experiencePoint;
 
-        yield return _experiencePointBar.FillByLerp(1f - experienceInfo.experiencePoint / experienceInfo.experiencePoint_Max, 0.1f);
+        _experiencePointBar.StartFillByLerp(1f - _experienceInfo.experiencePoint / _experienceInfo.experiencePoint_Max, 0.1f);
 
-        while (experienceInfo.experiencePoint >= experienceInfo.experiencePoint_Max)
+        while(_experiencePointBar.fillByLerp != null) yield return null;
+
+        while (_experienceInfo.experiencePoint >= _experienceInfo.experiencePoint_Max)
         {
-            experienceInfo.experiencePoint -= experienceInfo.experiencePoint_Max;
+            _experienceInfo.experiencePoint -= _experienceInfo.experiencePoint_Max;
 
             LevelUp(1);
 
             _experiencePointBar.fillAmount = 1f;
 
-            if (experienceInfo.experiencePoint > 0f)
+            if (_experienceInfo.experiencePoint > 0f)
             {
-                yield return _experiencePointBar.FillByLerp(1f - experienceInfo.experiencePoint / experienceInfo.experiencePoint_Max, 0.1f);
+                _experiencePointBar.StartFillByLerp(1f - _experienceInfo.experiencePoint / _experienceInfo.experiencePoint_Max, 0.1f);
+
+                while (_experiencePointBar.fillByLerp != null) yield return null;
             }
         }
 
-        _getExperiencePoint_ = null;
+        _getExperiencePoint = null;
     }
 
     public virtual void GetMoney(float moneyAmount) { }
 
-    protected virtual IEnumerator SkillCooldown(SkillInfo skillInfo)
+    protected virtual bool SearchSkillTarget() { return false; }
+
+    protected bool IsSkillTargetWithinRange(float range)
     {
-        skillInfo.SetCoolTimer();
-
-        while (skillInfo.cooldownTimer > 0f)
-        {
-            yield return null;
-
-            skillInfo.cooldownTimer -= Time.deltaTime;
-        }
-
-        skillInfo.cooldownTimer = 0f;
+        return Vector3.Distance(transform.position, _skillTarget_transform.position) <= range;
     }
 
-    protected virtual void Dead() { }
+    protected virtual bool IsSkillValid() { return true; }
+
+    protected virtual void SkillEventAction() { }
+
+    public bool GetItem(ItemInfo itemInfo)
+    {
+        var itemInfo_ = FindItem(itemInfo.itemType, itemInfo.itemCode);
+
+        if (itemInfo_ != null)
+        {
+            float stackCount_Max = itemInfo_.stackCount_Max;
+
+            if (itemInfo_.stackCount < stackCount_Max)
+            {
+                itemInfo_.stackCount += itemInfo.stackCount;
+
+                if (itemInfo_.stackCount > stackCount_Max)
+                {
+                    itemInfo_.stackCount = stackCount_Max;
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+
+        _inventoryInfo.itemInfos[itemInfo.itemType].Add(itemInfo);
+
+        return true;
+    }
+
+    public ItemInfo FindItem(ItemType itemType, ItemCode itemCode)
+    {
+        var itemInfos = _inventoryInfo.itemInfos[itemType];
+
+        int count = itemInfos.Count;
+
+        for (int index = 0; index < count; ++index)
+        {
+            if (itemInfos[index].itemCode == itemCode)
+            {
+                return itemInfos[index];
+            }
+        }
+
+        return null;
+    }
+
+    protected int SelectItem(ItemType itemType, int number)
+    {
+        int number_Max = _inventoryInfo.itemInfos[itemType].Count - 1;
+
+        if (number > number_Max)
+        {
+            number = 0;
+        }
+
+        else if (number < 0)
+        {
+            number = number_Max;
+        }
+
+        return selectedItemNumbers[itemType] = number;
+    }
+
+    protected void SetCurrentItem(ItemType itemType, int number)
+    {
+        _inventoryInfo.currentItemNumbers[itemType] = number;
+
+        currentItems[itemType] = items[_inventoryInfo.itemInfos[itemType][number].itemCode];
+
+        currentItems[itemType].Initialize(_inventoryInfo.itemInfos[itemType][number]);
+    }
+
+    protected IEnumerator switchWeaponRoutine = null;
+
+    protected IEnumerator SwitchWeaponRoutine(int number)
+    {
+        yield return currentItems[ItemType.weapon].Store();
+
+        SetCurrentItem(ItemType.weapon, number);
+
+        yield return currentItems[ItemType.weapon].Draw();
+
+        switchWeaponRoutine = null;
+    }
+
+    protected void ItemSkill(ItemType itemType, int skillNumber)
+    {
+        currentItems[itemType].StartSkill(skillNumber);
+    }
+
+    public void ReloadWeapon()
+    {
+        StartCoroutine(currentItems[ItemType.weapon].Reload());
+    }
 }

@@ -3,23 +3,34 @@ using System.Collections;
 
 public sealed class Medikit : Consumable
 {
-    public override ItemCode itemCode => ItemCode.medikit;
+    public override ItemCode itemCode { get => ItemCode.medikit; }
 
-    protected override IEnumerator SkillRoutine(int skillNumber)
+    protected override IEnumerator Skill(int skillNumber)
     {
-        if (itemInfo.stackCount > 0)
+        switch (skillNumber)
         {
-            if (player.characterInfo.damageableInfo.healthPoint < player.characterInfo.damageableInfo.healthPoint_Max)
-            {
-                --itemInfo.stackCount;
+            case 0:
 
-                player.GetHealthPoint(player.characterInfo.damageableInfo.healthPoint_Max * 0.25f);
+                if (_itemInfo.stackCount > 0)
+                {
+                    if (_character.damageableInfo.healthPoint < _character.damageableInfo.healthPoint_Max)
+                    {
+                        --_itemInfo.stackCount;
 
-                StartCoroutine(SkillCooldown(skillNumber));
-            }
+                        _character.GetHealthPoint(_character.damageableInfo.healthPoint_Max * 0.25f);
+
+
+                    }
+                }
+
+                break;
+
+            default:
+
+                break;
         }
 
-        skillRoutine = null;
+        skill = null;
 
         yield break;
     }

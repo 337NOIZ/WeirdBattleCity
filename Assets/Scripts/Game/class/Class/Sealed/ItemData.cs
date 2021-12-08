@@ -11,15 +11,21 @@ public sealed class ItemData
 
     public float ammoCount_Max { get; private set; }
 
+    public float drawingMotionTime_Origin { get; private set; }
+
     public float drawingMotionTime { get; private set; }
+
+    public float drawingMotionSpeed { get; private set; }
+
+    public float reloadingMotionTime_Origin { get; private set; }
 
     public float reloadingMotionTime { get; private set; }
 
-    public bool autoSkill { get; private set; }
+    public float reloadingMotionSpeed { get; private set; }
 
     public List<SkillData> skillDatas { get; private set; } = null;
 
-    public ItemData(ItemType itemType, ItemCode itemCode, float stackCount_Max, float ammoCount_Max, float drawingMotionTime, float reloadingMotionTime, bool autoSkill, List<SkillData> skillDatas)
+    public ItemData(ItemType itemType, ItemCode itemCode, float stackCount_Max, float ammoCount_Max, float drawingMotionTime_Origin, float drawingMotionTime, float reloadingMotionTime_Origin,  float reloadingMotionTime, List<SkillData> skillDatas)
     {
         this.itemType = itemType;
 
@@ -29,11 +35,39 @@ public sealed class ItemData
 
         this.ammoCount_Max = ammoCount_Max;
 
-        this.drawingMotionTime = drawingMotionTime;
+        this.drawingMotionTime_Origin = drawingMotionTime_Origin;
+
+        if(drawingMotionTime > 0f)
+        {
+            this.drawingMotionTime = drawingMotionTime;
+
+            drawingMotionSpeed = drawingMotionTime_Origin / drawingMotionTime;
+        }
+
+        else
+        {
+            this.drawingMotionTime = drawingMotionTime_Origin;
+
+            drawingMotionSpeed = 1f;
+        }
+
+        this.reloadingMotionTime_Origin = reloadingMotionTime_Origin;
 
         this.reloadingMotionTime = reloadingMotionTime;
 
-        this.autoSkill = autoSkill;
+        if(reloadingMotionTime > 0f)
+        {
+            this.reloadingMotionTime = reloadingMotionTime;
+
+            reloadingMotionSpeed = reloadingMotionTime_Origin / reloadingMotionTime;
+        }
+
+        else
+        {
+            this.reloadingMotionTime = reloadingMotionTime_Origin;
+
+            reloadingMotionSpeed = 1f;
+        }
 
         if(skillDatas != null)
         {
@@ -53,9 +87,11 @@ public sealed class ItemData
 
         drawingMotionTime = itemData.drawingMotionTime;
 
+        drawingMotionSpeed = itemData.drawingMotionSpeed;
+
         reloadingMotionTime = itemData.reloadingMotionTime;
 
-        autoSkill = itemData.autoSkill;
+        reloadingMotionSpeed = itemData.reloadingMotionSpeed;
 
         if (itemData.skillDatas != null)
         {

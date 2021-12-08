@@ -7,52 +7,43 @@ public abstract class ParticleEffect : MonoBehaviour
 {
     public abstract ParticleEffectCode particleEffectCode { get; }
 
-    [Space]
+    [SerializeField] protected ParticleSystem _particleSystem = null;
 
-    [SerializeField] private ParticleSystem _particleSystem = null;
-
-    public new ParticleSystem particleSystem { get; private set; }
-
-    public void Initialize()
+    public void Play()
     {
-        particleSystem = _particleSystem;
+        Stop();
+
+        _play = Play_();
+
+        StartCoroutine(_play);
     }
 
-    public void PlayParticleSystem()
+    protected IEnumerator _play = null;
+
+    protected IEnumerator Play_()
     {
-        StopParticleSystem();
+        _particleSystem.Play();
 
-        playRoutine = PlayRoutine();
-
-        StartCoroutine(playRoutine);
-    }
-
-    private IEnumerator playRoutine = null;
-
-    private IEnumerator PlayRoutine()
-    {
-        particleSystem.Play();
-
-        while (particleSystem.isPlaying == true) yield return null;
+        while (_particleSystem.isPlaying == true) yield return null;
 
         Disable();
     }
 
-    public void StopParticleSystem()
+    public void Stop()
     {
-        if (playRoutine != null)
+        if (_play != null)
         {
-            StopCoroutine(playRoutine);
+            StopCoroutine(_play);
 
-            particleSystem.Stop();
+            _particleSystem.Stop();
 
-            playRoutine = null;
+            _play = null;
         }
     }
 
     public void Disable()
     {
-        StopParticleSystem();
+        Stop();
 
         gameObject.SetActive(false);
 

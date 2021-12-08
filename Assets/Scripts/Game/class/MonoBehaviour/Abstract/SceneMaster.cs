@@ -23,10 +23,10 @@ public abstract class SceneMaster : MonoBehaviour
 
     public void LoadScene(string sceneName)
     {
-        StartCoroutine(_LoadScene_(sceneName));
+        StartCoroutine(LoadScene_(sceneName));
     }
 
-    private IEnumerator _LoadScene_(string sceneName)
+    private IEnumerator LoadScene_(string sceneName)
     {
         AudioMaster.instance.FadeAudioListenerVolume(0f, 2f);
 

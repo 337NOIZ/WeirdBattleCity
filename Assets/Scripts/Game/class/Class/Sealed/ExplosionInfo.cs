@@ -5,94 +5,95 @@ public sealed class ExplosionInfo
 {
     public ParticleEffectCode particleEffectCode { get; private set; }
 
+    private float _range_Origin;
+
+    private float _range_;
+
     public float range
     {
-        get => range_Calculated;
+        get => _range_;
 
         private set
         {
-            range_Origin = value;
+            _range_Origin = value;
 
-            range_Calculated = range_Origin * range_Multiple_Origin;
+            _range_ = _range_Origin * _range_Multiple_;
         }
     }
 
-    private float range_Origin;
-
-    private float range_Calculated;
+    private float _range_Multiple_;
 
     public float range_Multiple
     {
-        get => range_Multiple_Origin;
+        get => _range_Multiple_;
 
         set
         {
-            range_Multiple_Origin = value;
+            _range_Multiple_ = value;
 
-            range_Calculated = range_Origin * range_Multiple_Origin;
+            _range_ = _range_Origin * _range_Multiple_;
         }
     }
 
-    private float range_Multiple_Origin;
+    private float _damage_Origin;
+
+    private float _damage_;
 
     public float damage
     {
-        get => damage_Calculated;
+        get => _damage_;
 
         private set
         {
-            damage_Origin = value;
+            _damage_Origin = value;
 
-            damage_Calculated = damage_Origin * damage_Multiple_Origin;
+            _damage_ = _damage_Origin * _damage_Multiple_;
         }
     }
 
-    private float damage_Origin;
-
-    private float damage_Calculated;
+    private float _damage_Multiple_;
 
     public float damage_Multiple
     {
-        get => damage_Multiple_Origin;
+        get => _damage_Multiple_;
 
         set
         {
-            damage_Multiple_Origin = value;
+            _damage_Multiple_ = value;
 
-            damage_Calculated = range_Origin * damage_Multiple_Origin;
+            _damage_ = _range_Origin * _damage_Multiple_;
         }
     }
 
-    private float damage_Multiple_Origin;
+    private float _force_Origin;
+
+    private float _force_;
+
     public float force
     {
-        get => force_Calculated;
+        get => _force_;
 
         private set
         {
-            force_Origin = value;
+            _force_Origin = value;
 
-            force_Calculated = force_Origin * force_Multiple_Origin;
+            _force_ = _force_Origin * _force_Multiple_;
         }
     }
 
-    private float force_Origin;
-
-    private float force_Calculated;
+    private float _force_Multiple_;
 
     public float force_Multiple
     {
-        get => force_Multiple_Origin;
+        get => _force_Multiple_;
 
         set
         {
-            force_Multiple_Origin = value;
+            _force_Multiple_ = value;
 
-            force_Calculated = force_Origin * force_Multiple_Origin;
+            _force_ = _force_Origin * _force_Multiple_;
         }
     }
-
-    private float force_Multiple_Origin;
 
     public List<StatusEffectInfo> statusEffectInfos { get; private set; } = null;
 
@@ -100,23 +101,23 @@ public sealed class ExplosionInfo
     {
         particleEffectCode = explosionData.particleEffectCode;
 
-        range_Origin = explosionData.range;
+        _range_Origin = explosionData.range;
 
-        range_Calculated = explosionData.range;
+        _range_ = explosionData.range;
 
-        range_Multiple_Origin = 1f;
+        _range_Multiple_ = 1f;
 
-        damage_Origin = explosionData.damage;
+        _damage_Origin = explosionData.damage;
 
-        damage_Calculated = explosionData.damage;
+        _damage_ = explosionData.damage;
 
-        damage_Multiple_Origin = 1f;
+        _damage_Multiple_ = 1f;
 
-        force_Origin = explosionData.force;
+        _force_Origin = explosionData.force;
 
-        force_Calculated = explosionData.force;
+        _force_ = explosionData.force;
 
-        force_Multiple_Origin = 1f;
+        _force_Multiple_ = 1f;
 
         var statusEffectDatas = explosionData.statusEffectDatas;
 
@@ -135,23 +136,23 @@ public sealed class ExplosionInfo
     {
         particleEffectCode = explosionInfo.particleEffectCode;
 
-        range_Origin = explosionInfo.range_Origin;
+        _range_Origin = explosionInfo._range_Origin;
 
-        range_Calculated = explosionInfo.range_Calculated;
+        _range_ = explosionInfo._range_;
 
-        range_Multiple_Origin = explosionInfo.range_Multiple_Origin;
+        _range_Multiple_ = explosionInfo._range_Multiple_;
 
-        damage_Origin = explosionInfo.damage_Origin;
+        _damage_Origin = explosionInfo._damage_Origin;
 
-        damage_Calculated = explosionInfo.damage_Calculated;
+        _damage_ = explosionInfo._damage_;
 
-        damage_Multiple_Origin = explosionInfo.damage_Multiple_Origin;
+        _damage_Multiple_ = explosionInfo._damage_Multiple_;
 
-        force_Origin = explosionInfo.force_Origin;
+        _force_Origin = explosionInfo._force_Origin;
 
-        force_Calculated = explosionInfo.force_Calculated;
+        _force_ = explosionInfo._force_;
 
-        force_Multiple_Origin = explosionInfo.force_Multiple_Origin;
+        _force_Multiple_ = explosionInfo._force_Multiple_;
 
         if (explosionInfo.statusEffectInfos != null)
         {
@@ -161,19 +162,21 @@ public sealed class ExplosionInfo
 
     public sealed class LevelUpData
     {
+        private int _level_;
+
         public int level
         {
-            get => level_Origin;
+            get => _level_;
 
             set
             {
-                level_Origin = value;
+                _level_ = value;
 
-                range = range_Origin * level_Origin;
+                range = _range_ * _level_;
 
-                damage = damage_Origin * level_Origin;
+                damage = _damage_ * _level_;
 
-                force = force_Origin * level_Origin;
+                force = _force_ * _level_;
 
                 if (statusEffectInfos != null)
                 {
@@ -181,43 +184,41 @@ public sealed class ExplosionInfo
 
                     for (int index = 0; index < count; ++index)
                     {
-                        statusEffectInfos[index].level = level_Origin;
+                        statusEffectInfos[index].level = _level_;
                     }
                 }
             }
         }
 
-        private int level_Origin;
+        private float _range_;
 
         public float range { get; private set; }
 
-        private float range_Origin;
+        private float _damage_;
 
         public float damage { get; private set; }
 
-        private float damage_Origin;
+        private float _force_;
 
         public float force { get; private set; }
-
-        private float force_Origin;
 
         public List<StatusEffectInfo.LevelUpData> statusEffectInfos { get; private set; } = null;
 
         public LevelUpData(float range, float damage, float force, List<StatusEffectInfo.LevelUpData> statusEffectInfos)
         {
-            level_Origin = 1;
+            _level_ = 1;
+
+            _range_ = range;
 
             this.range = range;
 
-            range_Origin = range;
+            _damage_ = damage;
 
             this.damage = damage;
 
-            damage_Origin = damage;
+            _force_ = force;
 
             this.force = force;
-
-            force_Origin = force;
 
             if (statusEffectInfos != null)
             {
@@ -227,19 +228,19 @@ public sealed class ExplosionInfo
 
         public LevelUpData(LevelUpData levelUpData)
         {
-            level_Origin = levelUpData.level_Origin;
+            _level_ = levelUpData._level_;
+
+            _range_ = levelUpData._range_;
 
             range = levelUpData.range;
 
-            range_Origin = levelUpData.range_Origin;
+            _damage_ = levelUpData._damage_;
 
             damage = levelUpData.damage;
 
-            damage_Origin = levelUpData.damage_Origin;
+            _force_ = levelUpData._force_;
 
             force = levelUpData.force;
-
-            force_Origin = levelUpData.force_Origin;
 
             if (levelUpData.statusEffectInfos != null)
             {

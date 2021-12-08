@@ -1,75 +1,89 @@
 
 using System.Collections;
 
-using System.Collections.Generic;
+using UnityEngine;
 
 public sealed class Shotgun : Weapon
 {
+    [SerializeField] private Muzzle _muzzle = null;
+
     public override ItemCode itemCode => ItemCode.shotgun;
 
-    protected override ItemCode ammo_ItemCode => ItemCode.shotgunAmmo;
+    protected override ItemCode _ammo_itemCode => ItemCode.shotgunAmmo;
 
-    public override void Initialize()
+    public override void Awaken(Character character)
     {
-        base.Initialize();
+        base.Awaken(character);
 
-        stance = "shotgunStance";
-
-        drawingMotionTime = AnimationTools.FrameCountToSeconds(40);
-
-        reloadingMotionTime = AnimationTools.FrameCountToSeconds(114);
+        _animatorStance = "shotgunStance";
     }
 
-    public override void Initialize(ItemInfo itemInfo)
+    protected override IEnumerator Skill(int skillNumber)
     {
-        base.Initialize(itemInfo);
+        _animator.SetBool("isAiming", true);
 
-        skillMotionTimes = new List<float>()
+        yield return new WaitForSeconds(0.05f);
+
+        switch (skillNumber)
         {
-            AnimationTools.FrameCountToSeconds(45),
-        };
+            case 0:
 
-        skillMotionSpeeds = new List<float>()
-        {
-            0f,
-        };
-
-        Caching();
-    }
-
-    protected override IEnumerator ReloadRoutine()
-    {
-        if (ammo != null)
-        {
-            if (itemInfo.ammoCount < itemInfo.ammoCount_Max)
-            {
-                if (ammo.stackCount > 0)
+                if (_itemInfo.ammoCount > 0)
                 {
-                    player.animator.SetFloat("reloadingMotionSpeed", reloadingMotionSpeed);
+                    --_itemInfo.ammoCount;
 
-                    player.animator.SetTrigger("reloadingMotion");
+                    _muzzle.LaunchProjectile(_character, _skillInfo.rangedInfo);
 
-                    player.animator.SetBool("isReloading", true);
+                    _skillWizard.StartSkill(_animatorStance);
 
-                    player.animationTools.SetEventAction(BulletInTubular);
+                    yield return _skillWizard.WaitForSkillEnd();
+                }
 
-                    while (player.animator.GetBool("isReloading") == true) yield return null;
+                break;
+
+            default:
+
+                break;
+        }
+
+        skill = null;
+    }
+
+    protected override IEnumerator Reload_()
+    {
+        if (_ammo != null)
+        {
+            if (_itemInfo.ammoCount < _itemInfo.ammoCount_Max)
+            {
+                if (_ammo.stackCount > 0)
+                {
+                    _animatorWizard.AddEventAction(_animatorStance, ReloadingEventAction);
+
+                    _animator.SetBool("isReloading", true);
+
+                    _animator.SetFloat("reloadingMotionSpeed", _itemInfo.reloadingMotionSpeed);
+
+                    _animator.SetTrigger("reloadingMotion");
+
+                    yield return CoroutineWizard.WaitForSeconds(_itemInfo.reloadingMotionTime);
+
+                    _animator.SetBool("isReloading", false);
                 }
             }
         }
 
-        reloadRoutine = null;
+        _reload = null;
     }
 
-    private void BulletInTubular()
+    private void ReloadingEventAction()
     {
-        --ammo.stackCount;
+        --_ammo.stackCount;
 
-        ++itemInfo.ammoCount;
+        ++_itemInfo.ammoCount;
 
-        if (ammo.stackCount == 0 || itemInfo.ammoCount == itemInfo.ammoCount_Max)
+        if (_ammo.stackCount == 0 || _itemInfo.ammoCount == _itemInfo.ammoCount_Max)
         {
-            player.animator.SetTrigger("finishReloading");
+            _animator.SetTrigger("finishReloading");
         }
     }
 }

@@ -10,10 +10,12 @@ public sealed class DesertSeceneMaster : SceneMaster
             GameMaster.instance.NewLevelInfo();
         }
 
+        Player.instance.Awaken();
+
         Player.instance.Initialize();
 
         yield return base.Opening();
 
-        yield return Stage.instance.Routine(SceneCode.desert);
+        yield return StageMaster.instance.Routine(SceneCode.desert);
     }
 }

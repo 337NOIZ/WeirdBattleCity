@@ -7,127 +7,73 @@ public sealed class ItemInfo
 
     public ItemCode itemCode { get; private set; }
 
+    private float _stackCount_Max_Origin;
+
+    private float _stackCount_Max_;
+
     public float stackCount_Max
     {
-        get => stackCount_Max_Calculated;
+        get => _stackCount_Max_;
 
         set
         {
-            stackCount_Max_Origin = value;
+            _stackCount_Max_Origin = value;
 
-            stackCount_Max_Calculated = stackCount_Max_Origin * stackCount_Max_Multiple_Origin;
+            _stackCount_Max_ = _stackCount_Max_Origin * _stackCount_Max_Multiple_;
         }
     }
 
-    private float stackCount_Max_Origin;
-
-    private float stackCount_Max_Calculated;
+    private float _stackCount_Max_Multiple_;
 
     public float stackCount_Max_Multiple
     {
-        get => stackCount_Max_Multiple_Origin;
+        get => _stackCount_Max_Multiple_;
 
         set
         {
-            stackCount_Max_Multiple_Origin = value;
+            _stackCount_Max_Multiple_ = value;
 
-            stackCount_Max_Calculated = stackCount_Max_Origin * stackCount_Max_Multiple_Origin;
-        }
-    }
-
-    private float stackCount_Max_Multiple_Origin;
-
-    public float ammoCount_Max
-    {
-        get => ammoCount_Max_Calculated;
-
-        set
-        {
-            ammoCount_Max_Origin = value;
-
-            ammoCount_Max_Calculated = ammoCount_Max_Origin * ammoCount_Max_Multiple_Origin;
+            _stackCount_Max_ = _stackCount_Max_Origin * _stackCount_Max_Multiple_;
         }
     }
 
     private float ammoCount_Max_Origin;
 
-    private float ammoCount_Max_Calculated;
+    private float _ammoCount_Max_;
+
+    public float ammoCount_Max
+    {
+        get => _ammoCount_Max_;
+
+        set
+        {
+            ammoCount_Max_Origin = value;
+
+            _ammoCount_Max_ = ammoCount_Max_Origin * _ammoCount_Max_Multiple_;
+        }
+    }
+
+    private float _ammoCount_Max_Multiple_;
 
     public float ammoCount_Max_Multiple
     {
-        get => ammoCount_Max_Multiple_Origin;
+        get => _ammoCount_Max_Multiple_;
 
         set
         {
-            ammoCount_Max_Multiple_Origin = value;
+            _ammoCount_Max_Multiple_ = value;
 
-            ammoCount_Max_Calculated = ammoCount_Max_Origin * ammoCount_Max_Multiple_Origin;
+            _ammoCount_Max_ = ammoCount_Max_Origin * _ammoCount_Max_Multiple_;
         }
     }
 
-    private float ammoCount_Max_Multiple_Origin;
+    public float drawingMotionTime;
 
-    public float drawingMotionTime
-    {
-        get => drawingMotionTime_Calculated;
+    public float drawingMotionSpeed;
 
-        set
-        {
-            drawingMotionTime_Origin = value;
+    public float reloadingMotionTime;
 
-            drawingMotionTime_Calculated = drawingMotionTime_Origin / drawingMotionSpeed_Origin;
-        }
-    }
-
-    private float drawingMotionTime_Origin;
-
-    private float drawingMotionTime_Calculated;
-
-    public float drawingMotionSpeed
-    {
-        get => drawingMotionSpeed_Origin;
-
-        set
-        {
-            drawingMotionSpeed_Origin = value;
-
-            drawingMotionTime_Calculated = drawingMotionTime_Origin / drawingMotionSpeed_Origin;
-        }
-    }
-
-    private float drawingMotionSpeed_Origin;
-
-    public float reloadingMotionTime
-    {
-        get => reloadingMotionTime_Calculated;
-
-        set
-        {
-            reloadingMotionTime_Origin = value;
-
-            reloadingMotionTime_Calculated = reloadingMotionTime_Origin / reloadingMotionSpeed_Origin;
-        }
-    }
-
-    private float reloadingMotionTime_Origin;
-
-    private float reloadingMotionTime_Calculated;
-
-    public float reloadingMotionSpeed
-    {
-        get => reloadingMotionSpeed_Origin;
-
-        set
-        {
-            reloadingMotionSpeed_Origin = value;
-
-            reloadingMotionTime_Calculated = reloadingMotionTime_Origin / reloadingMotionSpeed_Origin;
-        }
-    }
-
-    private float reloadingMotionSpeed_Origin;
-
-    public bool autoSkill { get; set; }
+    public float reloadingMotionSpeed;
 
     public List<SkillInfo> skillInfos { get; private set; } = null;
 
@@ -141,31 +87,25 @@ public sealed class ItemInfo
 
         itemCode = itemData.itemCode;
 
-        stackCount_Max_Origin = itemData.stackCount_Max;
+        _stackCount_Max_Origin = itemData.stackCount_Max;
 
-        stackCount_Max_Calculated = itemData.stackCount_Max;
+        _stackCount_Max_ = itemData.stackCount_Max;
 
-        stackCount_Max_Multiple_Origin = 1f;
+        _stackCount_Max_Multiple_ = 1f;
 
         ammoCount_Max_Origin = itemData.ammoCount_Max;
 
-        ammoCount_Max_Calculated = itemData.ammoCount_Max;
+        _ammoCount_Max_ = itemData.ammoCount_Max;
 
-        ammoCount_Max_Multiple_Origin = 1f;
+        _ammoCount_Max_Multiple_ = 1f;
 
-        drawingMotionTime_Origin = itemData.drawingMotionTime;
+        drawingMotionTime = itemData.drawingMotionTime;
 
-        drawingMotionTime_Calculated = itemData.drawingMotionTime;
+        drawingMotionSpeed = itemData.drawingMotionSpeed;
 
-        drawingMotionSpeed_Origin = 1f;
+        reloadingMotionTime = itemData.reloadingMotionTime;
 
-        reloadingMotionTime_Origin = itemData.reloadingMotionTime;
-
-        reloadingMotionTime_Calculated = itemData.reloadingMotionTime;
-
-        reloadingMotionSpeed_Origin = 1f;
-
-        autoSkill = itemData.autoSkill;
+        reloadingMotionSpeed = itemData.reloadingMotionSpeed;
 
         var skillDatas = itemData.skillDatas;
 
@@ -190,31 +130,25 @@ public sealed class ItemInfo
 
         itemCode = itemInfo.itemCode;
 
-        stackCount_Max_Origin = itemInfo.stackCount_Max_Origin;
+        _stackCount_Max_Origin = itemInfo._stackCount_Max_Origin;
 
-        stackCount_Max_Calculated = itemInfo.stackCount_Max_Calculated;
+        _stackCount_Max_ = itemInfo._stackCount_Max_;
 
-        stackCount_Max_Multiple_Origin = itemInfo.stackCount_Max_Multiple_Origin;
+        _stackCount_Max_Multiple_ = itemInfo._stackCount_Max_Multiple_;
 
         ammoCount_Max_Origin = itemInfo.ammoCount_Max_Origin;
 
-        ammoCount_Max_Calculated = itemInfo.ammoCount_Max_Calculated;
+        _ammoCount_Max_ = itemInfo._ammoCount_Max_;
 
-        ammoCount_Max_Multiple_Origin = itemInfo.ammoCount_Max_Multiple_Origin;
+        _ammoCount_Max_Multiple_ = itemInfo._ammoCount_Max_Multiple_;
 
-        drawingMotionTime_Origin = itemInfo.drawingMotionTime_Origin;
+        drawingMotionTime = itemInfo.drawingMotionTime;
 
-        drawingMotionTime_Calculated = itemInfo.drawingMotionTime_Calculated;
+        drawingMotionSpeed = itemInfo.drawingMotionSpeed;
 
-        drawingMotionSpeed_Origin = itemInfo.drawingMotionSpeed_Origin;
+        reloadingMotionTime = itemInfo.reloadingMotionTime;
 
-        reloadingMotionTime_Origin = itemInfo.reloadingMotionTime_Origin;
-
-        reloadingMotionTime_Calculated = itemInfo.reloadingMotionTime_Calculated;
-
-        reloadingMotionSpeed_Origin = itemInfo.reloadingMotionSpeed_Origin;
-
-        autoSkill = itemInfo.autoSkill;
+        reloadingMotionSpeed = itemInfo.reloadingMotionSpeed;
 
         if (itemInfo.skillInfos != null)
         {

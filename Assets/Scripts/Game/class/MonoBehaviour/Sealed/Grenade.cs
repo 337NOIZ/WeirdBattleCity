@@ -1,59 +1,68 @@
 
 using System.Collections;
 
-using System.Collections.Generic;
+using UnityEngine;
 
 public sealed class Grenade : Consumable
 {
-    public override ItemCode itemCode => ItemCode.grenade;
+    [SerializeField] private Muzzle _muzzle = null;
 
-    public override void Initialize()
+    public override ItemCode itemCode { get => ItemCode.grenade; }
+
+    public override void Awaken(Character character)
     {
-        base.Initialize();
+        base.Awaken(character);
 
-        stance = "grenadeStance";
+        _animatorStance = "grenadeStance";
     }
 
-    public override void Initialize(ItemInfo itemInfo)
+    protected override IEnumerator Skill(int skillNumber)
     {
-        base.Initialize(itemInfo);
-
-        skillMotionTimes = new List<float>()
+        switch (skillNumber)
         {
-            AnimationTools.FrameCountToSeconds(30),
-        };
+            case 0:
 
-        skillMotionSpeeds = new List<float>()
-        {
-            0f,
-        };
+                if (_itemInfo.skillInfos[skillNumber].cooldownTimer == 0f)
+                {
+                    if (_itemInfo.stackCount > 0)
+                    {
+                        --_itemInfo.stackCount;
 
-        Caching();
-    }
+                        _animator.SetBool("isAiming", true);
 
-    protected override IEnumerator SkillRoutine(int skillNumber)
-    {
-        if (itemInfo.stackCount > 0)
-        {
-            --itemInfo.stackCount;
+                        _muzzle.LaunchProjectile(_character, _skillInfo.rangedInfo);
 
-            LaunchProjectile(skillNumber);
+                        //_animatorWizard.AddEventAction(_animatorStance, _SkillEventAction_);
 
-            //player.animator.SetFloat("skillMotionSpeed", skillMotionSpeeds[skillNumber]);
+                        //_character.StartSkill(_animatorStance);
 
-            //player.animator.SetBool("isUsingSkill", true);
+                        //while (_character.skill != null) yield return null;
 
-            //player.animator.SetInteger("skillNumber", skillNumber);
+                        //_animatorWizard.RemoveEventAction(_animatorStance);
 
-            //player.animator.SetTrigger("skillMotion");
+                        _animator.SetBool("isAiming", false);
+                    }
 
-            //while (player.animator.GetBool("isUsingSkill") == true) yield return null;
+                    else
+                    {
 
-            //StartCoroutine(SkillCooldown(skillNumber));
+                    }
+                }
+
+                else
+                {
+
+                }
+
+                break;
+
+            default:
+
+                break;
         }
 
-        skillRoutine = null;
+        skill = null;
 
-        yield break;
+        yield return null;
     }
 }

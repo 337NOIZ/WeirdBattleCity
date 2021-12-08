@@ -5,129 +5,72 @@ using System.Collections.Generic;
 
 using UnityEngine;
 
-using UnityEngine.Animations.Rigging;
-
 public abstract class InventoryItem : Item
 {
-    [Space]
+    [SerializeField] protected GameObject _model = null;
 
-    [SerializeField] protected GameObject model = null;
+    protected Character _character;
 
-    [Space]
+    protected Animator _animator;
 
-    [SerializeField] protected Transform muzzle = null;
+    protected AnimatorWizard _animatorWizard;
 
-    protected MultiAimConstraint multiAimConstraint;
+    protected SkillWizard _skillWizard;
 
-    protected Player player;
+    protected List<SkillInfo> _skillInfos;
 
-    protected string stance;
+    protected int _skillCount;
 
-    protected float drawingMotionTime;
+    protected string _animatorStance;
 
-    protected float drawingMotionSpeed;
+    protected SkillInfo _skillInfo;
 
-    protected float reloadingMotionTime;
-
-    protected float reloadingMotionSpeed;
-
-    protected int skillCount;
-
-    protected List<float> skillMotionTimes;
-
-    protected List<float> skillMotionSpeeds;
-
-    public override void Initialize()
+    public override void Awaken(Character character)
     {
-        multiAimConstraint = GetComponent<MultiAimConstraint>();
+        _character = character;
 
-        player = Player.instance;
+        _animator = character.animator;
+
+        _animatorWizard = character.animatorWizard;
+
+        _skillWizard = character.skillWizard;
     }
 
     public override void Initialize(ItemInfo itemInfo)
     {
-        this.itemInfo = itemInfo;
+        _itemInfo = itemInfo;
 
-        skillInfos = itemInfo.skillInfos;
-    }
+        _skillInfos = itemInfo.skillInfos;
 
-    protected virtual void Caching()
-    {
-        if (itemInfo.drawingMotionTime > 0f)
+        if (_skillInfos != null)
         {
-            drawingMotionSpeed = drawingMotionTime / itemInfo.drawingMotionTime;
+            _skillCount = _skillInfos.Count;
         }
-
-        if (itemInfo.reloadingMotionTime > 0f)
-        {
-            reloadingMotionSpeed = reloadingMotionTime / itemInfo.reloadingMotionTime;
-        }
-
-        if (skillInfos != null)
-        {
-            skillCount = skillInfos.Count;
-        }
-
-        for (int index = 0; index < skillCount; ++index)
-        {
-            skillMotionSpeeds[index] = skillMotionTimes[index] / skillInfos[index].skillMotionTime;
-        }
-    }
-
-    protected IEnumerator SkillCooldown(int skillNumber)
-    {
-        var skillInfo = itemInfo.skillInfos[skillNumber];
-
-        skillInfo.SetCoolTimer();
-
-        while (skillInfo.cooldownTimer > 0f)
-        {
-            yield return null;
-
-            skillInfo.cooldownTimer -= Time.deltaTime;
-        }
-
-        skillInfo.cooldownTimer = 0f;
     }
 
     public virtual IEnumerator Draw() { yield return null; }
 
     public virtual IEnumerator Store() { yield return null; }
 
-    public virtual IEnumerator Skill(int skillNumber) { yield return null; }
+    public virtual void StartSkill(int skillNumber)
+    {
+        if (skill == null)
+        {
+            skill = Skill(skillNumber);
 
-    protected IEnumerator skillRoutine = null;
+            StartCoroutine(skill);
+        }
+    }
 
-    protected virtual IEnumerator SkillRoutine(int skillNumber) { yield return null; }
+    public IEnumerator skill { get; protected set; } = null;
+
+    protected virtual IEnumerator Skill(int skillNumber) { yield return null; }
 
     public virtual IEnumerator StopSkill() { yield return null; }
 
     public virtual IEnumerator StopSkill(bool keepAiming) { yield return null; }
 
-    protected void LaunchProjectile(int skillNumber)
-    {
-        Projectile projectile;
-
-        var rangedInfo = itemInfo.skillInfos[skillNumber].rangedInfo;
-
-        int count = Mathf.FloorToInt(rangedInfo.division);
-
-        for (int index = 0; index < count; ++index)
-        {
-            projectile = ObjectPool.instance.Pop(rangedInfo.projectileCode);
-
-            projectile.transform.position = muzzle.position;
-
-            projectile.transform.rotation = muzzle.rotation;
-
-            if (rangedInfo.diffusion > 0f)
-            {
-                projectile.transform.rotation *= Quaternion.Euler(Random.insideUnitSphere * rangedInfo.diffusion);
-            }
-
-            projectile.Launch(player, rangedInfo.projectileInfo);
-        }
-    }
+    protected virtual void _SkillEventAction_() { }
 
     public virtual IEnumerator Reload() { yield return null; }
 }

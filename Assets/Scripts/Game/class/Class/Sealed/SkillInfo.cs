@@ -5,195 +5,144 @@ public sealed class SkillInfo
 {
     public int priority;
 
+    private float _range_Origin;
+
+    private float _range_;
     public float range
     {
-        get => range_Calculated;
+        get => _range_;
 
         private set
         {
-            range_Origin = value;
+            _range_Origin = value;
 
-            range_Calculated = range_Origin * range_Multiple_Origin;
+            _range_ = _range_Origin * _range_Multiple_;
         }
     }
 
-    private float range_Origin;
-
-    private float range_Calculated;
+    private float _range_Multiple_;
 
     public float range_Multiple
     {
-        get => range_Multiple_Origin;
+        get => _range_Multiple_;
 
         set
         {
-            range_Multiple_Origin = value;
+            _range_Multiple_ = value;
 
-            range_Calculated = range_Origin * range_Multiple_Origin;
+            _range_ = _range_Origin * _range_Multiple_;
         }
     }
 
-    private float range_Multiple_Origin;
+    private float _cooldownTime_Origin;
+
+    private float _cooldownTime_;
 
     public float cooldownTime
     {
-        get => cooldownTime_Calculated;
+        get => _cooldownTime_;
 
         private set
         {
-            cooldownTime_Origin = value;
+            _cooldownTime_Origin = value;
 
-            cooldownTime_Calculated = cooldownTime_Origin / cooldownSpeed_Origin;
+            _cooldownTime_ = _cooldownTime_Origin / _cooldownSpeed_;
         }
     }
 
-    private float cooldownTime_Origin;
-
-    private float cooldownTime_Calculated;
+    private float _cooldownSpeed_;
 
     public float cooldownSpeed
     {
-        get => cooldownSpeed_Origin;
+        get => _cooldownSpeed_;
 
         set
         {
-            cooldownSpeed_Origin = value;
+            _cooldownSpeed_ = value;
 
-            cooldownTime_Calculated = cooldownTime_Origin / cooldownSpeed_Origin;
+            _cooldownTime_ = _cooldownTime_Origin / _cooldownSpeed_;
         }
     }
-
-    private float cooldownSpeed_Origin;
 
     public int castingMotionNumber { get; private set; }
 
-    public float castingMotionTime
-    {
-        get => castingMotionTime_Calculated;
+    public float castingMotionTime { get; private set; }
 
-        private set
-        {
-            castingMotionTime_Origin = value;
+    public float castingMotionSpeed { get; private set; }
 
-            castingMotionTime_Calculated = castingMotionTime_Origin / castingMotionSpeed_Origin;
-        }
-    }
-
-    private float castingMotionTime_Origin;
-
-    private float castingMotionTime_Calculated;
-
-    public float castingMotionSpeed
-    {
-        get => castingMotionSpeed_Origin;
-
-        set
-        {
-            castingMotionSpeed_Origin = value;
-
-            castingMotionTime_Calculated = castingMotionTime_Origin / castingMotionSpeed_Origin;
-        }
-    }
-
-    private float castingMotionSpeed_Origin;
+    public float castingMotionLoopTime { get; private set; }
 
     public int skillMotionNumber { get; private set; }
 
-    public float skillMotionTime
-    {
-        get => skillMotionTime_Calculated;
+    public float skillMotionTime { get; private set; }
 
-        private set
-        {
-            skillMotionTime_Origin = value;
+    public float skillMotionSpeed { get; private set; }
 
-            skillMotionTime_Calculated = skillMotionTime_Origin / skillMotionSpeed_Origin;
-        }
-    }
-
-    private float skillMotionTime_Origin;
-
-    private float skillMotionTime_Calculated;
-
-    public float skillMotionSpeed
-    {
-        get => skillMotionSpeed_Origin;
-
-        set
-        {
-            skillMotionSpeed_Origin = value;
-
-            skillMotionTime_Calculated = skillMotionTime_Origin / skillMotionSpeed_Origin;
-        }
-    }
-
-    private float skillMotionSpeed_Origin;
-
-    public float skillMotionDuration { get; private set; }
+    public float skillMotionLoopTime { get; private set; }
 
     public bool movable { get; private set; }
 
     public sealed class MeleeInfo
     {
+        private float _range_Origin;
+
+        private float _range_;
+
         public float range
         {
-            get => range_Calculated;
+            get => _range_;
 
             private set
             {
-                range_Origin = value;
+                _range_Origin = value;
 
-                range_Calculated = range_Origin * range_Multiple_Origin;
+                _range_ = _range_Origin * _range_Multiple_;
             }
         }
 
-        private float range_Origin;
-
-        private float range_Calculated;
+        private float _range_Multiple_;
 
         public float range_Multiple
         {
-            get => range_Multiple_Origin;
+            get => _range_Multiple_;
 
             set
             {
-                range_Multiple_Origin = value;
+                _range_Multiple_ = value;
 
-                range_Calculated = range_Origin * range_Multiple_Origin;
+                _range_ = _range_Origin * _range_Multiple_;
             }
         }
 
-        private float range_Multiple_Origin;
+        private float _damage_Origin;
+
+        private float _damage_;
 
         public float damage
         {
-            get => damage_Calculated;
+            get => _damage_;
 
             private set
             {
-                damage_Origin = value;
+                _damage_Origin = value;
 
-                damage_Calculated = damage_Origin * damage_Multiple_Origin;
+                _damage_ = _damage_Origin * _damage_Multiple_;
             }
         }
 
-        private float damage_Origin;
-
-        private float damage_Calculated;
+        private float _damage_Multiple_;
 
         public float damage_Multiple
         {
-            get => damage_Multiple_Origin;
+            get => _damage_Multiple_;
 
             set
             {
-                damage_Multiple_Origin = value;
+                _damage_Multiple_ = value;
 
-                damage_Calculated = damage_Origin * damage_Multiple_Origin;
+                _damage_ = _damage_Origin * _damage_Multiple_;
             }
         }
-
-        private float damage_Multiple_Origin;
 
         public ExplosionInfo explosionInfo { get; private set; } = null;
 
@@ -201,17 +150,17 @@ public sealed class SkillInfo
 
         public MeleeInfo(SkillData.MeleeData meleeData)
         {
-            range_Origin = meleeData.range;
+            _range_Origin = meleeData.range;
 
-            range_Calculated = meleeData.range;
+            _range_ = meleeData.range;
 
-            range_Multiple_Origin = 1f;
+            _range_Multiple_ = 1f;
 
-            damage_Origin = meleeData.damage;
+            _damage_Origin = meleeData.damage;
 
-            damage_Calculated = meleeData.damage;
+            _damage_ = meleeData.damage;
 
-            damage_Multiple_Origin = 1f;
+            _damage_Multiple_ = 1f;
 
             if (meleeData.explosionData != null)
             {
@@ -233,17 +182,17 @@ public sealed class SkillInfo
 
         public MeleeInfo(MeleeInfo meleeInfo)
         {
-            range_Origin = meleeInfo.range_Origin;
+            _range_Origin = meleeInfo._range_Origin;
 
-            range_Calculated = meleeInfo.range_Calculated;
+            _range_ = meleeInfo._range_;
 
-            range_Multiple_Origin = meleeInfo.range_Multiple_Origin;
+            _range_Multiple_ = meleeInfo._range_Multiple_;
 
-            damage_Origin = meleeInfo.damage_Origin;
+            _damage_Origin = meleeInfo._damage_Origin;
 
-            damage_Calculated = meleeInfo.damage_Calculated;
+            _damage_ = meleeInfo._damage_;
 
-            damage_Multiple_Origin = meleeInfo.damage_Multiple_Origin;
+            _damage_Multiple_ = meleeInfo._damage_Multiple_;
 
             if (meleeInfo.explosionInfo != null)
             {
@@ -258,19 +207,20 @@ public sealed class SkillInfo
 
         public sealed class LevelUpData
         {
+            private int _level_;
             public int level
             {
-                get => level_Origin;
+                get => _level_;
 
                 set
                 {
-                    level_Origin = value;
+                    _level_ = value;
 
-                    damage = damage_Origin * level_Origin;
+                    damage = _damage_ * _level_;
 
                     if (explosionInfo != null)
                     {
-                        explosionInfo.level = level_Origin;
+                        explosionInfo.level = _level_;
                     }
 
                     if (statusEffectInfos != null)
@@ -279,17 +229,15 @@ public sealed class SkillInfo
 
                         for (int index = 0; index < count; ++index)
                         {
-                            statusEffectInfos[index].level = level_Origin;
+                            statusEffectInfos[index].level = _level_;
                         }
                     }
                 }
             }
 
-            private int level_Origin;
+            private float _damage_;
 
             public float damage { get; private set; }
-
-            private float damage_Origin;
 
             public ExplosionInfo.LevelUpData explosionInfo { get; private set; }
 
@@ -297,11 +245,11 @@ public sealed class SkillInfo
 
             public LevelUpData(float damage, ExplosionInfo.LevelUpData explosionInfo, List<StatusEffectInfo.LevelUpData> statusEffectInfos)
             {
-                level_Origin = 1;
+                _level_ = 1;
+
+                _damage_ = damage;
 
                 this.damage = damage;
-
-                damage_Origin = damage;
 
                 if (explosionInfo != null)
                 {
@@ -316,11 +264,11 @@ public sealed class SkillInfo
 
             public LevelUpData(LevelUpData levelUpData)
             {
-                level_Origin = levelUpData.level_Origin;
+                _level_ = levelUpData._level_;
+
+                _damage_ = levelUpData._damage_;
 
                 damage = levelUpData.damage;
-
-                damage_Origin = levelUpData.damage_Origin;
 
                 if (levelUpData.explosionInfo != null)
                 {
@@ -363,65 +311,65 @@ public sealed class SkillInfo
     {
         public ProjectileCode projectileCode { get; private set; }
 
+        private float _division_Origin;
+
+        private float _division_;
+
         public float division
         {
-            get => division_Calculated;
+            get => _division_;
 
             private set
             {
-                division_Origin = value;
+                _division_Origin = value;
 
-                division_Calculated = division_Origin * division_Multiple_Origin;
+                _division_ = _division_Origin * _division_Multiple_;
             }
         }
 
-        private float division_Origin;
-
-        private float division_Calculated;
+        private float _division_Multiple_;
 
         public float division_Multiple
         {
-            get => division_Multiple_Origin;
+            get => _division_Multiple_;
 
             set
             {
-                division_Multiple_Origin = value;
+                _division_Multiple_ = value;
 
-                division_Calculated = division_Origin * division_Multiple_Origin;
+                _division_ = _division_Origin * _division_Multiple_;
             }
         }
 
-        private float division_Multiple_Origin;
+        private float _diffusion_Origin;
+
+        private float _diffusion_;
 
         public float diffusion
         {
-            get => diffusion_Calculated;
+            get => _diffusion_;
 
             private set
             {
-                diffusion_Origin = value;
+                _diffusion_Origin = value;
 
-                diffusion_Calculated = diffusion_Origin * diffusion_Multiple_Origin;
+                _diffusion_ = _diffusion_Origin * _diffusion_Multiple_;
             }
         }
 
-        private float diffusion_Origin;
-
-        private float diffusion_Calculated;
+        private float _diffusion_Multiple_;
 
         public float diffusion_Multiple
         {
-            get => diffusion_Multiple_Origin;
+            get => _diffusion_Multiple_;
 
             set
             {
-                diffusion_Multiple_Origin = value;
+                _diffusion_Multiple_ = value;
 
-                diffusion_Calculated = diffusion_Origin * diffusion_Multiple_Origin;
+                _diffusion_ = _diffusion_Origin * _diffusion_Multiple_;
             }
         }
-
-        private float diffusion_Multiple_Origin;
 
         public ProjectileInfo projectileInfo { get; private set; }
 
@@ -429,17 +377,17 @@ public sealed class SkillInfo
         {
             projectileCode = rangedData.projectileCode;
 
-            division_Origin = rangedData.division;
+            _division_Origin = rangedData.division;
 
-            division_Calculated = rangedData.division;
+            _division_ = rangedData.division;
 
-            division_Multiple_Origin = 1f;
+            _division_Multiple_ = 1f;
 
-            diffusion_Origin = rangedData.diffusion;
+            _diffusion_Origin = rangedData.diffusion;
 
-            diffusion_Calculated = rangedData.diffusion;
+            _diffusion_ = rangedData.diffusion;
 
-            diffusion_Multiple_Origin = 1f;
+            _diffusion_Multiple_ = 1f;
 
             projectileInfo = new ProjectileInfo(rangedData.projectileData);
         }
@@ -448,49 +396,49 @@ public sealed class SkillInfo
         {
             projectileCode = rangedInfo.projectileCode;
 
-            division_Origin = rangedInfo.division;
+            _division_Origin = rangedInfo.division;
 
-            division_Calculated = rangedInfo.division;
+            _division_ = rangedInfo.division;
 
-            division_Multiple_Origin = rangedInfo.division_Multiple_Origin;
+            _division_Multiple_ = rangedInfo._division_Multiple_;
 
-            diffusion_Origin = rangedInfo.diffusion;
+            _diffusion_Origin = rangedInfo.diffusion;
 
-            diffusion_Calculated = rangedInfo.diffusion;
+            _diffusion_ = rangedInfo.diffusion;
 
-            diffusion_Multiple_Origin = rangedInfo.diffusion_Multiple_Origin;
+            _diffusion_Multiple_ = rangedInfo._diffusion_Multiple_;
 
             projectileInfo = new ProjectileInfo(rangedInfo.projectileInfo);
         }
 
         public sealed class LevelUpData
         {
+            private int _level_;
+
             public int level
             {
-                get => level_Origin;
+                get => _level_;
 
                 set
                 {
-                    level_Origin = value;
+                    _level_ = value;
 
-                    projectileInfo.level = level_Origin;
+                    projectileInfo.level = _level_;
                 }
             }
-
-            private int level_Origin;
 
             public ProjectileInfo.LevelUpData projectileInfo { get; private set; }
 
             public LevelUpData(ProjectileInfo.LevelUpData projectileInfo)
             {
-                level_Origin = 1;
+                _level_ = 1;
 
                 this.projectileInfo = new ProjectileInfo.LevelUpData(projectileInfo);
             }
 
             public LevelUpData(LevelUpData levelUpData)
             {
-                level_Origin = levelUpData.level;
+                _level_ = levelUpData.level;
 
                 projectileInfo = new ProjectileInfo.LevelUpData(levelUpData.projectileInfo);
             }
@@ -512,35 +460,33 @@ public sealed class SkillInfo
     {
         priority = skillData.priority;
 
-        range_Origin = skillData.range;
+        _range_Origin = skillData.range;
 
-        range_Calculated = skillData.range;
+        _range_ = skillData.range;
 
-        range_Multiple_Origin = 1f;
+        _range_Multiple_ = 1f;
 
-        cooldownTime_Origin = skillData.cooldownTime;
+        _cooldownTime_Origin = skillData.cooldownTime;
 
-        cooldownTime_Calculated = skillData.cooldownTime;
+        _cooldownTime_ = skillData.cooldownTime;
 
-        cooldownSpeed_Origin = 1f;
+        _cooldownSpeed_ = 1f;
 
         castingMotionNumber = skillData.castingMotionNumber;
 
-        castingMotionTime_Origin = skillData.castingMotionTime;
+        castingMotionTime = skillData.castingMotionTime;
 
-        castingMotionTime_Calculated = skillData.castingMotionTime;
+        castingMotionSpeed = skillData.castingMotionSpeed;
 
-        castingMotionSpeed_Origin = 1f;
+        castingMotionLoopTime = skillData.castingMotionLoopTime;
 
         skillMotionNumber = skillData.skillMotionNumber;
 
-        skillMotionTime_Origin = skillData.skillMotionTime;
+        skillMotionTime = skillData.skillMotionTime;
 
-        skillMotionTime_Calculated = skillData.skillMotionTime;
+        skillMotionSpeed = skillData.castingMotionSpeed;
 
-        skillMotionSpeed_Origin = 1f;
-
-        skillMotionDuration = skillData.skillMotionDuration;
+        skillMotionLoopTime = skillData.skillMotionLoopTime;
 
         if (skillData.meleeData != null)
         {
@@ -571,35 +517,31 @@ public sealed class SkillInfo
     {
         priority = skillInfo.priority;
 
-        range_Origin = skillInfo.range_Origin;
+        _range_Origin = skillInfo._range_Origin;
 
-        range_Calculated = skillInfo.range_Calculated;
+        _range_ = skillInfo._range_;
 
-        range_Multiple_Origin = skillInfo.range_Multiple_Origin;
+        _range_Multiple_ = skillInfo._range_Multiple_;
 
-        cooldownTime_Origin = skillInfo.cooldownTime_Origin;
+        _cooldownTime_Origin = skillInfo._cooldownTime_Origin;
 
-        cooldownTime_Calculated = skillInfo.cooldownTime_Calculated;
+        _cooldownTime_ = skillInfo._cooldownTime_;
 
-        cooldownSpeed_Origin = skillInfo.cooldownSpeed_Origin;
+        _cooldownSpeed_ = skillInfo._cooldownSpeed_;
 
         castingMotionNumber = skillInfo.castingMotionNumber;
 
-        castingMotionTime_Origin = skillInfo.castingMotionTime_Origin;
+        castingMotionTime = skillInfo.castingMotionTime;
 
-        castingMotionTime_Calculated = skillInfo.castingMotionTime_Calculated;
-
-        castingMotionSpeed_Origin = skillInfo.castingMotionSpeed_Origin;
+        castingMotionSpeed = skillInfo.castingMotionSpeed;
 
         skillMotionNumber = skillInfo.skillMotionNumber;
 
-        skillMotionTime_Origin = skillInfo.skillMotionTime_Origin;
+        skillMotionTime = skillInfo.skillMotionTime;
 
-        skillMotionTime_Calculated = skillInfo.skillMotionTime_Calculated;
+        skillMotionSpeed = skillInfo.skillMotionSpeed;
 
-        skillMotionSpeed_Origin = skillInfo.skillMotionSpeed_Origin;
-
-        skillMotionDuration = skillInfo.skillMotionDuration;
+        skillMotionLoopTime = skillInfo.skillMotionLoopTime;
 
         if (skillInfo.meleeInfo != null)
         {
@@ -626,27 +568,29 @@ public sealed class SkillInfo
 
     public void SetCoolTimer()
     {
-        cooldownTimer = cooldownTime_Calculated;
+        cooldownTimer = _cooldownTime_;
     }
 
     public sealed class LevelUpData
     {
+        private int _level_;
+
         public int level
         {
-            get => level_Origin;
+            get => _level_;
 
             set
             {
-                level_Origin = value;
+                _level_ = value;
 
                 if (meleeInfo != null)
                 {
-                    meleeInfo.level = level_Origin;
+                    meleeInfo.level = _level_;
                 }
 
                 if (rangedInfo != null)
                 {
-                    rangedInfo.level = level_Origin;
+                    rangedInfo.level = _level_;
                 }
 
                 if (statusEffectInfos != null)
@@ -655,13 +599,11 @@ public sealed class SkillInfo
 
                     for (int index = 0; index < count; ++index)
                     {
-                        statusEffectInfos[index].level = level_Origin;
+                        statusEffectInfos[index].level = _level_;
                     }
                 }
             }
         }
-
-        private int level_Origin;
 
         public MeleeInfo.LevelUpData meleeInfo { get; private set; } = null;
 
@@ -671,7 +613,7 @@ public sealed class SkillInfo
 
         public LevelUpData(MeleeInfo.LevelUpData meleeInfo, RangedInfo.LevelUpData rangedInfo, List<StatusEffectInfo.LevelUpData> statusEffectInfos)
         {
-            level_Origin = 1;
+            _level_ = 1;
 
             if (meleeInfo != null)
             {
@@ -691,7 +633,7 @@ public sealed class SkillInfo
 
         public LevelUpData(LevelUpData levelUpData)
         {
-            level_Origin = levelUpData.level_Origin;
+            _level_ = levelUpData._level_;
 
             if (levelUpData.meleeInfo != null)
             {

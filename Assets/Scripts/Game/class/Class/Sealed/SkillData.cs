@@ -13,15 +13,23 @@ public sealed class SkillData
 
     public int castingMotionNumber { get; private set; }
 
+    public float castingMotionTime_Origin { get; private set; }
+
     public float castingMotionTime { get; private set; }
 
-    public float castingMotionDuration { get; private set; }
+    public float castingMotionSpeed { get; private set; }
+
+    public float castingMotionLoopTime { get; private set; }
 
     public int skillMotionNumber { get; private set; }
 
+    public float skillMotionTime_Origin { get; private set; }
+
     public float skillMotionTime { get; private set; }
 
-    public float skillMotionDuration { get; private set; }
+    public float skillMotionSpeed { get; private set; }
+
+    public float skillMotionLoopTime { get; private set; }
 
     public sealed class MeleeData
     {
@@ -107,7 +115,7 @@ public sealed class SkillData
 
     public List<StatusEffectData> statusEffectDatas { get; private set; } = null;
 
-    public SkillData(int priority, float range, float cooldownTime, int castingMotionNumber, float castingMotionTime, float castingMotionDuration, int skillMotionNumber, float skillMotionTime, float skillMotionDuration, MeleeData meleeData, RangedData rangedData, List<StatusEffectData> statusEffectDatas)
+    public SkillData(int priority, float range, float cooldownTime, int castingMotionNumber, float castingMotionTime_Origin, float castingMotionTime, float castingMotionLoopTime, int skillMotionNumber, float skillMotionTime_Origin, float skillMotionTime, float skillMotionLoopTime, MeleeData meleeData, RangedData rangedData, List<StatusEffectData> statusEffectDatas)
     {
         this.priority = priority;
 
@@ -117,31 +125,43 @@ public sealed class SkillData
 
         this.castingMotionNumber = castingMotionNumber;
 
-        this.castingMotionTime = castingMotionTime;
+        this.castingMotionTime_Origin = castingMotionTime_Origin;
 
-        if(castingMotionDuration > 0f)
+        if(castingMotionTime > 0f)
         {
-            this.castingMotionDuration = castingMotionDuration;
+            this.castingMotionTime = castingMotionTime;
+
+            castingMotionSpeed = castingMotionTime_Origin / castingMotionTime;
         }
 
         else
         {
-            this.castingMotionDuration = castingMotionTime;
+            this.castingMotionTime = castingMotionTime_Origin;
+
+            castingMotionSpeed = 1f;
         }
+
+        this.castingMotionLoopTime = castingMotionLoopTime;
 
         this.skillMotionNumber = skillMotionNumber;
 
-        this.skillMotionTime = skillMotionTime;
+        this.skillMotionTime_Origin = skillMotionTime_Origin;
 
-        if (skillMotionDuration > 0f)
+        if(skillMotionTime > 0f)
         {
-            this.skillMotionDuration = skillMotionDuration;
+            this.skillMotionTime = skillMotionTime;
+
+            skillMotionSpeed = skillMotionTime_Origin / skillMotionTime;
         }
 
         else
         {
-            this.skillMotionDuration = skillMotionTime;
+            this.skillMotionTime = skillMotionTime_Origin;
+
+            skillMotionSpeed = 0f;
         }
+
+        this.skillMotionLoopTime = skillMotionLoopTime;
 
         if (meleeData != null)
         {
@@ -167,15 +187,21 @@ public sealed class SkillData
 
         cooldownTime = skillData.cooldownTime;
 
+        castingMotionNumber = skillData.castingMotionNumber;
+
         castingMotionTime = skillData.castingMotionTime;
 
-        castingMotionDuration = skillData.castingMotionDuration;
+        castingMotionSpeed = skillData.skillMotionSpeed;
 
-        skillMotionTime = skillData.skillMotionTime;
+        castingMotionLoopTime = skillData.castingMotionLoopTime;
 
         skillMotionNumber = skillData.skillMotionNumber;
 
-        skillMotionDuration = skillData.skillMotionDuration;
+        skillMotionTime = skillData.skillMotionTime;
+
+        skillMotionSpeed = skillData.skillMotionSpeed;
+
+        skillMotionLoopTime = skillData.skillMotionLoopTime;
 
         if (skillData.meleeData != null)
         {

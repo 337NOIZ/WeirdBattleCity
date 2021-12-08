@@ -32,54 +32,54 @@ public class ExperienceInfo
 
     public class LevelUpData
     {
+        private int _level_;
+
         public int level
         {
-            get => level_Origin;
+            get => _level_;
 
             set
             {
-                level_Origin = value;
+                _level_ = value;
 
-                experiencePoint_Max = experiencePoint_Max_Origin * level_Origin;
+                experiencePoint_Max = _experiencePoint_Max_ * _level_;
 
-                experiencePoint_Drop = experiencePoint_Drop_Origin * level_Origin;
+                experiencePoint_Drop = _experiencePoint_Drop_ * _level_;
             }
         }
 
-        private int level_Origin;
+        private float _experiencePoint_Max_;
 
         public float experiencePoint_Max { get; private set; }
 
-        private float experiencePoint_Max_Origin;
+        private float _experiencePoint_Drop_;
 
         public float experiencePoint_Drop { get; private set; }
 
-        private float experiencePoint_Drop_Origin;
-
         public LevelUpData(float experiencePoint_Max, float experiencePoint_Drop)
         {
-            level_Origin = 1;
+            _level_ = 1;
+
+            _experiencePoint_Max_ = experiencePoint_Max;
 
             this.experiencePoint_Max = experiencePoint_Max;
 
-            experiencePoint_Max_Origin = experiencePoint_Max;
+            _experiencePoint_Drop_ = experiencePoint_Drop;
 
             this.experiencePoint_Drop = experiencePoint_Drop;
-
-            experiencePoint_Drop_Origin = experiencePoint_Drop;
         }
 
         public LevelUpData(LevelUpData levelUpData)
         {
-            level_Origin = levelUpData.level_Origin;
+            _level_ = levelUpData._level_;
+
+            _experiencePoint_Max_ = levelUpData._experiencePoint_Max_;
 
             experiencePoint_Max = levelUpData.experiencePoint_Max;
 
-            experiencePoint_Max_Origin = levelUpData.experiencePoint_Max_Origin;
+            _experiencePoint_Drop_ = levelUpData._experiencePoint_Drop_;
 
             experiencePoint_Drop = levelUpData.experiencePoint_Drop;
-
-            experiencePoint_Drop_Origin = levelUpData.experiencePoint_Drop_Origin;
         }
     }
 

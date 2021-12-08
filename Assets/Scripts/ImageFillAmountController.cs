@@ -9,39 +9,43 @@ public class ImageFillAmountController : MonoBehaviour
 {
     [SerializeField] private Image _image = null;
 
-    private float _fillAmount;
+    private float _fillAmount_;
 
     public float fillAmount
     {
         set
         {
-            _fillAmount = value;
+            _fillAmount_ = value;
 
-            _image.fillAmount = _fillAmount;
+            _image.fillAmount = _fillAmount_;
         }
     }
 
-    public IEnumerator FillByLerp(float targetFillAmount, float fillSpeed)
+    public void StartFillByLerp(float targetFillAmount, float fillSpeed)
     {
-        if(_fillByLerp_ != null)
+        if (fillByLerp != null)
         {
-            StopCoroutine(_fillByLerp_);
-
-            _fillByLerp_ = null;
-
-            yield return null;
+            StopFillByLerp();
         }
 
-        _fillByLerp_ = _FillByLerp_(targetFillAmount, fillSpeed);
+        fillByLerp = FillByLerp(targetFillAmount, fillSpeed);
 
-        StartCoroutine(_fillByLerp_);
-
-        while (_fillByLerp_ != null) yield return null;
+        StartCoroutine(fillByLerp);
     }
 
-    private IEnumerator _fillByLerp_ = null;
+    public void StopFillByLerp()
+    {
+        if (fillByLerp != null)
+        {
+            StopCoroutine(fillByLerp);
 
-    private IEnumerator _FillByLerp_(float targetFillAmount, float fillSpeed)
+            fillByLerp = null;
+        }
+    }
+
+    public IEnumerator fillByLerp { get; private set; } = null;
+
+    private IEnumerator FillByLerp(float targetFillAmount, float fillSpeed)
     {
         if(targetFillAmount > 1f)
         {
@@ -61,30 +65,30 @@ public class ImageFillAmountController : MonoBehaviour
             {
                 time += Time.deltaTime;
 
-                fillAmount = Mathf.Lerp(_fillAmount, targetFillAmount, time * fillSpeed);
+                fillAmount = Mathf.Lerp(_fillAmount_, targetFillAmount, time * fillSpeed);
 
                 yield return null;
             }
 
             float targetFillAmount_Adjusted = targetFillAmount;
 
-            if (_fillAmount < targetFillAmount)
+            if (_fillAmount_ < targetFillAmount)
             {
                 targetFillAmount_Adjusted -= 0.001f;
 
-                while (_fillAmount < targetFillAmount_Adjusted) yield return Fill();
+                while (_fillAmount_ < targetFillAmount_Adjusted) yield return Fill();
             }
 
-            else if(_fillAmount > targetFillAmount)
+            else if(_fillAmount_ > targetFillAmount)
             {
                 targetFillAmount_Adjusted += 0.001f;
 
-                while (_fillAmount > targetFillAmount_Adjusted) yield return Fill();
+                while (_fillAmount_ > targetFillAmount_Adjusted) yield return Fill();
             }
         }
 
         fillAmount = targetFillAmount;
 
-        _fillByLerp_ = null;
+        fillByLerp = null;
     }
 }

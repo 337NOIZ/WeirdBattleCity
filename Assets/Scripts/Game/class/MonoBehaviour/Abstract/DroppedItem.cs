@@ -11,7 +11,7 @@ public abstract class DroppedItem : Item
     {
         Player player = collision.gameObject.GetComponent<Player>();
 
-        if (player.GetItem(itemInfo) == true)
+        if (player.GetItem(_itemInfo) == true)
         {
             Disable();
         }
@@ -19,7 +19,7 @@ public abstract class DroppedItem : Item
 
     public override void Initialize(float stackCount)
     {
-        itemInfo = new ItemInfo(GameMaster.instance.gameData.levelData.itemDatas[itemCode], stackCount);
+        _itemInfo = new ItemInfo(GameMaster.instance.gameData.levelData.itemDatas[itemCode], stackCount);
 
         model.Spining(new Vector3(0f, 45f, 0f));
 

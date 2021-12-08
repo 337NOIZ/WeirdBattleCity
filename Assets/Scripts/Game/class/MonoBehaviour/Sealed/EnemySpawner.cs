@@ -22,7 +22,7 @@ public sealed class EnemySpawner : Spawner
 
         character.transform.localEulerAngles = Vector3.zero;
 
-        character.Initialize(characterLevel);
+        character.SetLevel(characterLevel);
 
         ++spawnCount;
     }

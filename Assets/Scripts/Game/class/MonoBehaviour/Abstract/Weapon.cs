@@ -7,36 +7,36 @@ public abstract class Weapon : InventoryItem
 {
     public override ItemType itemType => ItemType.weapon;
 
-    protected virtual ItemCode ammo_ItemCode { get; }
+    protected virtual ItemCode _ammo_itemCode { get; }
 
-    protected ItemInfo ammo;
+    protected ItemInfo _ammo;
 
-    protected float keepAimingTime = 1.5f;
+    protected float _keepAimingTime = 1.5f;
 
-    protected float keepAimingTimer = 0f;
+    protected float _keepAimingTimer = 0f;
 
-    protected bool isUsingSkill = false;
-
-    public override void Initialize()
+    public override void Awaken(Character character)
     {
-        base.Initialize();
+        base.Awaken(character);
 
-        ammo = player.SearchItem(ItemType.ammo, ammo_ItemCode);
+        _ammo = character.FindItem(ItemType.ammo, _ammo_itemCode);
     }
 
     public override IEnumerator Draw()
     {
-        model.SetActive(true);
+        _model.SetActive(true);
 
-        player.animator.SetBool(stance, true);
+        _animator.SetBool(_animatorStance, true);
 
-        player.animator.SetFloat("drawingMotionSpeed", drawingMotionSpeed);
+        _animator.SetBool("isDrawing", true);
 
-        player.animator.SetTrigger("drawingMotion");
+        _animator.SetFloat("drawingMotionSpeed", _itemInfo.drawingMotionSpeed);
 
-        player.animator.SetBool("isDrawing", true);
+        _animator.SetTrigger("drawingMotion");
 
-        while (player.animator.GetBool("isDrawing") == true) yield return null;
+        yield return CoroutineWizard.WaitForSeconds(_itemInfo.drawingMotionTime);
+
+        _animator.SetBool("isDrawing", false);
     }
 
     public override IEnumerator Store()
@@ -45,73 +45,25 @@ public abstract class Weapon : InventoryItem
 
         StopReload();
 
-        model.SetActive(false);
+        _model.SetActive(false);
 
-        player.animator.SetBool(stance, false);
+        _animator.SetBool(_animatorStance, false);
     }
 
-    public override IEnumerator Skill(int skillNumber)
+    public override void StartSkill(int skillNumber)
     {
-        if (skillRoutine == null)
-        {
-            StopKeepAming();
+        StopKeepAming();
 
-            StopReload();
+        StopReload();
 
-            skillRoutine = SkillRoutine(skillNumber);
-
-            StartCoroutine(skillRoutine);
-
-            while (skillRoutine != null) yield return null;
-        }
-    }
-
-    protected override IEnumerator SkillRoutine(int skillNumber)
-    {
-        player.animator.SetBool("isAiming", true);
-
-        yield return new WaitForSeconds(0.05f);
-
-        isUsingSkill = itemInfo.autoSkill;
-
-        do
-        {
-            yield return null;
-
-            if (itemInfo.ammoCount > 0)
-            {
-                --itemInfo.ammoCount;
-
-                LaunchProjectile(skillNumber);
-
-                player.animator.SetFloat("skillMotionSpeed", skillMotionSpeeds[skillNumber]);
-
-                player.animator.SetBool("isUsingSkill", true);
-
-                player.animator.SetInteger("skillNumber", skillNumber);
-
-                player.animator.SetTrigger("skillMotion");
-
-                yield return new WaitForSeconds(itemInfo.skillInfos[skillNumber].skillMotionTime);
-
-                player.animator.SetBool("isUsingSkill", false);
-            }
-        }
-        while (isUsingSkill == true);
-
-        skillRoutine = null;
+        base.StartSkill(skillNumber);
     }
 
     public override IEnumerator StopSkill(bool keepAiming)
     {
-        if (skillRoutine != null)
-        {
-            //player.animator.SetBool("isUsingSkill", false);
+        _skillWizard.TryStopSkill();
 
-            isUsingSkill = false;
-
-            while (skillRoutine != null) yield return null;
-        }
+        while (skill != null) yield return null;
 
         if (keepAiming == true)
         {
@@ -120,15 +72,68 @@ public abstract class Weapon : InventoryItem
 
         else
         {
-            keepAimingTimer = 0f;
+            _keepAimingTimer = 0f;
         }
+    }
+
+    public override IEnumerator Reload()
+    {
+        if (_reload == null)
+        {
+            yield return StopSkill(false);
+
+            _reload = Reload_();
+
+            StartCoroutine(_reload);
+
+            while (_reload != null) yield return null;
+        }
+    }
+
+    protected IEnumerator _reload = null;
+
+    protected virtual IEnumerator Reload_()
+    {
+        if (_ammo != null)
+        {
+            if (_itemInfo.ammoCount < _itemInfo.ammoCount_Max)
+            {
+                if (_ammo.stackCount > 0)
+                {
+                    _animator.SetBool("isReloading", true);
+
+                    _animator.SetFloat("reloadingMotionSpeed", _itemInfo.reloadingMotionSpeed);
+
+                    _animator.SetTrigger("reloadingMotion");
+
+                    yield return CoroutineWizard.WaitForSeconds(_itemInfo.reloadingMotionTime);
+
+                    _animator.SetBool("isReloading", false);
+
+                    float magazine_ammoCount_Needs = _itemInfo.ammoCount_Max - _itemInfo.ammoCount;
+
+                    _ammo.stackCount -= magazine_ammoCount_Needs;
+
+                    if (_ammo.stackCount < 0)
+                    {
+                        magazine_ammoCount_Needs += _ammo.stackCount;
+
+                        _ammo.stackCount = 0;
+                    }
+
+                    _itemInfo.ammoCount += magazine_ammoCount_Needs;
+                }
+            }
+        }
+
+        _reload = null;
     }
 
     protected void KeepAiming()
     {
         if (keepAimingRoutine != null)
         {
-            keepAimingTimer = keepAimingTime;
+            _keepAimingTimer = _keepAimingTime;
         }
 
         else
@@ -143,92 +148,40 @@ public abstract class Weapon : InventoryItem
 
     protected IEnumerator KeepAimingRoutine()
     {
-        keepAimingTimer = keepAimingTime;
+        _keepAimingTimer = _keepAimingTime;
 
-        while (keepAimingTimer > 0f)
+        while (_keepAimingTimer > 0f)
         {
             yield return null;
 
-            keepAimingTimer -= Time.deltaTime;
+            _keepAimingTimer -= Time.deltaTime;
         }
 
-        keepAimingTimer = 0f;
+        _keepAimingTimer = 0f;
 
-        player.animator.SetBool("isAiming", false);
+        _animator.SetBool("isAiming", false);
 
         keepAimingRoutine = null;
     }
 
     protected void StopKeepAming()
     {
-        if(keepAimingRoutine != null)
+        if (keepAimingRoutine != null)
         {
             StopCoroutine(keepAimingRoutine);
 
             keepAimingRoutine = null;
         }
     }
-
-    public override IEnumerator Reload()
-    {
-        if (reloadRoutine == null)
-        {
-            yield return StopSkill(false);
-
-            reloadRoutine = ReloadRoutine();
-
-            StartCoroutine(reloadRoutine);
-
-            while (reloadRoutine != null) yield return null;
-        }
-    }
-
-    protected IEnumerator reloadRoutine = null;
-
-    protected virtual IEnumerator ReloadRoutine()
-    {
-        if (ammo != null)
-        {
-            if (itemInfo.ammoCount < itemInfo.ammoCount_Max)
-            {
-                if (ammo.stackCount > 0)
-                {
-                    player.animator.SetFloat("reloadingMotionSpeed", reloadingMotionSpeed);
-
-                    player.animator.SetTrigger("reloadingMotion");
-
-                    player.animator.SetBool("isReloading", true);
-
-                    while (player.animator.GetBool("isReloading") == true) yield return null;
-
-                    float magazine_ammoCount_Needs = itemInfo.ammoCount_Max - itemInfo.ammoCount;
-
-                    ammo.stackCount -= magazine_ammoCount_Needs;
-
-                    if (ammo.stackCount < 0)
-                    {
-                        magazine_ammoCount_Needs += ammo.stackCount;
-
-                        ammo.stackCount = 0;
-                    }
-
-                    itemInfo.ammoCount += magazine_ammoCount_Needs;
-                }
-            }
-        }
-
-        reloadRoutine = null;
-    }
-
     protected void StopReload()
     {
-        if (reloadRoutine != null)
+        if (_reload != null)
         {
-            StopCoroutine(reloadRoutine);
+            StopCoroutine(_reload);
 
-            player.animator.SetBool("isReloading", false);
+            _animator.SetBool("isReloading", false);
 
-            reloadRoutine = null;
+            _reload = null;
         }
     }
 }

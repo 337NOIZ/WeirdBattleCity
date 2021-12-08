@@ -5,25 +5,30 @@ public sealed class CharacterInfo
 {
     public int characterLevel { get; private set; }
 
-    public float moneyAmount { get; set; }
+    public MovementInfo movementInfo { get; private set; } = null;
 
     public DamageableInfo damageableInfo { get; private set; } = null;
 
     public ExperienceInfo experienceInfo { get; private set; } = null;
 
+    public float moneyAmount { get; set; }
+
     public List<SkillInfo> skillInfos { get; private set; } = null;
 
-    public MovementInfo movementInfo { get; private set; } = null;
-
-    public TransformInfo transformInfo { get; private set; } = null;
+    public InventoryInfo inventoryInfo { get; private set; }
 
     public Dictionary<StatusEffectCode, List<StatusEffectInfo>> statusEffectInfos { get; private set; } = null;
 
-    public CharacterInfo(CharacterData characterData, TransformInfo transformInfo)
+    public TransformInfo transformInfo { get; set; } = null;
+
+    public CharacterInfo(CharacterData characterData)
     {
         characterLevel = 1;
 
-        moneyAmount = characterData.moneyAmount;
+        if (characterData.movementData != null)
+        {
+            movementInfo = new MovementInfo(characterData.movementData);
+        }
 
         if (characterData.damageableData != null)
         {
@@ -34,6 +39,8 @@ public sealed class CharacterInfo
         {
             experienceInfo = new ExperienceInfo(characterData.experienceData);
         }
+
+        moneyAmount = characterData.moneyAmount;
 
         var skillDatas = characterData.skillDatas;
 
@@ -49,14 +56,9 @@ public sealed class CharacterInfo
             }
         }
 
-        if (characterData.movementData != null)
+        if(characterData.inventoryData != null)
         {
-            movementInfo = new MovementInfo(characterData.movementData);
-        }
-
-        if (transformInfo != null)
-        {
-            this.transformInfo = new TransformInfo(transformInfo);
+            inventoryInfo = new InventoryInfo(characterData.inventoryData);
         }
     }
 
@@ -64,7 +66,10 @@ public sealed class CharacterInfo
     {
         characterLevel = characterInfo.characterLevel;
 
-        moneyAmount = characterInfo.moneyAmount;
+        if (characterInfo.movementInfo != null)
+        {
+            movementInfo = new MovementInfo(characterInfo.movementInfo);
+        }
 
         if (characterInfo.damageableInfo != null)
         {
@@ -76,14 +81,16 @@ public sealed class CharacterInfo
             experienceInfo = new ExperienceInfo(characterInfo.experienceInfo);
         }
 
-        if(characterInfo.skillInfos != null)
+        moneyAmount = characterInfo.moneyAmount;
+
+        if (characterInfo.skillInfos != null)
         {
             skillInfos = characterInfo.skillInfos.ConvertAll(skillInfo => new SkillInfo(skillInfo));
         }
 
-        if (characterInfo.movementInfo != null)
+        if (characterInfo.inventoryInfo != null)
         {
-            movementInfo = new MovementInfo(characterInfo.movementInfo);
+            inventoryInfo = new InventoryInfo(characterInfo.inventoryInfo);
         }
 
         if (characterInfo.transformInfo != null)
@@ -94,6 +101,11 @@ public sealed class CharacterInfo
 
     public void Initialize()
     {
+        if (movementInfo != null)
+        {
+            movementInfo.Initialize();
+        }
+
         if (damageableInfo != null)
         {
             damageableInfo.Initialize();
@@ -114,34 +126,31 @@ public sealed class CharacterInfo
             }
         }
 
-        if (movementInfo != null)
-        {
-            movementInfo.Initialize();
-        }
-
         statusEffectInfos = new Dictionary<StatusEffectCode, List<StatusEffectInfo>>();
     }
 
     public sealed class LevelUpData
     {
+        private int _level_;
+
         public int level
         {
-            get => level_Origin;
+            get => _level_;
 
             set
             {
-                level_Origin = value;
+                _level_ = value;
 
-                moneyAmount = moneyAmount_Origin * level_Origin;
+                moneyAmount = _moneyAmount_ * _level_;
 
                 if (damageableInfo_LevelUpData != null)
                 {
-                    damageableInfo_LevelUpData.level = level_Origin;
+                    damageableInfo_LevelUpData.level = _level_;
                 }
 
                 if(experienceInfo_LevelUpData != null)
                 {
-                    experienceInfo_LevelUpData.level = level_Origin;
+                    experienceInfo_LevelUpData.level = _level_;
                 }
 
                 if (skillInfo_LevelUpDatas != null)
@@ -150,31 +159,25 @@ public sealed class CharacterInfo
 
                     for (int index = 0; index < count; ++index)
                     {
-                        skillInfo_LevelUpDatas[index].level = level_Origin;
+                        skillInfo_LevelUpDatas[index].level = _level_;
                     }
                 }
             }
         }
 
-        private int level_Origin;
-
-        public float moneyAmount { get; private set; }
-
-        private float moneyAmount_Origin;
-
         public DamageableInfo.LevelUpData damageableInfo_LevelUpData { get; private set; } = null;
 
         public ExperienceInfo.LevelUpData experienceInfo_LevelUpData { get; private set; } = null;
 
+        private float _moneyAmount_;
+
+        public float moneyAmount { get; private set; }
+
         public List<SkillInfo.LevelUpData> skillInfo_LevelUpDatas { get; private set; } = null;
 
-        public LevelUpData(float moneyAmount, DamageableInfo.LevelUpData damageableInfo_LevelUpData, ExperienceInfo.LevelUpData experienceInfo_LevelUpData, List<SkillInfo.LevelUpData> skillInfo_LevelUpDatas)
+        public LevelUpData(DamageableInfo.LevelUpData damageableInfo_LevelUpData, ExperienceInfo.LevelUpData experienceInfo_LevelUpData, float moneyAmount, List<SkillInfo.LevelUpData> skillInfo_LevelUpDatas)
         {
-            level_Origin = 1;
-
-            this.moneyAmount = moneyAmount;
-
-            moneyAmount_Origin = moneyAmount;
+            _level_ = 1;
 
             if (damageableInfo_LevelUpData != null)
             {
@@ -186,6 +189,10 @@ public sealed class CharacterInfo
                 this.experienceInfo_LevelUpData = new ExperienceInfo.LevelUpData(experienceInfo_LevelUpData);
             }
 
+            _moneyAmount_ = moneyAmount;
+
+            this.moneyAmount = moneyAmount;
+
             if (skillInfo_LevelUpDatas != null)
             {
                 this.skillInfo_LevelUpDatas = new List<SkillInfo.LevelUpData>(skillInfo_LevelUpDatas);
@@ -194,11 +201,7 @@ public sealed class CharacterInfo
 
         public LevelUpData(LevelUpData levelUpData)
         {
-            level_Origin = levelUpData.level_Origin;
-
-            moneyAmount = levelUpData.moneyAmount;
-
-            moneyAmount_Origin = levelUpData.moneyAmount_Origin;
+            _level_ = levelUpData._level_;
 
             if (levelUpData.damageableInfo_LevelUpData != null)
             {
@@ -209,6 +212,10 @@ public sealed class CharacterInfo
             {
                 experienceInfo_LevelUpData = new ExperienceInfo.LevelUpData(levelUpData.experienceInfo_LevelUpData);
             }
+
+            _moneyAmount_ = levelUpData._moneyAmount_;
+
+            moneyAmount = levelUpData.moneyAmount;
 
             if (levelUpData.skillInfo_LevelUpDatas != null)
             {
@@ -221,8 +228,6 @@ public sealed class CharacterInfo
     {
         characterLevel += levelUpData.level;
 
-        moneyAmount += levelUpData.moneyAmount;
-
         if (levelUpData.damageableInfo_LevelUpData != null)
         {
             damageableInfo.LevelUp(levelUpData.damageableInfo_LevelUpData);
@@ -232,6 +237,8 @@ public sealed class CharacterInfo
         {
             experienceInfo.LevelUp(levelUpData.experienceInfo_LevelUpData);
         }
+
+        moneyAmount += levelUpData.moneyAmount;
 
         var skillInfo_LevelUpDatas = levelUpData.skillInfo_LevelUpDatas;
 

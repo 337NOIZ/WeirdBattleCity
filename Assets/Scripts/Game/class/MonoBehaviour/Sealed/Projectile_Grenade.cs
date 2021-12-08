@@ -46,7 +46,7 @@ public class Projectile_Grenade : Projectile
 
         particleEffec.transform.position = transform.position;
 
-        particleEffec.PlayParticleSystem();
+        particleEffec.Play();
 
         Disable();
     }

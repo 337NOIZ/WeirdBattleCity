@@ -25,12 +25,12 @@ public sealed class VirtualController : MonoBehaviour
 
     public void OnSelectWeaponNext()
     {
-        Player.instance.SelectWeaponNext();
+        Player.instance.SelectItemNext(ItemType.weapon);
     }
 
     public void OnSelectWeaponPrevious()
     {
-        Player.instance.SelectWeaponPrevious();
+        Player.instance.SelectItemNext(ItemType.weapon);
     }
 
     public void OnSwitchConsumableNext()

@@ -7,11 +7,11 @@ public sealed class TransformInfo
 
     public Vector3 eulerAngles { get; set; }
 
-    public TransformInfo()
+    public TransformInfo(Vector3 position, Vector3 eulerAngles)
     {
-        position = Vector3.zero;
+        this.position = position;
 
-        eulerAngles = Vector3.zero;
+        this.eulerAngles = eulerAngles;
     }
 
     public TransformInfo(TransformInfo transformInfo)

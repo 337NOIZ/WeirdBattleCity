@@ -1,5 +1,5 @@
 
 public class ParticleEffect_Explosion : ParticleEffect
 {
-    public override ParticleEffectCode particleEffectCode => ParticleEffectCode.explosion;
+    public override ParticleEffectCode particleEffectCode { get => ParticleEffectCode.explosion; }
 }

@@ -7,19 +7,9 @@ using UnityEngine.AI;
 
 public abstract class Enemy : Character
 {
-    public override CharacterType characterType => CharacterType.enemy;
-
-    [SerializeField] private Transform[] _muzzles = null;
-
-    [SerializeField] private Canvas _canvas = null;
+    public override CharacterType characterType { get => CharacterType.enemy; }
 
     private NavMeshAgent _navMeshAgent;
-
-    private Character target_Skill = null;
-
-    private Transform target_Skill_transform = null;
-
-    private Transform target_Skill_target_Aim = null;
 
     private bool _isMoving;
 
@@ -48,14 +38,14 @@ public abstract class Enemy : Character
         _rigidbody.angularVelocity = Vector3.zero;
     }
 
-    public override void Initialize()
+    public override void Awaken()
     {
-        base.Initialize();
-
         if (_canvas != null)
         {
             _canvas.worldCamera = Camera.main;
         }
+
+        base.Awaken();
 
         _navMeshAgent = GetComponent<NavMeshAgent>();
 
@@ -63,59 +53,31 @@ public abstract class Enemy : Character
         {
             _navMeshAgent.updateRotation = false;
         }
-
-        characterData = GameMaster.instance.gameData.levelData.characterDatas[characterCode];
     }
 
-    public override void Initialize(int characterLevel)
+    public override void Initialize()
     {
-        if (characterInfo == null)
+        _characterData = GameMaster.instance.gameData.levelData.characterDatas[characterCode];
+
+        _characterInfo = new CharacterInfo(_characterData);
+
+        base.Initialize();
+    }
+
+    public override void SetLevel(int characterLevel)
+    {
+        if (characterLevel != _characterInfo.characterLevel)
         {
-            characterInfo = new CharacterInfo(characterData, null);
-
-            damageableInfo = characterInfo.damageableInfo;
-
-            experienceInfo = characterInfo.experienceInfo;
-
-            skillInfos = characterInfo.skillInfos;
-
-            if(skillInfos != null)
-            {
-                skillInfos_Count = skillInfos.Count;
-            }
-
-            movementInfo = characterInfo.movementInfo;
+            LevelUp(characterLevel - _characterInfo.characterLevel);
         }
 
-        else
-        {
-            characterInfo.Initialize();
-        }
+        animator.SetFloat("movingMotionSpeed", _characterInfo.movementInfo.movingSpeed_Multiply);
 
-        if (characterLevel != characterInfo.characterLevel)
-        {
-            LevelUp(characterLevel - characterInfo.characterLevel);
-        }
+        _navMeshAgent.speed = _characterInfo.movementInfo.movingSpeed_Walk;
 
-        animator.SetFloat("movingMotionSpeed", characterInfo.movementInfo.movingSpeed_Multiply);
-
-        _navMeshAgent.speed = characterInfo.movementInfo.movingSpeed_Walk;
-
-        _healthPointBar.fillAmount = 1f;
-
-        StartCoroutine(_healthPointBar.FillByLerp(1f - damageableInfo.healthPoint / damageableInfo.healthPoint_Max, 0.1f));
+        _healthPointBar.StartFillByLerp(1f - damageableInfo.healthPoint / damageableInfo.healthPoint_Max, 0.1f);
 
         StartCoroutine(Thinking());
-    }
-
-    protected override IEnumerator SkillCooldown(SkillInfo skillInfo)
-    {
-        yield return base.SkillCooldown(skillInfo);
-
-        if (skillInfo.priority > this.skillInfo.priority)
-        {
-            OrderSkill(skillInfo);
-        }
     }
 
     protected override void Dead()
@@ -129,23 +91,25 @@ public abstract class Enemy : Character
     {
         --EnemySpawner.instance.spawnCount;
 
-        _ragDoll.AlignTransforms(_model);
+        TransformWizard.AlignTransforms(_ragDoll, _model);
 
         _model.gameObject.SetActive(false);
 
         _ragDoll.gameObject.SetActive(true);
 
-        if (attacker != null)
+        if (_attacker != null)
         {
-            if (experienceInfo != null)
+            if (_experienceInfo != null)
             {
-                attacker.GetExperiencePoint(experienceInfo.experiencePoint_Drop);
+                _attacker.GetExperiencePoint(_experienceInfo.experiencePoint_Drop);
             }
 
-            attacker.GetMoney(characterInfo.moneyAmount);
+            _attacker.GetMoney(_characterInfo.moneyAmount);
         }
 
-        yield return _healthPointBar.FillByLerp(1f - damageableInfo.healthPoint / damageableInfo.healthPoint_Max, 0.1f);
+        _healthPointBar.StartFillByLerp(1f - damageableInfo.healthPoint / damageableInfo.healthPoint_Max, 0.1f);
+
+        while (_healthPointBar.fillByLerp != null) yield return null;
 
         _canvas.gameObject.SetActive(false);
 
@@ -153,26 +117,31 @@ public abstract class Enemy : Character
 
         gameObject.SetActive(false);
 
-        _ragDoll.gameObject.SetActive(false);
-
         _model.gameObject.SetActive(true);
+
+        _ragDoll.gameObject.SetActive(false);
 
         _canvas.gameObject.SetActive(true);
 
-        animator.Rebind();
+        _healthPointBar.fillAmount = 1f;
 
-        target_Skill = null;
+        animatorWizard.Rebind();
 
-        target_Skill_transform = null;
-
-        target_Skill_target_Aim = null;
+        _attacker = null;
 
         _isMoving = false;
 
         ObjectPool.instance.Push(this);
     }
 
-    private IEnumerator Thinking()
+    protected override bool SearchSkillTarget()
+    {
+        skillTarget = Player.instance;
+
+        return true;
+    }
+
+    protected IEnumerator Thinking()
     {
         StartCoroutine(Tracking());
 
@@ -180,20 +149,14 @@ public abstract class Enemy : Character
 
         while (true)
         {
-            if (skillInfos[index].cooldownTimer == 0f)
+            if (_skillInfos[index].cooldownTimer == 0f)
             {
-                skillInfo = skillInfos[index];
-
-                _orderSkill_ = _OrderSkill_();
-
-                StartCoroutine(_orderSkill_);
-
-                while (_orderSkill_ != null) yield return null;
+                yield return OrderSkill(_skillInfos[index]);
 
                 index = 0;
             }
 
-            else if(++index >= skillInfos_Count)
+            else if (++index >= _skillInfos_Count)
             {
                 index = 0;
             }
@@ -202,15 +165,17 @@ public abstract class Enemy : Character
         }
     }
 
-    private IEnumerator Tracking()
+    protected IEnumerator Tracking()
     {
         while (true)
         {
-            if (target_Skill != null)
-            {
-                _navMeshAgent.SetDestination(target_Skill_transform.position);
+            SearchSkillTarget();
 
-                if(_isMoving == false)
+            while(_skillTarget != null)
+            {
+                _navMeshAgent.SetDestination(_skillTarget_transform.position);
+
+                if (_isMoving == false)
                 {
                     _navMeshAgent.velocity = Vector3.zero;
                 }
@@ -220,138 +185,60 @@ public abstract class Enemy : Character
                     transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(_navMeshAgent.desiredVelocity), Time.deltaTime * 2f);
                 }
 
-                _aim.position = target_Skill_target_Aim.position;
+                _aim.position = _skillTarget_aimTarget.position;
+
+                yield return null;
             }
 
             yield return null;
         }
     }
 
-    private void SetSkillTarget(Character target_Skill)
+    protected IEnumerator orderSkill = null;
+
+    protected IEnumerator OrderSkill(SkillInfo skillInfo)
     {
-        this.target_Skill = target_Skill;
+        yield return skillWizard.SetSkillWhenSkillEnd(skillInfo);
 
-        target_Skill_transform = target_Skill.transform;
+        _skillInfo = skillInfo;
 
-        target_Skill_target_Aim = target_Skill.target_Aim;
-    }
-
-    private void OrderSkill(SkillInfo skillInfo)
-    {
-        if (StopOrderSkill() == true)
-        {
-            this.skillInfo = skillInfo;
-
-            _orderSkill_ = _OrderSkill_();
-
-            StartCoroutine(_orderSkill_);
-        }
-    }
-
-    private IEnumerator _orderSkill_ = null;
-
-    private IEnumerator _OrderSkill_()
-    {
-        var range = skillInfo.range;
-
-        if(SkillValidityCheck() == false)
+        if (IsSkillTargetWithinRange(skillInfo.range) == false || IsSkillValid() == false)
         {
             isMoving = true;
 
-            do
+            while (true)
             {
                 yield return null;
+
+                if (IsSkillTargetWithinRange(skillInfo.range) == true && IsSkillValid() == true)
+                {
+                    break;
+                }
             }
-            while (SkillValidityCheck() == true);
 
             isMoving = false;
         }
 
-        if (skillInfo.castingMotionTime > 0f)
-        {
-            castingMotionRoutine = CastingMotionRoutine();
+        animatorWizard.AddEventAction(_animatorStance, SkillEventAction);
 
-            yield return castingMotionRoutine;
-        }
+        skillWizard.StartSkill(_animatorStance);
 
-        skillMotion = SkillMotion();
+        yield return skillWizard.WaitForSkillEnd();
 
-        yield return skillMotion;
+        animatorWizard.RemoveEventAction(_animatorStance);
 
-        _orderSkill_ = null;
+        _skillInfo.SetCoolTimer();
+
+        skillWizard.StartSkillCooldown(CompareSkillPriority);
+
+        orderSkill = null;
     }
 
-    protected virtual bool SkillValidityCheck()
+    protected void CompareSkillPriority(SkillInfo skillInfo)
     {
-        RaycastHit raycastHit;
-
-        if (Physics.Raycast(_target_Aim.position, target_Skill_target_Aim.position, out raycastHit, skillInfo.range, attackable) == true)
+        if(skillInfo.priority < _skillInfo.priority)
         {
-            if (raycastHit.collider.gameObject == target_Skill.gameObject)
-            {
-                return true;
-            }
+            //skillWizard.TryStopSkill();
         }
-
-        return false;
     }
-
-    private bool StopOrderSkill()
-    {
-        if (_orderSkill_ == null)
-        {
-            return true;
-        }
-
-        else if (castingMotionRoutine == null && skillMotion == null)
-        {
-            StopCoroutine(_orderSkill_);
-
-            return true;
-        }
-
-        return false;
-    }
-
-    private IEnumerator castingMotionRoutine = null;
-
-    private IEnumerator CastingMotionRoutine()
-    {
-        animator.SetFloat("castingMotionSpeed", skillInfo.castingMotionSpeed);
-
-        animator.SetInteger("castingMotionNumber", skillInfo.castingMotionNumber);
-
-        animator.SetTrigger("castingMotion");
-
-        animator.SetBool("isCasting", true);
-
-        while (animator.GetBool("isCasting") == true) yield return null;
-
-        castingMotionRoutine = null;
-    }
-
-    private IEnumerator skillMotion = null;
-
-    private IEnumerator SkillMotion()
-    {
-        animator.SetFloat("skillMotionSpeed", skillInfo.skillMotionSpeed);
-
-        animator.SetInteger("skillMotionNumber", skillInfo.skillMotionNumber);
-
-        animator.SetTrigger("skillMotion");
-
-        animator.SetBool("isUsingSkill", true);
-
-        animationTools.SetEventAction(SkillEffect);
-
-        while (animator.GetBool("isUsingSkill") == true) yield return null;
-
-        StartCoroutine(SkillCooldown(skillInfo));
-
-        target_Skill = null;
-
-        skillMotion = null;
-    }
-
-    protected virtual void SkillEffect() { }
 }

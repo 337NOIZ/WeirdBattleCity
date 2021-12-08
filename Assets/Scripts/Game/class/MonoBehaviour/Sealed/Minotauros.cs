@@ -1,15 +1,20 @@
 
+using System.Collections;
+
 using UnityEngine;
 
-public class Minotauros : Enemy
+public sealed class Minotauros : Enemy
 {
-    public override CharacterCode characterCode => CharacterCode.minotauros;
+    public override CharacterCode characterCode { get => CharacterCode.minotauros; }
 
-    [SerializeField] private Transform muzzle = null;
+    public override void Initialize()
+    {
+        base.Initialize();
+    }
 
-    protected override bool Invincible() { return false; }
+    protected override bool IsInvincible() { return false; }
 
-    protected override void SkillEffect()
+    protected override void SkillEventAction()
     {
 
     }

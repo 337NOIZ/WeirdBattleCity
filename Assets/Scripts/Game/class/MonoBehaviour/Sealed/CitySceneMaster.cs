@@ -10,10 +10,12 @@ public sealed class CitySceneMaster : SceneMaster
             GameMaster.instance.NewLevelInfo();
         }
 
+        Player.instance.Awaken();
+
         Player.instance.Initialize();
 
         yield return base.Opening();
 
-        yield return Stage.instance.Routine(SceneCode.city);
+        yield return StageMaster.instance.Routine(SceneCode.city);
     }
 }

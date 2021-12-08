@@ -29,12 +29,12 @@ public sealed class InputSystemMaster : MonoBehaviour
 
     public void OnSelectWeaponNext(InputValue inputValue)
     {
-        Player.instance.SelectWeaponNext();
+        Player.instance.SelectItemNext(ItemType.weapon);
     }
 
     public void OnSelectWeaponPrevious(InputValue inputValue)
     {
-        Player.instance.SelectWeaponPrevious();
+        Player.instance.SelectItemPrevious(ItemType.weapon);
     }
 
     public void OnSwitchConsumableNext(InputValue inputValue)

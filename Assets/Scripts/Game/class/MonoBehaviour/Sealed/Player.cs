@@ -1,15 +1,11 @@
 
-using System.Collections;
-
-using System.Collections.Generic;
-
 using UnityEngine;
 
 public sealed class Player : Character
 {
-    public override CharacterType characterType => CharacterType.player;
+    public override CharacterType characterType { get => CharacterType.player; }
 
-    public override CharacterCode characterCode => CharacterCode.player;
+    public override CharacterCode characterCode { get => CharacterCode.player; }
 
     public static Player instance { get; private set; }
 
@@ -17,29 +13,17 @@ public sealed class Player : Character
 
     [SerializeField] private MoneyBox _moneyBox = null;
 
-    [SerializeField] private GameObject _items = null;
+    private GroundedCheckSphere _groundedCheckSphere;
 
-    private GroundedCheckSphere groundedCheckSphere;
+    private PlayerInfo _playerInfo;
 
-    public PlayerData playerData { get; private set; }
+    private Vector2 _lookDirection = Vector2.zero;
 
-    public PlayerInfo playerInfo { get; private set; }
+    private Vector3 _movePosition = Vector3.zero;
 
-    private PlayerInfo.InventoryInfo inventoryInfo;
+    private Vector2 _moveDirection = Vector2.zero;
 
-    private Vector2 lookDirection = Vector2.zero;
-
-    private Vector3 movePosition = Vector3.zero;
-
-    private Vector2 moveDirection = Vector2.zero;
-
-    private bool isRunKeyPressed = false;
-
-    private Dictionary<ItemCode, InventoryItem> items = new Dictionary<ItemCode, InventoryItem>();
-
-    private Dictionary<ItemType, int> selectedItemNumbers;
-
-    private Dictionary<ItemType, InventoryItem> currentItems;
+    private bool _isRunKeyPressed = false;
 
     private void Awake()
     {
@@ -58,85 +42,60 @@ public sealed class Player : Character
         Move();
     }
 
+    public override void Awaken()
+    {
+        base.Awaken();
+
+        _groundedCheckSphere = GetComponent<GroundedCheckSphere>();
+    }
+
     public override void Initialize()
     {
-        base.Initialize();
+        _playerInfo = GameMaster.instance.gameInfo.levelInfo.playerInfo;
 
-        groundedCheckSphere = GetComponent<GroundedCheckSphere>();
+        _characterInfo = _playerInfo.characterInfo;
 
-        playerData = GameMaster.instance.gameData.levelData.playerData;
-
-        characterData = playerData.characterData;
-
-        playerInfo = GameMaster.instance.gameInfo.levelInfo.playerInfo;
-
-        characterInfo = playerInfo.characterInfo;
-
-        damageableInfo = characterInfo.damageableInfo;
-
-        experienceInfo = characterInfo.experienceInfo;
-
-        movementInfo = characterInfo.movementInfo;
-
-        inventoryInfo = playerInfo.inventoryInfo;
-
-        _healthPointBar.fillAmount = 1f;
-
-        StartCoroutine(_healthPointBar.FillByLerp(1f - damageableInfo.healthPoint / damageableInfo.healthPoint_Max, 0.1f));
-
-        _experiencePointBar.fillAmount = 1f;
-
-        StartCoroutine(_experiencePointBar.FillByLerp(1f - experienceInfo.experiencePoint / experienceInfo.experiencePoint_Max, 0.1f));
-
-        _moneyBox.moneyAmount = 0f;
-
-        _moneyBox.SetMoneyAmountWithDirect(characterInfo.moneyAmount, 1f);
-
-        var items = _items.GetComponentsInChildren<InventoryItem>();
-
-        int index_Max = items.Length;
-
-        for (int index = 0; index < index_Max; ++index)
+        if (_characterInfo.transformInfo == null)
         {
-            this.items.Add(items[index].itemCode, items[index]);
-
-            items[index].Initialize();
+            _characterInfo.transformInfo = new TransformInfo(transform.position, transform.localEulerAngles);
         }
 
-        selectedItemNumbers = new Dictionary<ItemType, int>()
+        base.Initialize();
+
+        if (_healthPointBar != null)
         {
-            { ItemType.consumable, 0 },
+            _healthPointBar.fillAmount = 1f;
 
-            { ItemType.weapon, 0 },
-        };
-
-        currentItems = new Dictionary<ItemType, InventoryItem>()
+            _healthPointBar.StartFillByLerp(1f - damageableInfo.healthPoint / damageableInfo.healthPoint_Max, 0.1f);
+        }
+        
+        if(_experiencePointBar != null)
         {
-            { ItemType.consumable, null },
+            _experiencePointBar.fillAmount = 1f;
 
-            { ItemType.weapon, null },
-        };
+            _experiencePointBar.StartFillByLerp(1f - _experienceInfo.experiencePoint / _experienceInfo.experiencePoint_Max, 0.1f);
+        }
+        
+        if(_moneyBox != null)
+        {
+            _moneyBox.moneyAmount = 0f;
 
-        int number = inventoryInfo.currentItemNumbers[ItemType.consumable];
-
-        SelectItem(ItemType.consumable, number);
-
-        SetCurrentItem(ItemType.consumable, number);
-
-        number = inventoryInfo.currentItemNumbers[ItemType.weapon];
-
-        SelectItem(ItemType.weapon, number);
-
-        SetCurrentItem(ItemType.weapon, number);
-
-        StartCoroutine(currentItems[ItemType.weapon].Draw());
+            _moneyBox.SetMoneyAmountWithDirect(_characterInfo.moneyAmount, 1f);
+        }
     }
 
     public override void LevelUp(int characterLevel)
     {
         base.LevelUp(characterLevel);
 
-        StartCoroutine(_healthPointBar.FillByLerp(1f - damageableInfo.healthPoint / damageableInfo.healthPoint_Max, 0.1f));
+        _healthPointBar.StartFillByLerp(1f - damageableInfo.healthPoint / damageableInfo.healthPoint_Max, 0.1f);
+    }
+
+    public override void GetMoney(float moneyAmount)
+    {
+        _characterInfo.moneyAmount += moneyAmount;
+
+        _moneyBox.SetMoneyAmountWithDirect(_characterInfo.moneyAmount, 1f);
     }
 
     protected override void Dead()
@@ -146,18 +105,18 @@ public sealed class Player : Character
 
     private void GroundedCheck()
     {
-        if (groundedCheckSphere.isGrounded == true)
+        if (_groundedCheckSphere.isGrounded == true)
         {
-            movementInfo.jumpCount = 0;
+            _movementInfo.jumpCount = 0;
 
             animator.SetBool("isGrounded", true);
         }
 
         else
         {
-            if (movementInfo.jumpCount == 0)
+            if (_movementInfo.jumpCount == 0)
             {
-                ++movementInfo.jumpCount;
+                ++_movementInfo.jumpCount;
             }
 
             animator.SetBool("isGrounded", false);
@@ -166,26 +125,26 @@ public sealed class Player : Character
 
     public void Look(Vector2 lookDirection)
     {
-        this.lookDirection = lookDirection;
+        _lookDirection = lookDirection;
     }
 
     private void Look()
     {
-        if (lookDirection != Vector2.zero)
+        if (_lookDirection != Vector2.zero)
         {
-            playerInfo.cameraPivot_LocalEulerAngles += new Vector3(lookDirection.y, lookDirection.x, 0f) * playerInfo.cameraPivot_Sensitivity * Time.deltaTime;
+            _playerInfo.cameraPivot_LocalEulerAngles += new Vector3(_lookDirection.y, _lookDirection.x, 0f) * _playerInfo.cameraPivot_Sensitivity * Time.deltaTime;
 
-            playerInfo.cameraPivot_LocalEulerAngles = new Vector3(Mathf.Clamp(playerInfo.cameraPivot_LocalEulerAngles.x, -55f, 55f), playerInfo.cameraPivot_LocalEulerAngles.y, playerInfo.cameraPivot_LocalEulerAngles.z);
+            _playerInfo.cameraPivot_LocalEulerAngles = new Vector3(Mathf.Clamp(_playerInfo.cameraPivot_LocalEulerAngles.x, -55f, 55f), _playerInfo.cameraPivot_LocalEulerAngles.y, _playerInfo.cameraPivot_LocalEulerAngles.z);
         }
 
-        _thirdPersonCamera.transform.localEulerAngles = playerInfo.cameraPivot_LocalEulerAngles;
+        _thirdPersonCamera.transform.localEulerAngles = _playerInfo.cameraPivot_LocalEulerAngles;
 
         _aim.position = _thirdPersonCamera.GetAimPosition();
     }
 
     public void Move(Vector2 moveDirection)
     {
-        this.moveDirection = moveDirection;
+        _moveDirection = moveDirection;
     }
 
     private void Move()
@@ -194,46 +153,46 @@ public sealed class Player : Character
 
         Vector3 cameraRight = new Vector3(_thirdPersonCamera.transform.right.x, 0f, _thirdPersonCamera.transform.right.z).normalized;
 
-        if (moveDirection == Vector2.zero)
+        if (_moveDirection == Vector2.zero)
         {
             animator.SetFloat("movingMotionSpeed", 0f);
         }
 
         else
         {
-            movePosition = cameraForward * moveDirection.y + cameraRight * moveDirection.x;
+            _movePosition = cameraForward * _moveDirection.y + cameraRight * _moveDirection.x;
 
-            float movingSpeed = movementInfo.movingSpeed_Walk;
+            float movingSpeed = _movementInfo.movingSpeed_Walk;
 
-            animator.SetFloat("movingMotionSpeed", movementInfo.movingSpeed_Multiply);
+            animator.SetFloat("movingMotionSpeed", _movementInfo.movingSpeed_Multiply);
 
             if (animator.GetBool("isAiming") == false)
             {
-                if (isRunKeyPressed == false)
+                if (_isRunKeyPressed == false)
                 {
                     animator.SetFloat("movingDirection_X", 1f);
                 }
 
                 else
                 {
-                    movingSpeed = movementInfo.movingSpeed_Run;
+                    movingSpeed = _movementInfo.movingSpeed_Run;
 
                     animator.SetFloat("movingDirection_X", 2f);
                 }
 
                 animator.SetFloat("movingDirection_Y", 0f);
 
-                animator.transform.forward = movePosition;
+                animator.transform.forward = _movePosition;
             }
 
             else
             {
-                animator.SetFloat("movingDirection_X", movePosition.z);
+                animator.SetFloat("movingDirection_X", _movePosition.z);
 
-                animator.SetFloat("movingDirection_Y", -movePosition.x);
+                animator.SetFloat("movingDirection_Y", -_movePosition.x);
             }
 
-            GetComponent<Rigidbody>().MovePosition(GetComponent<Rigidbody>().position + movePosition * movingSpeed * movementInfo.movingSpeed_Multiply * Time.deltaTime);
+            GetComponent<Rigidbody>().MovePosition(GetComponent<Rigidbody>().position + _movePosition * movingSpeed * _movementInfo.movingSpeed_Multiply * Time.deltaTime);
         }
 
         if (animator.GetBool("isAiming") == true)
@@ -241,23 +200,23 @@ public sealed class Player : Character
             animator.transform.forward = cameraForward;
         }
 
-        playerInfo.animator_LocalEulerAngles = animator.transform.localEulerAngles;
+        _playerInfo.animator_LocalEulerAngles = animator.transform.localEulerAngles;
     }
 
     public void Run()
     {
-        isRunKeyPressed = !isRunKeyPressed;
+        _isRunKeyPressed = !_isRunKeyPressed;
     }
 
     public void Jump()
     {
-        if (movementInfo.jumpCount < movementInfo.jumpCount_Max)
+        if (_movementInfo.jumpCount < _movementInfo.jumpCount_Max)
         {
-            ++movementInfo.jumpCount;
+            ++_movementInfo.jumpCount;
 
             _rigidbody.velocity = Vector3.zero;
 
-            _rigidbody.AddForce(new Vector3(0f, movementInfo.jumpForce, 0f), ForceMode.Impulse);
+            _rigidbody.AddForce(new Vector3(0f, _movementInfo.jumpForce, 0f), ForceMode.Impulse);
 
             animator.SetBool("isGrounded", false);
 
@@ -265,102 +224,14 @@ public sealed class Player : Character
         }
     }
 
-    public ItemInfo SearchItem(ItemType itemType, ItemCode itemCode)
+    public void SelectItemNext(ItemType itemType)
     {
-        var itemInfos = inventoryInfo.itemInfos[itemType];
-
-        int count = itemInfos.Count;
-
-        for (int index = 0; index < count; ++index)
-        {
-            if (itemInfos[index].itemCode == itemCode)
-            {
-                return itemInfos[index];
-            }
-        }
-
-        return null;
+        SelectItem(itemType, selectedItemNumbers[itemType] + 1);
     }
 
-    public bool GetItem(ItemInfo itemInfo)
+    public void SelectItemPrevious(ItemType itemType)
     {
-        var itemInfo_ = SearchItem(itemInfo.itemType, itemInfo.itemCode);
-
-        if (itemInfo_ != null)
-        {
-            float stackCount_Max = itemInfo_.stackCount_Max;
-
-            if (itemInfo_.stackCount < stackCount_Max)
-            {
-                itemInfo_.stackCount += itemInfo.stackCount;
-
-                if (itemInfo_.stackCount > stackCount_Max)
-                {
-                    itemInfo_.stackCount = stackCount_Max;
-                }
-
-                return true;
-            }
-
-            return false;
-        }
-
-        inventoryInfo.itemInfos[itemInfo.itemType].Add(itemInfo);
-
-        return true;
-    }
-
-    public override void GetMoney(float moneyAmount)
-    {
-        characterInfo.moneyAmount += moneyAmount;
-
-        _moneyBox.SetMoneyAmountWithDirect(characterInfo.moneyAmount, 1f);
-    }
-
-    public void SelectWeaponNext()
-    {
-        SelectItemNext(ItemType.weapon);
-    }
-
-    public void SelectWeaponPrevious()
-    {
-        SelectItemPrevious(ItemType.weapon);
-    }
-
-    private int SelectItemNext(ItemType itemType)
-    {
-        return SelectItem(itemType, selectedItemNumbers[itemType] + 1);
-    }
-
-    private int SelectItemPrevious(ItemType itemType)
-    {
-        return SelectItem(itemType, selectedItemNumbers[itemType] - 1);
-    }
-
-    private int SelectItem(ItemType itemType, int number)
-    {
-        int number_max = inventoryInfo.itemInfos[itemType].Count - 1;
-
-        if (number > number_max)
-        {
-            number = 0;
-        }
-
-        else if (number < 0)
-        {
-            number = number_max;
-        }
-
-        return selectedItemNumbers[itemType] = number;
-    }
-
-    private void SetCurrentItem(ItemType itemType, int number)
-    {
-        inventoryInfo.currentItemNumbers[itemType] = number;
-
-        currentItems[itemType] = items[inventoryInfo.itemInfos[itemType][number].itemCode];
-
-        currentItems[itemType].Initialize(inventoryInfo.itemInfos[itemType][number]);
+        SelectItem(itemType, selectedItemNumbers[itemType] - 1);
     }
 
     public void SwitchConsumableNext()
@@ -379,7 +250,7 @@ public sealed class Player : Character
 
     public void SwitchWeapon()
     {
-        if (switchWeaponRoutine == null && inventoryInfo.currentItemNumbers[ItemType.weapon] != selectedItemNumbers[ItemType.weapon])
+        if (switchWeaponRoutine == null && _inventoryInfo.currentItemNumbers[ItemType.weapon] != selectedItemNumbers[ItemType.weapon])
         {
             switchWeaponRoutine = SwitchWeaponRoutine(selectedItemNumbers[ItemType.weapon]);
 
@@ -387,41 +258,18 @@ public sealed class Player : Character
         }
     }
 
-    private IEnumerator switchWeaponRoutine = null;
-
-    private IEnumerator SwitchWeaponRoutine(int number)
-    {
-        yield return currentItems[ItemType.weapon].Store();
-
-        SetCurrentItem(ItemType.weapon, number);
-
-        yield return currentItems[ItemType.weapon].Draw();
-
-        switchWeaponRoutine = null;
-    }
-
     public void ConsumableSkill(int skillNumber)
     {
-        Skill(ItemType.consumable, skillNumber);
+        ItemSkill(ItemType.consumable, skillNumber);
     }
 
     public void WeaponSkill(int skillNumber)
     {
-        Skill(ItemType.weapon, skillNumber);
-    }
-
-    private void Skill(ItemType itemType, int skillNumber)
-    {
-        StartCoroutine(currentItems[itemType].Skill(skillNumber));
+        ItemSkill(ItemType.weapon, skillNumber);
     }
 
     public void StopWeaponSkill(bool keepAiming)
     {
         StartCoroutine(currentItems[ItemType.weapon].StopSkill(keepAiming));
-    }
-
-    public void ReloadWeapon()
-    {
-        StartCoroutine(currentItems[ItemType.weapon].Reload());
     }
 }

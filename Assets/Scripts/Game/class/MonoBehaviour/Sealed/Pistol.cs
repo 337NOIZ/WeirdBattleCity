@@ -1,37 +1,55 @@
 
-using System.Collections.Generic;
+using System.Collections;
+
+using UnityEngine;
 
 public sealed class Pistol : Weapon
 {
-    public override ItemCode itemCode => ItemCode.pistol;
+    [SerializeField] private Muzzle _muzzle = null;
 
-    protected override ItemCode ammo_ItemCode => ItemCode.pistolAmmo;
+    public override ItemCode itemCode { get => ItemCode.pistol; }
 
-    public override void Initialize()
+    protected override ItemCode _ammo_itemCode { get => ItemCode.pistolAmmo; }
+
+    public override void Awaken(Character character)
     {
-        base.Initialize();
+        base.Awaken(character);
 
-        stance = "pistolStance";
-
-        drawingMotionTime = AnimationTools.FrameCountToSeconds(40);
-
-        reloadingMotionTime = AnimationTools.FrameCountToSeconds(125);
+        _animatorStance = "pistolStance";
     }
 
-    public override void Initialize(ItemInfo itemInfo)
+    protected override IEnumerator Skill(int skillNumber)
     {
-        base.Initialize(itemInfo);
+        _animator.SetBool("isAiming", true);
 
-        skillMotionTimes = new List<float>()
+        yield return new WaitForSeconds(0.05f);
+
+        switch (skillNumber)
         {
-            AnimationTools.FrameCountToSeconds(10),
-        };
+            case 0:
 
-        skillMotionSpeeds = new List<float>()
-        {
-            0f,
-        };
+                if (_itemInfo.ammoCount > 0)
+                {
+                    --_itemInfo.ammoCount;
 
-        Caching();
+                    _skillInfo = _skillInfos[skillNumber];
+
+                    _muzzle.LaunchProjectile(_character, _skillInfo.rangedInfo);
+
+                    _skillWizard.TrySetSkill(_skillInfo);
+
+                    _skillWizard.StartSkill(_animatorStance);
+
+                    yield return _skillWizard.WaitForSkillEnd();
+                }
+
+                break;
+
+            default:
+
+                break;
+        }
+
+        skill = null;
     }
 }

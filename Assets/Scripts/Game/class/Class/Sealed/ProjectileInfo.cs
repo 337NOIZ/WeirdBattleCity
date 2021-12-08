@@ -3,95 +3,95 @@ using System.Collections.Generic;
 
 public sealed class ProjectileInfo
 {
+    private float _force_Origin;
+
+    private float _force_;
+
     public float force
     {
-        get => force_Calculated;
+        get => _force_;
 
         set
         {
-            force_Origin = value;
+            _force_Origin = value;
 
-            force_Calculated = force_Origin * force_Multiple_Origin;
+            _force_ = _force_Origin * _force_Multiple_;
         }
     }
 
-    private float force_Origin;
-
-    private float force_Calculated;
+    private float _force_Multiple_;
 
     public float force_Multiple
     {
-        get => force_Multiple_Origin;
+        get => _force_Multiple_;
 
         set
         {
-            force_Multiple_Origin = value;
+            _force_Multiple_ = value;
 
-            force_Calculated = force_Origin * force_Multiple_Origin;
+            _force_ = _force_Origin * _force_Multiple_;
         }
     }
 
-    private float force_Multiple_Origin;
+    private float _lifeTime_Origin;
+
+    private float _lifeTime_;
 
     public float lifeTime
     {
-        get => lifeTime_Calculated;
+        get => _lifeTime_;
 
         private set
         {
-            lifeTime_Origin = value;
+            _lifeTime_Origin = value;
 
-            lifeTime_Calculated = lifeTime_Origin * lifeTime_Multiple_Origin;
+            _lifeTime_ = _lifeTime_Origin * _lifeTime_Multiple_;
         }
     }
 
-    private float lifeTime_Origin;
-
-    private float lifeTime_Calculated;
+    private float _lifeTime_Multiple_;
 
     public float lifeTime_Multiple
     {
-        get => lifeTime_Multiple_Origin;
+        get => _lifeTime_Multiple_;
 
         set
         {
-            lifeTime_Multiple_Origin = value;
+            _lifeTime_Multiple_ = value;
 
-            lifeTime_Calculated = lifeTime_Origin * lifeTime_Multiple_Origin;
+            _lifeTime_ = _lifeTime_Origin * _lifeTime_Multiple_;
         }
     }
 
-    private float lifeTime_Multiple_Origin;
+    private float _damage_Origin;
+
+    private float _damage_;
 
     public float damage
     {
-        get => damage_Calculated;
+        get => _damage_;
 
         private set
         {
-            damage_Origin = value;
+            _damage_Origin = value;
 
-            damage_Calculated = damage_Origin * damage_Multiple_Origin;
+            _damage_ = _damage_Origin * _damage_Multiple_;
         }
     }
 
-    private float damage_Origin;
-
-    private float damage_Calculated;
+    private float _damage_Multiple_;
 
     public float damage_Multiple
     {
-        get => damage_Multiple_Origin;
+        get => _damage_Multiple_;
 
         set
         {
-            damage_Multiple_Origin = value;
+            _damage_Multiple_ = value;
 
-            damage_Calculated = damage_Origin * damage_Multiple_Origin;
+            _damage_ = _damage_Origin * _damage_Multiple_;
         }
     }
-
-    private float damage_Multiple_Origin;
 
     public DamageableInfo damageableInfo { get; private set; } = null;
 
@@ -101,23 +101,23 @@ public sealed class ProjectileInfo
 
     public ProjectileInfo(ProjectileData projectileData)
     {
-        force_Origin = projectileData.force;
+        _force_Origin = projectileData.force;
 
-        force_Calculated = projectileData.force;
+        _force_ = projectileData.force;
 
-        force_Multiple_Origin = 1f;
+        _force_Multiple_ = 1f;
 
-        lifeTime_Origin = projectileData.lifeTime;
+        _lifeTime_Origin = projectileData.lifeTime;
 
-        lifeTime_Calculated = projectileData.lifeTime;
+        _lifeTime_ = projectileData.lifeTime;
 
-        lifeTime_Multiple_Origin = 1f;
+        _lifeTime_Multiple_ = 1f;
 
-        damage_Origin = projectileData.damage;
+        _damage_Origin = projectileData.damage;
 
-        damage_Calculated = projectileData.damage;
+        _damage_ = projectileData.damage;
 
-        damage_Multiple_Origin = 1f;
+        _damage_Multiple_ = 1f;
 
         if (projectileData.damageableData != null)
         {
@@ -146,23 +146,23 @@ public sealed class ProjectileInfo
 
     public ProjectileInfo(ProjectileInfo projectileInfo)
     {
-        force_Origin = projectileInfo.force_Origin;
+        _force_Origin = projectileInfo._force_Origin;
 
-        force_Calculated = projectileInfo.force_Calculated;
+        _force_ = projectileInfo._force_;
 
-        force_Multiple_Origin = projectileInfo.force_Multiple_Origin;
+        _force_Multiple_ = projectileInfo._force_Multiple_;
 
-        lifeTime_Origin = projectileInfo.lifeTime_Origin;
+        _lifeTime_Origin = projectileInfo._lifeTime_Origin;
 
-        lifeTime_Calculated = projectileInfo.lifeTime_Calculated;
+        _lifeTime_ = projectileInfo._lifeTime_;
 
-        lifeTime_Multiple_Origin = projectileInfo.lifeTime_Multiple_Origin;
+        _lifeTime_Multiple_ = projectileInfo._lifeTime_Multiple_;
 
-        damage_Origin = projectileInfo.damage_Origin;
+        _damage_Origin = projectileInfo._damage_Origin;
 
-        damage_Calculated = projectileInfo.damage_Calculated;
+        _damage_ = projectileInfo._damage_;
 
-        damage_Multiple_Origin = projectileInfo.damage_Multiple_Origin;
+        _damage_Multiple_ = projectileInfo._damage_Multiple_;
 
         if (projectileInfo.explosionInfo != null)
         {
@@ -177,24 +177,26 @@ public sealed class ProjectileInfo
 
     public sealed class LevelUpData
     {
+        private int _level_;
+
         public int level
         {
-            get => level_Origin;
+            get => _level_;
 
             set
             {
-                level_Origin = value;
+                _level_ = value;
 
-                damage = damage_Origin * level_Origin;
+                damage = _damage_ * _level_;
 
                 if (damageableInfo != null)
                 {
-                    damageableInfo.level = level_Origin;
+                    damageableInfo.level = _level_;
                 }
 
                 if (explosionInfo != null)
                 {
-                    explosionInfo.level = level_Origin;
+                    explosionInfo.level = _level_;
                 }
 
                 if (statusEffectInfos != null)
@@ -203,17 +205,15 @@ public sealed class ProjectileInfo
 
                     for (int index = 0; index < count; ++index)
                     {
-                        statusEffectInfos[index].level = level_Origin;
+                        statusEffectInfos[index].level = _level_;
                     }
                 }
             }
         }
 
-        private int level_Origin;
+        private float _damage_;
 
         public float damage { get; private set; }
-
-        private float damage_Origin;
 
         public DamageableInfo.LevelUpData damageableInfo { get; private set; } = null;
 
@@ -223,11 +223,11 @@ public sealed class ProjectileInfo
 
         public LevelUpData(float damage, DamageableInfo.LevelUpData damageableInfo, ExplosionInfo.LevelUpData explosionInfo, List<StatusEffectInfo.LevelUpData> statusEffectInfos)
         {
-            level_Origin = 1;
+            _level_ = 1;
+
+            _damage_ = damage;
 
             this.damage = damage;
-
-            damage_Origin = damage;
 
             if (damageableInfo != null)
             {
@@ -247,11 +247,11 @@ public sealed class ProjectileInfo
 
         public LevelUpData(LevelUpData levelUpData)
         {
-            level_Origin = levelUpData.level_Origin;
+            _level_ = levelUpData._level_;
+
+            _damage_ = levelUpData._damage_;
 
             damage = levelUpData.damage;
-
-            damage_Origin = levelUpData.damage_Origin;
 
             if (levelUpData.damageableInfo != null)
             {

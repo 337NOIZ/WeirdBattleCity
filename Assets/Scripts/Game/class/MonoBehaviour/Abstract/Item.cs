@@ -10,11 +10,9 @@ public abstract class Item : MonoBehaviour
 
     public abstract ItemCode itemCode { get; }
 
-    protected ItemInfo itemInfo;
+    protected ItemInfo _itemInfo;
 
-    protected List<SkillInfo> skillInfos;
-
-    public virtual void Initialize() { }
+    public virtual void Awaken(Character character) { }
 
     public virtual void Initialize(ItemInfo itemInfo) { }
 

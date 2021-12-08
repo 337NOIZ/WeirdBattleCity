@@ -3,22 +3,24 @@ using UnityEngine;
 
 public sealed class CrazySpider : Enemy
 {
-    public override CharacterCode characterCode => CharacterCode.spider;
+    [SerializeField] private Muzzle _muzzle = null;
 
-    [SerializeField] private Transform muzzle = null;
+    public override CharacterCode characterCode { get => CharacterCode.spider; }
 
-    protected override bool Invincible() { return false; }
-
-    protected override void SkillEffect()
+    public override void Initialize()
     {
-        var rangedInfo = skillInfo.rangedInfo;
+        base.Initialize();
+    }
 
-        var projectile = ObjectPool.instance.Pop(rangedInfo.projectileCode);
+    protected override bool IsInvincible() { return false; }
 
-        projectile.transform.position = muzzle.position;
+    protected override bool IsSkillValid()
+    {
+        return PhysicsWizard.Linecast(_muzzle.transform.position, _skillTarget_aimTarget.position, _skillInfo.range, attackable, _skillTarget.gameObject);
+    }
 
-        projectile.transform.rotation = muzzle.rotation;
-
-        projectile.Launch(this, rangedInfo.projectileInfo);
+    protected override void SkillEventAction()
+    {
+        _muzzle.LaunchProjectile(this, _skillInfo.rangedInfo);
     }
 }
