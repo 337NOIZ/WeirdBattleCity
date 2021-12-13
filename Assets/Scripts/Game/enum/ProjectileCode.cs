@@ -1,13 +1,15 @@
 
 public enum ProjectileCode
 {
-    arrow,
+    Arrow,
 
-    gunBullet,
+    GunBullet,
 
-    grenade,
+    Grenade,
 
-    poisonBullet,
+    MinotaurossAxe,
 
-    spiderWebBullet,
+    PoisonBullet,
+
+    SpiderWeb,
 }

@@ -5,6 +5,8 @@ public sealed class LevelInfo
 {
     public PlayerInfo playerInfo { get; private set; }
 
+    public ShopInfo shopInfo { get; private set; }
+
     public Dictionary<SceneCode, StageInfo> stageInfos { get; private set; }
 
     public SceneCode stageSceneCode { get; set; }
@@ -13,7 +15,9 @@ public sealed class LevelInfo
 
     public LevelInfo(LevelData levelData)
     {
-        playerInfo = new PlayerInfo(levelData.characterDatas[CharacterCode.player]);
+        playerInfo = new PlayerInfo(levelData.characterDatas[CharacterCode.Player]);
+
+        shopInfo = new ShopInfo(levelData.shopData);
 
         stageInfos = new Dictionary<SceneCode, StageInfo>();
 
@@ -22,7 +26,7 @@ public sealed class LevelInfo
             stageInfos.Add(stageDatas.Key, new StageInfo(stageDatas.Value));
         }
 
-        stageSceneCode = SceneCode.city;
+        stageSceneCode = SceneCode.City;
 
         levelPlayTime = 0f;
     }
@@ -30,6 +34,8 @@ public sealed class LevelInfo
     public LevelInfo(LevelInfo levelInfo)
     {
         playerInfo = new PlayerInfo(levelInfo.playerInfo);
+
+        shopInfo = new ShopInfo(levelInfo.shopInfo);
 
         stageInfos = new Dictionary<SceneCode, StageInfo>(levelInfo.stageInfos);
 

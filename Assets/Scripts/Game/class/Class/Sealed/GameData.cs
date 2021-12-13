@@ -9,10 +9,10 @@ public sealed class GameData
 
     public GameData()
     {
-        sceneNames.Add(SceneCode.city, "City");
+        sceneNames.Add(SceneCode.City, "City");
 
-        sceneNames.Add(SceneCode.desert, "Desert");
+        sceneNames.Add(SceneCode.Desert, "Desert");
 
-        sceneNames.Add(SceneCode.title, "Title");
+        sceneNames.Add(SceneCode.Title, "Title");
     }
 }

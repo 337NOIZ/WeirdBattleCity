@@ -7,19 +7,24 @@ public abstract class DroppedItem : Item
 
     [SerializeField] private SpinAndFloat model = null;
 
+    private ItemData _itemData;
+
     private void OnCollisionEnter(Collision collision)
     {
-        Player player = collision.gameObject.GetComponent<Player>();
-
-        if (player.GetItem(_itemInfo) == true)
+        if (Player.instance.GetItem(_itemInfo) == true)
         {
             Disable();
         }
     }
 
-    public override void Initialize(float stackCount)
+    public void Awaken()
     {
-        _itemInfo = new ItemInfo(GameMaster.instance.gameData.levelData.itemDatas[itemCode], stackCount);
+        _itemData = GameMaster.instance.gameData.levelData.itemDatas[itemCode];
+    }
+
+    public void Initialize(int stackCount)
+    {
+        _itemInfo = new ItemInfo(_itemData, stackCount);
 
         model.Spining(new Vector3(0f, 45f, 0f));
 

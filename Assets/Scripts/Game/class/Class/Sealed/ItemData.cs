@@ -3,29 +3,31 @@ using System.Collections.Generic;
 
 public sealed class ItemData
 {
-    public ItemType itemType { get; private set; }
+    public readonly ItemType itemType;
 
-    public ItemCode itemCode { get; private set; }
+    public readonly ItemCode itemCode;
 
-    public float stackCount_Max { get; private set; }
+    public readonly int stackCount_Max;
 
-    public float ammoCount_Max { get; private set; }
+    public readonly int ammoCount_Max;
 
-    public float drawingMotionTime_Origin { get; private set; }
+    public readonly float drawingMotionTime_Origin;
 
-    public float drawingMotionTime { get; private set; }
+    public readonly float drawingMotionTime;
 
-    public float drawingMotionSpeed { get; private set; }
+    public readonly float drawingMotionSpeed;
 
-    public float reloadingMotionTime_Origin { get; private set; }
+    public readonly float reloadingMotionTime_Origin;
 
-    public float reloadingMotionTime { get; private set; }
+    public readonly float reloadingMotionTime;
 
-    public float reloadingMotionSpeed { get; private set; }
+    public readonly float reloadingMotionSpeed;
 
-    public List<SkillData> skillDatas { get; private set; } = null;
+    public readonly List<SkillData> skillDatas;
 
-    public ItemData(ItemType itemType, ItemCode itemCode, float stackCount_Max, float ammoCount_Max, float drawingMotionTime_Origin, float drawingMotionTime, float reloadingMotionTime_Origin,  float reloadingMotionTime, List<SkillData> skillDatas)
+    public readonly float price;
+
+    public ItemData(ItemType itemType, ItemCode itemCode, int stackCount_Max, int ammoCount_Max, float drawingMotionTime_Origin, float drawingMotionTime, float reloadingMotionTime_Origin,  float reloadingMotionTime, List<SkillData> skillDatas, float price)
     {
         this.itemType = itemType;
 
@@ -73,6 +75,8 @@ public sealed class ItemData
         {
             this.skillDatas = skillDatas.ConvertAll(skillData => new SkillData(skillData));
         }
+
+        this.price = price;
     }
 
     public ItemData(ItemData itemData)
@@ -97,5 +101,7 @@ public sealed class ItemData
         {
             skillDatas = itemData.skillDatas.ConvertAll(skillData => new SkillData(skillData));
         }
+
+        price = itemData.price;
     }
 }

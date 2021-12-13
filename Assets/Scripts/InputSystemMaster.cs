@@ -5,8 +5,6 @@ using UnityEngine.InputSystem;
 
 public sealed class InputSystemMaster : MonoBehaviour
 {
-    public static InputSystemMaster instance { get; private set; }
-
     public void OnMove(InputValue inputValue)
     {
         Player.instance.Move(inputValue.Get<Vector2>());
@@ -25,35 +23,5 @@ public sealed class InputSystemMaster : MonoBehaviour
     public void OnJump(InputValue inputValue)
     {
         Player.instance.Jump();
-    }
-
-    public void OnSelectWeaponNext(InputValue inputValue)
-    {
-        Player.instance.SelectItemNext(ItemType.weapon);
-    }
-
-    public void OnSelectWeaponPrevious(InputValue inputValue)
-    {
-        Player.instance.SelectItemPrevious(ItemType.weapon);
-    }
-
-    public void OnSwitchConsumableNext(InputValue inputValue)
-    {
-        Player.instance.SwitchConsumableNext();
-    }
-
-    public void OnSwitchConsumablePrevious(InputValue inputValue)
-    {
-        Player.instance.SwitchConsumablePrevious();
-    }
-
-    public void OnSwitchWeapon(InputValue inputValue)
-    {
-        Player.instance.SwitchWeapon();
-    }
-
-    public void OnReload()
-    {
-        Player.instance.ReloadWeapon();
     }
 }

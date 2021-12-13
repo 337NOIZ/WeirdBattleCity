@@ -5,50 +5,68 @@ using UnityEngine;
 
 public sealed class SubmachineGun : Weapon
 {
-    [SerializeField] private Muzzle _muzzle = null;
+    public override ItemCode itemCode => ItemCode.SubmachineGun;
 
-    public override ItemCode itemCode => ItemCode.submachineGun;
+    protected override string _motionTriggerName { get; } = "submachineGun";
 
-    protected override ItemCode _ammo_itemCode => ItemCode.submachineGunAmmo;
+    protected override ItemCode _ammo_itemCode => ItemCode.SubmachineGunAmmo;
 
-    private bool isSkillStopped = false;
+    private bool isUsingSkill = false;
 
     public override void Awaken(Character character)
     {
         base.Awaken(character);
 
-        _animatorStance = "submachineGunStance";
+        _muzzle.Awaken(_character.aim);
     }
 
-    protected override IEnumerator Skill(int skillNumber)
+    protected override IEnumerator Skill_(int skillNumber)
     {
         _animator.SetBool("isAiming", true);
 
         yield return new WaitForSeconds(0.05f);
 
-        if (_skillWizard.TrySetSkill(_skillInfo) == true)
+        if (_skillWizard.TrySetSkill(_skillInfos[skillNumber]) == true)
         {
-            _skillInfo = _skillInfos[skillNumber];
+            var skillInfo_RangedInfo = _skillInfos[skillNumber].rangedInfo;
+
+            var projectileInfo = skillInfo_RangedInfo.projectileInfo;
 
             switch (skillNumber)
             {
                 case 0:
 
-                    isSkillStopped = false;
+                    isUsingSkill = true;
 
-                    while (isSkillStopped == false)
+                    do
                     {
                         if (_itemInfo.ammoCount > 0)
                         {
                             --_itemInfo.ammoCount;
 
-                            _muzzle.LaunchProjectile(_character, _skillInfo.rangedInfo);
+                            _muzzle.LaunchProjectile
+                            (
+                                _character,
 
-                            _skillWizard.StartSkill(_animatorStance);
+                                (hitBox) =>
+                                {
+                                    hitBox.character.TakeAttack(_character, projectileInfo.damage, null);
+                                },
+
+                                skillInfo_RangedInfo
+                            );
+
+                            _skillWizard.StartSkill(_motionTriggerName);
 
                             yield return _skillWizard.WaitForSkillEnd();
                         }
+
+                        else
+                        {
+                            break;
+                        }
                     }
+                    while (isUsingSkill == true);
 
                     break;
 
@@ -58,13 +76,13 @@ public sealed class SubmachineGun : Weapon
             }
         }
 
-        skill = null;
+        _skill = null;
     }
 
-    public override IEnumerator StopSkill(bool keepAiming)
+    protected override IEnumerator StopSkill_(bool keepAiming)
     {
-        isSkillStopped = true;
+        isUsingSkill = false;
 
-        yield return base.StopSkill(keepAiming);
+        yield return base.StopSkill_(keepAiming);
     }
 }

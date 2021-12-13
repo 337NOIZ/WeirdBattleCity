@@ -1,71 +1,38 @@
 
 using System.Collections;
 
-using UnityEngine;
-
 public sealed class Shotgun : Weapon
 {
-    [SerializeField] private Muzzle _muzzle = null;
+    public override ItemCode itemCode { get => ItemCode.Shotgun; }
 
-    public override ItemCode itemCode => ItemCode.shotgun;
+    protected override string _motionTriggerName { get; } = "shotgun";
 
-    protected override ItemCode _ammo_itemCode => ItemCode.shotgunAmmo;
+    protected override ItemCode _ammo_itemCode { get => ItemCode.ShotgunAmmo; }
 
     public override void Awaken(Character character)
     {
         base.Awaken(character);
 
-        _animatorStance = "shotgunStance";
-    }
-
-    protected override IEnumerator Skill(int skillNumber)
-    {
-        _animator.SetBool("isAiming", true);
-
-        yield return new WaitForSeconds(0.05f);
-
-        switch (skillNumber)
-        {
-            case 0:
-
-                if (_itemInfo.ammoCount > 0)
-                {
-                    --_itemInfo.ammoCount;
-
-                    _skillInfo = _skillInfos[skillNumber];
-
-                    _muzzle.LaunchProjectile(_character, _skillInfo.rangedInfo);
-
-                    _skillWizard.TrySetSkill(_skillInfo);
-
-                    _skillWizard.StartSkill(_animatorStance);
-
-                    yield return _skillWizard.WaitForSkillEnd();
-                }
-
-                break;
-
-            default:
-
-                break;
-        }
-
-        skill = null;
+        _muzzle.Awaken(_character.aim);
     }
 
     protected override IEnumerator Reload_()
     {
+        StopSkill(false);
+
+        while (_stopSkill != null) yield return null;
+
         if (_ammo != null)
         {
             if (_itemInfo.ammoCount < _itemInfo.ammoCount_Max)
             {
                 if (_ammo.stackCount > 0)
                 {
-                    _animator.SetTrigger(_animatorStance);
+                    _animator.SetTrigger(_motionTriggerName);
 
                     _animator.SetFloat("reloadingMotionSpeed", _itemInfo.reloadingMotionSpeed);
 
-                    _animatorWizard.AddEventAction(_animatorStance, ReloadingEventAction);
+                    _animatorWizard.AddEventAction(_motionTriggerName, ReloadingEventAction);
 
                     _animator.SetBool("isReloading", true);
 
@@ -89,7 +56,7 @@ public sealed class Shotgun : Weapon
         {
             _animator.SetTrigger("finishReloading");
 
-            _animatorWizard.RemoveEventAction(_animatorStance);
+            _animatorWizard.RemoveEventAction(_motionTriggerName);
         }
     }
 }

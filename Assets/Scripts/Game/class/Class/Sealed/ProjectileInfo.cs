@@ -93,8 +93,6 @@ public sealed class ProjectileInfo
         }
     }
 
-    public DamageableInfo damageableInfo { get; private set; } = null;
-
     public ExplosionInfo explosionInfo { get; private set; } = null;
 
     public List<StatusEffectInfo> statusEffectInfos { get; private set; } = null;
@@ -118,11 +116,6 @@ public sealed class ProjectileInfo
         _damage_ = projectileData.damage;
 
         _damage_Multiple_ = 1f;
-
-        if (projectileData.damageableData != null)
-        {
-            damageableInfo = new DamageableInfo(projectileData.damageableData);
-        }
 
         if (projectileData.explosionData != null)
         {
@@ -189,24 +182,9 @@ public sealed class ProjectileInfo
 
                 damage = _damage_ * _level_;
 
-                if (damageableInfo != null)
-                {
-                    damageableInfo.level = _level_;
-                }
-
                 if (explosionInfo != null)
                 {
                     explosionInfo.level = _level_;
-                }
-
-                if (statusEffectInfos != null)
-                {
-                    int count = statusEffectInfos.Count;
-
-                    for (int index = 0; index < count; ++index)
-                    {
-                        statusEffectInfos[index].level = _level_;
-                    }
                 }
             }
         }
@@ -215,13 +193,9 @@ public sealed class ProjectileInfo
 
         public float damage { get; private set; }
 
-        public DamageableInfo.LevelUpData damageableInfo { get; private set; } = null;
-
         public ExplosionInfo.LevelUpData explosionInfo { get; private set; } = null;
 
-        public List<StatusEffectInfo.LevelUpData> statusEffectInfos { get; private set; } = null;
-
-        public LevelUpData(float damage, DamageableInfo.LevelUpData damageableInfo, ExplosionInfo.LevelUpData explosionInfo, List<StatusEffectInfo.LevelUpData> statusEffectInfos)
+        public LevelUpData(float damage, ExplosionInfo.LevelUpData explosionInfo)
         {
             _level_ = 1;
 
@@ -229,19 +203,9 @@ public sealed class ProjectileInfo
 
             this.damage = damage;
 
-            if (damageableInfo != null)
-            {
-                this.damageableInfo = new DamageableInfo.LevelUpData(damageableInfo);
-            }
-
             if (explosionInfo != null)
             {
                 this.explosionInfo = new ExplosionInfo.LevelUpData(explosionInfo);
-            }
-
-            if (statusEffectInfos != null)
-            {
-                this.statusEffectInfos = new List<StatusEffectInfo.LevelUpData>(statusEffectInfos);
             }
         }
 
@@ -253,19 +217,9 @@ public sealed class ProjectileInfo
 
             damage = levelUpData.damage;
 
-            if (levelUpData.damageableInfo != null)
-            {
-                damageableInfo = new DamageableInfo.LevelUpData(levelUpData.damageableInfo);
-            }
-
             if (levelUpData.explosionInfo != null)
             {
                 explosionInfo = new ExplosionInfo.LevelUpData(levelUpData.explosionInfo);
-            }
-
-            if (levelUpData.statusEffectInfos != null)
-            {
-                statusEffectInfos = new List<StatusEffectInfo.LevelUpData>(levelUpData.statusEffectInfos);
             }
         }
     }
@@ -277,18 +231,6 @@ public sealed class ProjectileInfo
         if (levelUpData.explosionInfo != null)
         {
             explosionInfo.LevelUp(levelUpData.explosionInfo);
-        }
-
-        var statusEffectInfos = levelUpData.statusEffectInfos;
-
-        if (statusEffectInfos != null)
-        {
-            int count = statusEffectInfos.Count;
-
-            for (int index = 0; index < count; ++index)
-            {
-                this.statusEffectInfos[index].LevelUp(statusEffectInfos[index]);
-            }
         }
     }
 }

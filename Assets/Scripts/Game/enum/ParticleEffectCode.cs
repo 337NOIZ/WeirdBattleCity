@@ -1,7 +1,13 @@
 
 public enum ParticleEffectCode
 {
-    explosion,
+    None,
 
-    poisonBullet_Hit,
+    Explosion,
+
+    GunBullet_Hit,
+
+    Minotauros_Dash,
+
+    PoisonBullet,
 }

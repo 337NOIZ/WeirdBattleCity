@@ -23,9 +23,9 @@ public sealed class InventoryInfo
 
         currentItemNumbers = new Dictionary<ItemType, int>()
         {
-            {ItemType.consumable, 0},
+            {ItemType.Consumable, 0},
 
-            {ItemType.weapon, 0},
+            {ItemType.Weapon, 0},
         };
     }
 

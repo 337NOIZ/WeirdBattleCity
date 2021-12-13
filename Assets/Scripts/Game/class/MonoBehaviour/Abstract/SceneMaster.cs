@@ -7,12 +7,19 @@ using UnityEngine.SceneManagement;
 
 public abstract class SceneMaster : MonoBehaviour
 {
-    private void Start()
+    public static SceneMaster instance { get; private set; }
+
+    protected void Awake()
     {
-        StartCoroutine(Opening());
+        instance = this;
     }
 
-    protected virtual IEnumerator Opening()
+    protected void Start()
+    {
+        StartCoroutine(_Opening_());
+    }
+
+    protected virtual IEnumerator _Opening_()
     {
         yield return ScreenEffecter.instance.primaryFadeScreen.Fade(2f, 0f, 1f, 2f);
 
@@ -21,12 +28,12 @@ public abstract class SceneMaster : MonoBehaviour
         AudioMaster.instance.PlayBackgroundMusic("sceneName", 1f);
     }
 
-    public void LoadScene(string sceneName)
+    public void LoadScene(SceneCode sceneCode)
     {
-        StartCoroutine(LoadScene_(sceneName));
+        StartCoroutine(_LoadScene_(GameMaster.instance.gameData.sceneNames[sceneCode]));
     }
 
-    private IEnumerator LoadScene_(string sceneName)
+    protected IEnumerator _LoadScene_(string sceneName)
     {
         AudioMaster.instance.FadeAudioListenerVolume(0f, 2f);
 

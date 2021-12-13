@@ -27,7 +27,7 @@ public sealed class AnimatorWizard : MonoBehaviour
     {
         animator.Rebind();
 
-        _eventActions = new Dictionary<string, UnityAction>();
+        _eventActions.Clear();
     }
 
     public void SetParameterTrue(string name)
@@ -45,21 +45,37 @@ public sealed class AnimatorWizard : MonoBehaviour
         animator.SetTrigger(name);
     }
 
-    public void AddEventAction(string animatorStance, UnityAction eventAction)
+    public void AddEventAction(string key, UnityAction eventAction)
     {
-        if (_eventActions.ContainsKey(animatorStance) == false)
+        if (_eventActions.ContainsKey(key) != true)
         {
-            _eventActions.Add(animatorStance, eventAction);
+            _eventActions.Add(key, eventAction);
+        }
+
+        else
+        {
+            _eventActions[key] = eventAction;
         }
     }
 
-    public void InvokeEventAction(string animatorStance)
+    public void InvokeEventAction(string key)
     {
-        _eventActions[animatorStance].Invoke();
+        if (_eventActions.ContainsKey(key) == true)
+        {
+            _eventActions[key].Invoke();
+        }
     }
 
-    public void RemoveEventAction(string animatorStance)
+    public void RemoveEventAction(string key)
     {
-        _eventActions.Remove(animatorStance);
+        if (_eventActions.ContainsKey(key) == true)
+        {
+            _eventActions.Remove(key);
+        }
+    }
+
+    public void ClearEventActions()
+    {
+        _eventActions.Clear();
     }
 }

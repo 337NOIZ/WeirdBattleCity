@@ -3,80 +3,95 @@ using System.Collections;
 
 using UnityEngine;
 
+using UnityEngine.Events;
+
 public abstract class Projectile : MonoBehaviour
 {
-    public virtual ProjectileCode projectileCode { get; }
+    [SerializeField] protected AttackBox _attackBox = null;
 
-    protected new Rigidbody rigidbody;
+    public abstract ProjectileCode projectileCode { get; }
 
-    private TrailRenderer trailRenderer;
+    protected Rigidbody _rigidbody;
 
-    private Vector3 rigidbody_Position_Previous;
+    protected TrailRenderer _trailRenderer;
 
-    private RaycastHit raycastHit;
+    protected UnityAction<HitBox> _actionOnHit;
 
-    private void Awake()
+    protected Vector3 _previousPosition;
+
+    protected RaycastHit _raycastHit;
+
+    public void Awaken()
     {
-        rigidbody = GetComponent<Rigidbody>();
+        _rigidbody = GetComponent<Rigidbody>();
 
-        trailRenderer = GetComponent<TrailRenderer>();
+        _trailRenderer = GetComponent<TrailRenderer>();
     }
 
-    public void Launch(Character attacker, ProjectileInfo projectileInfo)
+    public void Launch(Character attacker, UnityAction<HitBox> actionOnHit, ProjectileInfo projectileInfo)
     {
-        lauchRoutine = LauchRoutine(attacker, projectileInfo);
+        _attackBox.Initialize(attacker);
 
-        StartCoroutine(lauchRoutine);
+        _actionOnHit = actionOnHit;
+
+        _launch = Launch_(projectileInfo);
+
+        StartCoroutine(_launch);
     }
 
-    private IEnumerator lauchRoutine = null;
+    protected IEnumerator _launch = null;
 
-    protected virtual IEnumerator LauchRoutine(Character attacker, ProjectileInfo projectileInfo)
+    protected virtual IEnumerator Launch_(ProjectileInfo projectileInfo)
     {
-        var hostileLayer = attacker.attackable;
+        _rigidbody.velocity = transform.forward * projectileInfo.force;
 
-        yield return null;
+        _attackBox.StartTrailCasting(ActionOnHit, true);
 
-        rigidbody.velocity = transform.forward * projectileInfo.force;
+        yield return CoroutineWizard.WaitForSeconds(projectileInfo.lifeTime);
 
-        var lifeTimer = projectileInfo.lifeTime;
+        Disable();
+    }
 
-        while (lifeTimer > 0f)
+    protected virtual void ActionOnHit(HitBox hitBox)
+    {
+        if(hitBox != null)
         {
-            rigidbody_Position_Previous = rigidbody.position;
-
-            yield return null;
-
-            if (Physics.Linecast(rigidbody_Position_Previous, rigidbody.position, out raycastHit, hostileLayer) == true)
-            {
-                Character victim = raycastHit.collider.GetComponentInParent<Character>();
-
-                if (victim != null)
-                {
-                    victim.TakeAttack(attacker, projectileInfo.damage, projectileInfo.statusEffectInfos);
-                }
-
-                break;
-            }
-
-            lifeTimer -= Time.deltaTime;
+            _actionOnHit.Invoke(hitBox);
         }
 
         Disable();
     }
 
+    protected void PlayParticleEffect(Vector3 position, ParticleEffectCode particleEffectCode)
+    {
+        var particleEffect = ObjectPool.instance.Pop(particleEffectCode);
+
+        particleEffect.transform.position = position;
+
+        particleEffect.gameObject.SetActive(true);
+
+        particleEffect.Play();
+    }
+
     protected void Disable()
     {
-        if (lauchRoutine != null)
+        if (_launch != null)
         {
-            StopCoroutine(lauchRoutine);
+            StopCoroutine(_launch);
+
+            _launch = null;
         }
+
+        _attackBox.StopTrailCasting();
 
         transform.rotation = Quaternion.identity;
 
-        rigidbody.Sleep();
+        _rigidbody.Sleep();
 
-        trailRenderer.Clear();
+        if (_trailRenderer != null)
+        {
+            _trailRenderer.Clear();
+        }
 
         gameObject.SetActive(false);
 

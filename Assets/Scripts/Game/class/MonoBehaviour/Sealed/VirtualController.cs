@@ -3,68 +3,100 @@ using UnityEngine;
 
 public sealed class VirtualController : MonoBehaviour
 {
-    public void OnLook(Vector2 lookDirection)
+    public static VirtualController instance { get; private set; } = null;
+
+    public bool interactable = true;
+
+    private void Awake()
     {
-        Player.instance.Look(lookDirection);
+        instance = this;
     }
 
-    public void OnMove(Vector2 moveDirection)
+    public void Look(Vector2 lookDirection)
     {
-        Player.instance.Move(moveDirection);
+        if (interactable == true)
+        {
+            Player.instance.Look(lookDirection);
+        }
     }
 
-    public void OnRun()
+    public void Move(Vector2 moveDirection)
     {
-        Player.instance.Run();
+        if (interactable == true)
+        {
+            Player.instance.Move(moveDirection);
+        }
     }
 
-    public void OnJump()
+    public void Run()
     {
-        Player.instance.Jump();
+        if (interactable == true)
+        {
+            Player.instance.Run();
+        }
     }
 
-    public void OnSelectWeaponNext()
+    public void Jump()
     {
-        Player.instance.SelectItemNext(ItemType.weapon);
+        if (interactable == true)
+        {
+            Player.instance.Jump();
+        }
     }
 
-    public void OnSelectWeaponPrevious()
+    public void StartSwitchingWeaponNext()
     {
-        Player.instance.SelectItemNext(ItemType.weapon);
+        if (interactable == true)
+        {
+            Player.instance.StartSwitchingItemNext(ItemType.Weapon);
+        }
     }
 
-    public void OnSwitchConsumableNext()
+    public void StartSwitchingWeaponPrevious()
     {
-        Player.instance.SwitchConsumableNext();
+        if (interactable == true)
+        {
+            Player.instance.StartSwitchingItemPrevious(ItemType.Weapon);
+        }
     }
 
-    public void OnSwitchConsumablePrevious()
+    public void StartGrenadeSkill()
     {
-        Player.instance.SwitchConsumablePrevious();
+        if (interactable == true)
+        {
+            Player.instance.StartGrenadeSkill();
+        }
     }
 
-    public void OnSwitchWeapon()
+    public void StartMedikitSkill()
     {
-        Player.instance.SwitchWeapon();
+        if (interactable == true)
+        {
+            Player.instance.StartMedikitSkill();
+        }
     }
 
-    public void OnConsumableSkill(int skillNumer)
+    public void StartWeaponSkill(int skillNumer)
     {
-        Player.instance.ConsumableSkill(skillNumer);
+        if (interactable == true)
+        {
+            Player.instance.StartWeaponSkill(skillNumer);
+        }
     }
 
-    public void OnWeaponSkill(int skillNumer)
+    public void StopWeaponSkill()
     {
-        Player.instance.WeaponSkill(skillNumer);
+        if (interactable == true)
+        {
+            Player.instance.StopWeaponSkill();
+        }
     }
 
-    public void OnStopWeaponSkill()
+    public void StartReloadWeapon()
     {
-        Player.instance.StopWeaponSkill(true);
-    }
-
-    public void OnReload()
-    {
-        Player.instance.ReloadWeapon();
+        if (interactable == true)
+        {
+            Player.instance.StartReloadWeapon();
+        }
     }
 }

@@ -7,22 +7,26 @@ public sealed class EnemySpawner : Spawner
 
     protected override void Awake()
     {
-        base.Awake();
-
         instance = this;
+
+        base.Awake();
     }
 
     public void Spawn(CharacterCode characterCode, int characterLevel, int spotNumber)
     {
         var character = ObjectPool.instance.Pop(characterCode);
 
-        character.transform.parent = spots[spotNumber];
+        character.transform.parent = _spots[spotNumber];
 
         character.transform.localPosition = Vector3.zero;
 
         character.transform.localEulerAngles = Vector3.zero;
 
-        character.SetLevel(characterLevel);
+        character.gameObject.SetActive(true);
+
+        character.Initialize(characterLevel);
+
+        character.Launch();
 
         ++spawnCount;
     }

@@ -1,7 +1,9 @@
 
 public enum StatusEffectCode
 {
-    heal,
+    MovementSpeedDown,
 
-    slow,
+    MovementSpeedUp,
+
+    Healing,
 }

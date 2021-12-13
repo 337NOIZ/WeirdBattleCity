@@ -13,11 +13,9 @@ public sealed class GameMaster : MonoBehaviour
 {
     public static GameMaster instance { get; private set; } = null;
 
-    [Space]
+    [SerializeField] private int _targetFrameRate = 60;
 
-    [SerializeField] private int targetFrameRate = 60;
-
-    private string gameInfoPath;
+    private string _gameInfoPath;
 
     public Dictionary<string, Sprite> sprites { get; private set; } = new Dictionary<string, Sprite>();
 
@@ -64,9 +62,9 @@ public sealed class GameMaster : MonoBehaviour
 
         #endif
 
-        Application.targetFrameRate = targetFrameRate;
+        Application.targetFrameRate = _targetFrameRate;
 
-        gameInfoPath = Application.dataPath + "/GameInfo.cfg";
+        _gameInfoPath = Application.dataPath + "/GameInfo.cfg";
     }
 
     private void LoadResources()
@@ -119,7 +117,7 @@ public sealed class GameMaster : MonoBehaviour
 
     public void CheckGameInfo()
     {
-        if (new FileInfo(gameInfoPath).Exists == true)
+        if (new FileInfo(_gameInfoPath).Exists == true)
         {
             LoadGameInfo();
         }
@@ -134,7 +132,7 @@ public sealed class GameMaster : MonoBehaviour
 
     public void LoadGameInfo()
     {
-        gameInfo = JsonConvert.DeserializeObject<GameInfo>(System.Text.Encoding.UTF8.GetString(System.Convert.FromBase64String(File.ReadAllText(gameInfoPath))));
+        gameInfo = JsonConvert.DeserializeObject<GameInfo>(System.Text.Encoding.UTF8.GetString(System.Convert.FromBase64String(File.ReadAllText(_gameInfoPath))));
     }
 
     public void NewGameInfo()
@@ -144,7 +142,7 @@ public sealed class GameMaster : MonoBehaviour
 
     public void SaveGameInfo()
     {
-        File.WriteAllText(gameInfoPath, System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(gameInfo))));
+        File.WriteAllText(_gameInfoPath, System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(gameInfo))));
     }
 
     public void NewLevelInfo()
@@ -189,7 +187,7 @@ public sealed class GameMaster : MonoBehaviour
         }
     }
 
-    public void Quit()
+    public void QuitGame()
     {
         #if UNITY_EDITOR == true
 

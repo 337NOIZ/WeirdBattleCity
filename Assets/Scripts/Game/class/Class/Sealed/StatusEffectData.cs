@@ -1,7 +1,7 @@
 
 public sealed class StatusEffectData
 {
-    public StatusEffectCode statusEffectCode { get; private set; }
+    public readonly StatusEffectCode statusEffectCode;
 
     public float power { get; private set; }
 

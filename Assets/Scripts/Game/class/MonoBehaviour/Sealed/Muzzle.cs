@@ -1,6 +1,8 @@
 
 using UnityEngine;
 
+using UnityEngine.Events;
+
 public sealed class Muzzle : MonoBehaviour
 {
     private Transform _aim;
@@ -10,17 +12,15 @@ public sealed class Muzzle : MonoBehaviour
         _aim = aim;
     }
 
-    public void LaunchProjectile(Character attacker, SkillInfo.RangedInfo rangedInfo)
+    public void LaunchProjectile(Character attacker, UnityAction<HitBox> actionOnHit, SkillInfo.RangedInfo rangedInfo)
     {
         transform.LookAt(_aim);
-
-        Projectile projectile;
 
         int index_Max = Mathf.FloorToInt(rangedInfo.division);
 
         for (int index = 0; index < index_Max; ++index)
         {
-            projectile = ObjectPool.instance.Pop(rangedInfo.projectileCode);
+            var projectile = ObjectPool.instance.Pop(rangedInfo.projectileCode);
 
             projectile.transform.position = transform.position;
 
@@ -31,7 +31,9 @@ public sealed class Muzzle : MonoBehaviour
                 projectile.transform.rotation *= Quaternion.Euler(Random.insideUnitSphere * rangedInfo.diffusion);
             }
 
-            projectile.Launch(attacker, rangedInfo.projectileInfo);
+            projectile.gameObject.SetActive(true);
+
+            projectile.Launch(attacker, actionOnHit, rangedInfo.projectileInfo);
         }
     }
 }

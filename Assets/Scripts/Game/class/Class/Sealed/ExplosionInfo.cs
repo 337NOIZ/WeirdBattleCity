@@ -3,8 +3,6 @@ using System.Collections.Generic;
 
 public sealed class ExplosionInfo
 {
-    public ParticleEffectCode particleEffectCode { get; private set; }
-
     private float _range_Origin;
 
     private float _range_;
@@ -99,8 +97,6 @@ public sealed class ExplosionInfo
 
     public ExplosionInfo(ExplosionData explosionData)
     {
-        particleEffectCode = explosionData.particleEffectCode;
-
         _range_Origin = explosionData.range;
 
         _range_ = explosionData.range;
@@ -134,8 +130,6 @@ public sealed class ExplosionInfo
 
     public ExplosionInfo(ExplosionInfo explosionInfo)
     {
-        particleEffectCode = explosionInfo.particleEffectCode;
-
         _range_Origin = explosionInfo._range_Origin;
 
         _range_ = explosionInfo._range_;
@@ -177,16 +171,6 @@ public sealed class ExplosionInfo
                 damage = _damage_ * _level_;
 
                 force = _force_ * _level_;
-
-                if (statusEffectInfos != null)
-                {
-                    int count = statusEffectInfos.Count;
-
-                    for (int index = 0; index < count; ++index)
-                    {
-                        statusEffectInfos[index].level = _level_;
-                    }
-                }
             }
         }
 
@@ -202,9 +186,7 @@ public sealed class ExplosionInfo
 
         public float force { get; private set; }
 
-        public List<StatusEffectInfo.LevelUpData> statusEffectInfos { get; private set; } = null;
-
-        public LevelUpData(float range, float damage, float force, List<StatusEffectInfo.LevelUpData> statusEffectInfos)
+        public LevelUpData(float range, float damage, float force)
         {
             _level_ = 1;
 
@@ -219,11 +201,6 @@ public sealed class ExplosionInfo
             _force_ = force;
 
             this.force = force;
-
-            if (statusEffectInfos != null)
-            {
-                this.statusEffectInfos = new List<StatusEffectInfo.LevelUpData>(statusEffectInfos);
-            }
         }
 
         public LevelUpData(LevelUpData levelUpData)
@@ -241,11 +218,6 @@ public sealed class ExplosionInfo
             _force_ = levelUpData._force_;
 
             force = levelUpData.force;
-
-            if (levelUpData.statusEffectInfos != null)
-            {
-                statusEffectInfos = new List<StatusEffectInfo.LevelUpData>(levelUpData.statusEffectInfos);
-            }
         }
     }
 
@@ -256,17 +228,5 @@ public sealed class ExplosionInfo
         damage += levelUpData.damage;
 
         force += levelUpData.force;
-
-        var statusEffectInfos = levelUpData.statusEffectInfos;
-
-        if (statusEffectInfos != null)
-        {
-            int count = statusEffectInfos.Count;
-
-            for (int index = 0; index < count; ++index)
-            {
-                this.statusEffectInfos[index].LevelUp(statusEffectInfos[index]);
-            }
-        }
     }
 }

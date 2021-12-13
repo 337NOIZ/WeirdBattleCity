@@ -48,11 +48,11 @@ public sealed class SkillWizard : MonoBehaviour
         _skillInfo = skillInfo;
     }
 
-    public void StartSkill(string eventAction_Key)
+    public void StartSkill(string animatorStance)
     {
-        if (TryStopSkill() == true)
+        if (_skill == null)
         {
-            _skill = Skill_(eventAction_Key);
+            _skill = Skill_(animatorStance);
 
             StartCoroutine(_skill);
         }
@@ -60,46 +60,58 @@ public sealed class SkillWizard : MonoBehaviour
 
     private IEnumerator _skill = null;
 
-    private IEnumerator Skill_(string animatorStance)
+    private IEnumerator Skill_(string motionTriggerName)
     {
-        animator.SetBool(animatorStance, true);
-
         if (_skillInfo.castingMotionTime > 0f)
         {
-            animator.SetBool("isCasting", true);
-
             animator.SetFloat("castingMotionSpeed", _skillInfo.castingMotionSpeed);
 
             animator.SetInteger("castingMotionNumber", _skillInfo.castingMotionNumber);
 
-            animator.SetTrigger("castingMotion");
+            animator.SetBool("isCasting", true);
 
-            yield return CoroutineWizard.WaitForSeconds(_skillInfo.castingMotionTime);
+            animator.SetTrigger(motionTriggerName);
 
-            animator.SetBool("isCasting", false);
+            if (_skillInfo.castingMotionLoopTime > 0f)
+            {
+                yield return CoroutineWizard.WaitForSeconds(_skillInfo.castingMotionLoopTime);
+
+                animator.SetBool("isCasting", false);
+            }
+
+            else
+            {
+                while (animator.GetBool("isCasting") == true) yield return null;
+            }
         }
-
-        animator.SetBool("isUsingSkill", true);
 
         animator.SetFloat("skillMotionSpeed", _skillInfo.skillMotionSpeed);
 
         animator.SetInteger("skillMotionNumber", _skillInfo.skillMotionNumber);
 
-        animator.SetTrigger("skillMotion");
+        animator.SetBool("isUsingSkill", true);
+
+        animator.SetTrigger(motionTriggerName);
 
         if (_skillInfo.skillMotionLoopTime > 0f)
         {
+            animatorWizard.InvokeEventAction(motionTriggerName);
+
             yield return CoroutineWizard.WaitForSeconds(_skillInfo.skillMotionLoopTime);
+
+            animatorWizard.InvokeEventAction(motionTriggerName);
+
+            animator.SetBool("isUsingSkill", false);
         }
 
         else
         {
-            yield return CoroutineWizard.WaitForSeconds(_skillInfo.skillMotionTime);
+            while (animator.GetBool("isUsingSkill") == true) yield return null;
         }
 
-        animator.SetBool("isUsingSkill", false);
+        _skillInfo.SetCoolTimer();
 
-        animator.SetBool(animatorStance, false);
+        StartSkillCooldown(_skillInfo);
 
         _skill = null;
     }
@@ -109,11 +121,11 @@ public sealed class SkillWizard : MonoBehaviour
         while (_skill != null) yield return null;
     }
 
-    public bool TryStopSkill()
+    public void StopSkill()
     {
         if (_skill != null)
         {
-            if (animator.GetBool("isUsingSkill") == false)
+            if(animator.GetBool("isUsingSkill") == false)
             {
                 StopCoroutine(_skill);
 
@@ -121,22 +133,15 @@ public sealed class SkillWizard : MonoBehaviour
 
                 _skill = null;
             }
-
-            else
-            {
-                return false;
-            }
         }
-
-        return true;
     }
 
-    public void StartSkillCooldown(UnityAction<SkillInfo> unityAction)
+    public void StartSkillCooldown(SkillInfo skillInfo)
     {
-        StartCoroutine(SkillCooldown(_skillInfo, unityAction));
+        StartCoroutine(_SkillCooldown_(skillInfo));
     }
 
-    private IEnumerator SkillCooldown(SkillInfo skillInfo, UnityAction<SkillInfo> unityAction)
+    private IEnumerator _SkillCooldown_(SkillInfo skillInfo)
     {
         do
         {
@@ -147,10 +152,5 @@ public sealed class SkillWizard : MonoBehaviour
         while (skillInfo.cooldownTimer > 0f);
 
         skillInfo.cooldownTimer = 0f;
-
-        if(unityAction != null)
-        {
-            unityAction.Invoke(skillInfo);
-        }
     }
 }

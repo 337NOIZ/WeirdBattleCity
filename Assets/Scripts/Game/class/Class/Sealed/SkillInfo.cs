@@ -3,8 +3,6 @@ using System.Collections.Generic;
 
 public sealed class SkillInfo
 {
-    public int priority;
-
     private float _range_Origin;
 
     private float _range_;
@@ -82,38 +80,10 @@ public sealed class SkillInfo
 
     public bool movable { get; private set; }
 
+    public List<StatusEffectInfo> statusEffectInfos { get; private set; } = null;
+
     public sealed class MeleeInfo
     {
-        private float _range_Origin;
-
-        private float _range_;
-
-        public float range
-        {
-            get => _range_;
-
-            private set
-            {
-                _range_Origin = value;
-
-                _range_ = _range_Origin * _range_Multiple_;
-            }
-        }
-
-        private float _range_Multiple_;
-
-        public float range_Multiple
-        {
-            get => _range_Multiple_;
-
-            set
-            {
-                _range_Multiple_ = value;
-
-                _range_ = _range_Origin * _range_Multiple_;
-            }
-        }
-
         private float _damage_Origin;
 
         private float _damage_;
@@ -144,28 +114,15 @@ public sealed class SkillInfo
             }
         }
 
-        public ExplosionInfo explosionInfo { get; private set; } = null;
-
         public List<StatusEffectInfo> statusEffectInfos { get; private set; } = null;
 
         public MeleeInfo(SkillData.MeleeData meleeData)
         {
-            _range_Origin = meleeData.range;
-
-            _range_ = meleeData.range;
-
-            _range_Multiple_ = 1f;
-
             _damage_Origin = meleeData.damage;
 
             _damage_ = meleeData.damage;
 
             _damage_Multiple_ = 1f;
-
-            if (meleeData.explosionData != null)
-            {
-                explosionInfo = new ExplosionInfo(meleeData.explosionData);
-            }
 
             var statusEffectDatas = meleeData.statusEffectDatas;
 
@@ -182,22 +139,11 @@ public sealed class SkillInfo
 
         public MeleeInfo(MeleeInfo meleeInfo)
         {
-            _range_Origin = meleeInfo._range_Origin;
-
-            _range_ = meleeInfo._range_;
-
-            _range_Multiple_ = meleeInfo._range_Multiple_;
-
             _damage_Origin = meleeInfo._damage_Origin;
 
             _damage_ = meleeInfo._damage_;
 
             _damage_Multiple_ = meleeInfo._damage_Multiple_;
-
-            if (meleeInfo.explosionInfo != null)
-            {
-                explosionInfo = new ExplosionInfo(meleeInfo.explosionInfo);
-            }
 
             if (meleeInfo.statusEffectInfos != null)
             {
@@ -217,21 +163,6 @@ public sealed class SkillInfo
                     _level_ = value;
 
                     damage = _damage_ * _level_;
-
-                    if (explosionInfo != null)
-                    {
-                        explosionInfo.level = _level_;
-                    }
-
-                    if (statusEffectInfos != null)
-                    {
-                        int count = statusEffectInfos.Count;
-
-                        for (int index = 0; index < count; ++index)
-                        {
-                            statusEffectInfos[index].level = _level_;
-                        }
-                    }
                 }
             }
 
@@ -239,27 +170,13 @@ public sealed class SkillInfo
 
             public float damage { get; private set; }
 
-            public ExplosionInfo.LevelUpData explosionInfo { get; private set; }
-
-            public List<StatusEffectInfo.LevelUpData> statusEffectInfos { get; private set; } = null;
-
-            public LevelUpData(float damage, ExplosionInfo.LevelUpData explosionInfo, List<StatusEffectInfo.LevelUpData> statusEffectInfos)
+            public LevelUpData(float damage)
             {
                 _level_ = 1;
 
                 _damage_ = damage;
 
                 this.damage = damage;
-
-                if (explosionInfo != null)
-                {
-                    this.explosionInfo = new ExplosionInfo.LevelUpData(explosionInfo);
-                }
-
-                if (statusEffectInfos != null)
-                {
-                    this.statusEffectInfos = new List<StatusEffectInfo.LevelUpData>(statusEffectInfos);
-                }
             }
 
             public LevelUpData(LevelUpData levelUpData)
@@ -269,39 +186,12 @@ public sealed class SkillInfo
                 _damage_ = levelUpData._damage_;
 
                 damage = levelUpData.damage;
-
-                if (levelUpData.explosionInfo != null)
-                {
-                    explosionInfo = new ExplosionInfo.LevelUpData(levelUpData.explosionInfo);
-                }
-
-                if (levelUpData.statusEffectInfos != null)
-                {
-                    statusEffectInfos = new List<StatusEffectInfo.LevelUpData>(levelUpData.statusEffectInfos);
-                }
             }
         }
 
         public void LevelUp(LevelUpData levelUpData)
         {
             damage += levelUpData.damage;
-
-            if (levelUpData.explosionInfo != null)
-            {
-                explosionInfo.LevelUp(levelUpData.explosionInfo);
-            }
-
-            var statusEffectInfos = levelUpData.statusEffectInfos;
-
-            if (statusEffectInfos != null)
-            {
-                int count = statusEffectInfos.Count;
-
-                for (int index = 0; index < count; ++index)
-                {
-                    this.statusEffectInfos[index].LevelUp(statusEffectInfos[index]);
-                }
-            }
         }
     }
 
@@ -452,14 +342,10 @@ public sealed class SkillInfo
 
     public RangedInfo rangedInfo { get; private set; } = null;
 
-    public List<StatusEffectInfo> statusEffectInfos { get; private set; } = null;
-
     public float cooldownTimer { get; set; }
 
     public SkillInfo(SkillData skillData)
     {
-        priority = skillData.priority;
-
         _range_Origin = skillData.range;
 
         _range_ = skillData.range;
@@ -488,6 +374,20 @@ public sealed class SkillInfo
 
         skillMotionLoopTime = skillData.skillMotionLoopTime;
 
+        var statusEffectDatas = skillData.statusEffectDatas;
+
+        if (statusEffectDatas != null)
+        {
+            statusEffectInfos = new List<StatusEffectInfo>();
+
+            int index_Max = statusEffectDatas.Count;
+
+            for (int index = 0; index < index_Max; ++index)
+            {
+                statusEffectInfos.Add(new StatusEffectInfo(statusEffectDatas[index]));
+            }
+        }
+
         if (skillData.meleeData != null)
         {
             meleeInfo = new MeleeInfo(skillData.meleeData);
@@ -498,25 +398,11 @@ public sealed class SkillInfo
             rangedInfo = new RangedInfo(skillData.rangedData);
         }
 
-        var statusEffectDatas = skillData.statusEffectDatas;
-
-        if (statusEffectDatas != null)
-        {
-            int count = statusEffectDatas.Count;
-
-            for(int index = 0; index < count; ++index)
-            {
-                statusEffectInfos[index] = new StatusEffectInfo(statusEffectDatas[index]);
-            }
-        }
-
         Initialize();
     }
 
     public SkillInfo(SkillInfo skillInfo)
     {
-        priority = skillInfo.priority;
-
         _range_Origin = skillInfo._range_Origin;
 
         _range_ = skillInfo._range_;
@@ -543,6 +429,11 @@ public sealed class SkillInfo
 
         skillMotionLoopTime = skillInfo.skillMotionLoopTime;
 
+        if (skillInfo.statusEffectInfos != null)
+        {
+            statusEffectInfos = new List<StatusEffectInfo>(skillInfo.statusEffectInfos);
+        }
+
         if (skillInfo.meleeInfo != null)
         {
             meleeInfo = new MeleeInfo(skillInfo.meleeInfo);
@@ -551,11 +442,6 @@ public sealed class SkillInfo
         if (skillInfo.rangedInfo != null)
         {
             rangedInfo = new RangedInfo(skillInfo.rangedInfo);
-        }
-
-        if (skillInfo.statusEffectInfos != null)
-        {
-            statusEffectInfos = new List<StatusEffectInfo>(skillInfo.statusEffectInfos);
         }
 
         cooldownTimer = skillInfo.cooldownTimer;
@@ -592,16 +478,6 @@ public sealed class SkillInfo
                 {
                     rangedInfo.level = _level_;
                 }
-
-                if (statusEffectInfos != null)
-                {
-                    int count = statusEffectInfos.Count;
-
-                    for (int index = 0; index < count; ++index)
-                    {
-                        statusEffectInfos[index].level = _level_;
-                    }
-                }
             }
         }
 
@@ -609,9 +485,7 @@ public sealed class SkillInfo
 
         public RangedInfo.LevelUpData rangedInfo { get; private set; } = null;
 
-        public List<StatusEffectInfo.LevelUpData> statusEffectInfos { get; private set; } = null;
-
-        public LevelUpData(MeleeInfo.LevelUpData meleeInfo, RangedInfo.LevelUpData rangedInfo, List<StatusEffectInfo.LevelUpData> statusEffectInfos)
+        public LevelUpData(MeleeInfo.LevelUpData meleeInfo, RangedInfo.LevelUpData rangedInfo)
         {
             _level_ = 1;
 
@@ -623,11 +497,6 @@ public sealed class SkillInfo
             if (rangedInfo != null)
             {
                 this.rangedInfo = new RangedInfo.LevelUpData(rangedInfo);
-            }
-
-            if (statusEffectInfos != null)
-            {
-                this.statusEffectInfos = new List<StatusEffectInfo.LevelUpData>(statusEffectInfos);
             }
         }
 
@@ -644,11 +513,6 @@ public sealed class SkillInfo
             {
                 rangedInfo = new RangedInfo.LevelUpData(levelUpData.rangedInfo);
             }
-
-            if (levelUpData.statusEffectInfos != null)
-            {
-                statusEffectInfos = new List<StatusEffectInfo.LevelUpData>(levelUpData.statusEffectInfos);
-            }
         }
     }
 
@@ -662,18 +526,6 @@ public sealed class SkillInfo
         if (levelUpData.rangedInfo != null)
         {
             rangedInfo.LevelUp(levelUpData.rangedInfo);
-        }
-        
-        var statusEffectInfos = levelUpData.statusEffectInfos;
-
-        if (statusEffectInfos != null)
-        {
-            int count = statusEffectInfos.Count;
-
-            for (int index = 0; index < count; ++index)
-            {
-                this.statusEffectInfos[index].LevelUp(statusEffectInfos[index]);
-            }
         }
     }
 }

@@ -9,6 +9,8 @@ public abstract class InventoryItem : Item
 {
     [SerializeField] protected GameObject _model = null;
 
+    protected virtual string _motionTriggerName { get; }
+
     protected Character _character;
 
     protected Animator _animator;
@@ -21,11 +23,7 @@ public abstract class InventoryItem : Item
 
     protected int _skillCount;
 
-    protected string _animatorStance;
-
-    protected SkillInfo _skillInfo;
-
-    public override void Awaken(Character character)
+    public virtual void Awaken(Character character)
     {
         _character = character;
 
@@ -36,7 +34,7 @@ public abstract class InventoryItem : Item
         _skillWizard = character.skillWizard;
     }
 
-    public override void Initialize(ItemInfo itemInfo)
+    public virtual void Initialize(ItemInfo itemInfo)
     {
         _itemInfo = itemInfo;
 
@@ -54,23 +52,35 @@ public abstract class InventoryItem : Item
 
     public virtual void StartSkill(int skillNumber)
     {
-        if (skill == null)
+        if (_skill == null)
         {
-            skill = Skill(skillNumber);
+            _skill = Skill_(skillNumber);
 
-            StartCoroutine(skill);
+            StartCoroutine(_skill);
         }
     }
 
-    public IEnumerator skill { get; protected set; } = null;
+    protected IEnumerator _skill = null;
 
-    protected virtual IEnumerator Skill(int skillNumber) { yield return null; }
+    protected virtual IEnumerator Skill_(int skillNumber) { yield return _skill = null; }
 
-    public virtual IEnumerator StopSkill() { yield return null; }
+    public void StopSkill(bool keepAiming)
+    {
+        if (_stopSkill == null)
+        {
+            _stopSkill = StopSkill_(keepAiming);
 
-    public virtual IEnumerator StopSkill(bool keepAiming) { yield return null; }
+            StartCoroutine(_stopSkill);
+        }
+    }
 
-    protected virtual void _SkillEventAction_() { }
+    protected IEnumerator _stopSkill = null;
 
-    public virtual IEnumerator Reload() { yield return null; }
+    protected virtual IEnumerator StopSkill_(bool keepAiming) { yield return _stopSkill = null; }
+
+    public virtual void StartReload() { }
+
+    protected IEnumerator _reload = null;
+
+    protected virtual IEnumerator Reload_() { yield return null; }
 }

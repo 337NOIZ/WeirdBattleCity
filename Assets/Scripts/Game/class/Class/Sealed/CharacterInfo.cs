@@ -17,9 +17,9 @@ public sealed class CharacterInfo
 
     public InventoryInfo inventoryInfo { get; private set; }
 
-    public Dictionary<StatusEffectCode, List<StatusEffectInfo>> statusEffectInfos { get; private set; } = null;
-
     public TransformInfo transformInfo { get; set; } = null;
+
+    public Dictionary<StatusEffectCode, StatusEffectInfo> statusEffectInfos { get; private set; } = null;
 
     public CharacterInfo(CharacterData characterData)
     {
@@ -60,6 +60,8 @@ public sealed class CharacterInfo
         {
             inventoryInfo = new InventoryInfo(characterData.inventoryData);
         }
+
+        statusEffectInfos = new Dictionary<StatusEffectCode, StatusEffectInfo>();
     }
 
     public CharacterInfo(CharacterInfo characterInfo)
@@ -97,6 +99,8 @@ public sealed class CharacterInfo
         {
             transformInfo = new TransformInfo(characterInfo.transformInfo);
         }
+
+        statusEffectInfos = new Dictionary<StatusEffectCode, StatusEffectInfo>(characterInfo.statusEffectInfos);
     }
 
     public void Initialize()
@@ -126,7 +130,7 @@ public sealed class CharacterInfo
             }
         }
 
-        statusEffectInfos = new Dictionary<StatusEffectCode, List<StatusEffectInfo>>();
+        statusEffectInfos.Clear();
     }
 
     public sealed class LevelUpData
@@ -195,7 +199,7 @@ public sealed class CharacterInfo
 
             if (skillInfo_LevelUpDatas != null)
             {
-                this.skillInfo_LevelUpDatas = new List<SkillInfo.LevelUpData>(skillInfo_LevelUpDatas);
+                this.skillInfo_LevelUpDatas = skillInfo_LevelUpDatas.ConvertAll(skillInfo_LevelUpData => new SkillInfo.LevelUpData(skillInfo_LevelUpData));
             }
         }
 
@@ -219,7 +223,7 @@ public sealed class CharacterInfo
 
             if (levelUpData.skillInfo_LevelUpDatas != null)
             {
-                skillInfo_LevelUpDatas = new List<SkillInfo.LevelUpData>(levelUpData.skillInfo_LevelUpDatas);
+                skillInfo_LevelUpDatas = levelUpData.skillInfo_LevelUpDatas.ConvertAll(skillInfo_LevelUpData => new SkillInfo.LevelUpData(skillInfo_LevelUpData));
             }
         }
     }

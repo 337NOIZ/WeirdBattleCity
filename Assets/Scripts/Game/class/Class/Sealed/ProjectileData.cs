@@ -9,13 +9,11 @@ public sealed class ProjectileData
 
     public float damage { get; private set; }
 
-    public DamageableData damageableData { get; private set; } = null;
+    public List<StatusEffectData> statusEffectDatas { get; private set; } = null;
 
     public ExplosionData explosionData { get; private set; } = null;
 
-    public List<StatusEffectData> statusEffectDatas { get; private set; } = null;
-
-    public ProjectileData(float force, float lifeTime, float damage, DamageableData damageableData, ExplosionData explosionData, List<StatusEffectData> statusEffectDatas)
+    public ProjectileData(float force, float lifeTime, float damage, List<StatusEffectData> statusEffectDatas, ExplosionData explosionData)
     {
         this.force = force;
 
@@ -23,19 +21,14 @@ public sealed class ProjectileData
 
         this.damage = damage;
 
-        if(damageableData != null)
+        if (statusEffectDatas != null)
         {
-            this.damageableData = new DamageableData(damageableData);
+            this.statusEffectDatas = new List<StatusEffectData>(statusEffectDatas);
         }
 
         if (explosionData != null)
         {
             this.explosionData = new ExplosionData(explosionData);
-        }
-
-        if (statusEffectDatas != null)
-        {
-            this.statusEffectDatas = new List<StatusEffectData>(statusEffectDatas);
         }
     }
 
@@ -47,19 +40,14 @@ public sealed class ProjectileData
 
         damage = projectileData.damage;
 
-        if (projectileData.damageableData != null)
+        if (projectileData.statusEffectDatas != null)
         {
-            damageableData = new DamageableData(projectileData.damageableData);
+            statusEffectDatas = new List<StatusEffectData>(projectileData.statusEffectDatas);
         }
 
         if (projectileData.explosionData != null)
         {
             explosionData = new ExplosionData(projectileData.explosionData);
-        }
-
-        if (projectileData.statusEffectDatas != null)
-        {
-            statusEffectDatas = new List<StatusEffectData>(projectileData.statusEffectDatas);
         }
     }
 }

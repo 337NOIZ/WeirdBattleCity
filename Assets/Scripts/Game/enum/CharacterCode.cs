@@ -1,12 +1,13 @@
+
 public enum CharacterCode
 {
-    bird,
+    Bird,
 
-    rabbit,
+    CrazyRabbit,
     
-    spider,
+    GiantSpider,
     
-    minotauros,
+    Minotauros,
     
-    player,
+    Player,
 }

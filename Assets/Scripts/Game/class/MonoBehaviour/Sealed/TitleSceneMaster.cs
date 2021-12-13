@@ -1,45 +1,25 @@
 ﻿
 using System.Collections;
 
-using UnityEngine;
-
-using UnityEngine.UI;
-
 public sealed class TitleSceneMaster : SceneMaster
 {
-    [Space]
+    protected override IEnumerator _Opening_()
+    {
+        yield return base._Opening_();
+    }
 
-    [SerializeField] private Button continueGameButton = null;
-
-    protected override IEnumerator Opening()
+    public void Play()
     {
         if(GameMaster.instance.gameInfo.levelInfo == null)
         {
-            continueGameButton.interactable = false;
+            GameMaster.instance.NewLevelInfo();
         }
 
-        yield return base.Opening();
+        LoadScene(GameMaster.instance.gameInfo.levelInfo.stageSceneCode);
     }
 
-    public void NewGame()
+    public void Exit()
     {
-        GameMaster.instance.NewLevelInfo();
-
-        ContinueGame();
-    }
-
-    public void ContinueGame()
-    {
-        LoadScene(GameMaster.instance.gameData.sceneNames[GameMaster.instance.gameInfo.levelInfo.stageSceneCode]);
-    }
-
-    public void Options()
-    {
-
-    }
-
-    public void Quit()
-    {
-        GameMaster.instance.Quit();
+        GameMaster.instance.QuitGame();
     }
 }

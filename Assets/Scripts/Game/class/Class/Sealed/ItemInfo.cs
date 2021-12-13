@@ -7,11 +7,11 @@ public sealed class ItemInfo
 
     public ItemCode itemCode { get; private set; }
 
-    private float _stackCount_Max_Origin;
+    private int _stackCount_Max_Origin;
 
-    private float _stackCount_Max_;
+    private int _stackCount_Max_;
 
-    public float stackCount_Max
+    public int stackCount_Max
     {
         get => _stackCount_Max_;
 
@@ -19,7 +19,7 @@ public sealed class ItemInfo
         {
             _stackCount_Max_Origin = value;
 
-            _stackCount_Max_ = _stackCount_Max_Origin * _stackCount_Max_Multiple_;
+            _stackCount_Max_ = _stackCount_Max_Origin * (int)_stackCount_Max_Multiple_;
         }
     }
 
@@ -33,15 +33,15 @@ public sealed class ItemInfo
         {
             _stackCount_Max_Multiple_ = value;
 
-            _stackCount_Max_ = _stackCount_Max_Origin * _stackCount_Max_Multiple_;
+            _stackCount_Max_ = _stackCount_Max_Origin * (int)_stackCount_Max_Multiple_;
         }
     }
 
-    private float ammoCount_Max_Origin;
+    private int ammoCount_Max_Origin;
 
-    private float _ammoCount_Max_;
+    private int _ammoCount_Max_;
 
-    public float ammoCount_Max
+    public int ammoCount_Max
     {
         get => _ammoCount_Max_;
 
@@ -49,7 +49,7 @@ public sealed class ItemInfo
         {
             ammoCount_Max_Origin = value;
 
-            _ammoCount_Max_ = ammoCount_Max_Origin * _ammoCount_Max_Multiple_;
+            _ammoCount_Max_ = ammoCount_Max_Origin * (int)_ammoCount_Max_Multiple_;
         }
     }
 
@@ -63,7 +63,7 @@ public sealed class ItemInfo
         {
             _ammoCount_Max_Multiple_ = value;
 
-            _ammoCount_Max_ = ammoCount_Max_Origin * _ammoCount_Max_Multiple_;
+            _ammoCount_Max_ = ammoCount_Max_Origin * (int)_ammoCount_Max_Multiple_;
         }
     }
 
@@ -77,11 +77,11 @@ public sealed class ItemInfo
 
     public List<SkillInfo> skillInfos { get; private set; } = null;
 
-    public float stackCount { get; set; }
+    public int stackCount { get; set; }
 
-    public float ammoCount { get; set; }
+    public int ammoCount { get; set; }
 
-    public ItemInfo(ItemData itemData, float stackCount)
+    public ItemInfo(ItemData itemData, int stackCount)
     {
         itemType = itemData.itemType;
 
@@ -160,7 +160,7 @@ public sealed class ItemInfo
         ammoCount = itemInfo.ammoCount;
     }
 
-    public void Initialize(float stackCount)
+    public void Initialize(int stackCount)
     {
         this.stackCount = stackCount;
 

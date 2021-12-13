@@ -1,52 +1,19 @@
 
 using System.Collections;
 
-using UnityEngine;
-
 public class Projectile_Grenade : Projectile
 {
-    public override ProjectileCode projectileCode => ProjectileCode.grenade;
+    public override ProjectileCode projectileCode => ProjectileCode.Grenade;
 
-    protected override IEnumerator LauchRoutine(Character attacker, ProjectileInfo projectileInfo)
+    protected override IEnumerator Launch_(ProjectileInfo projectileInfo)
     {
-        var hostileLayer = attacker.attackable;
+        _rigidbody.velocity = transform.forward * projectileInfo.force;
 
-        yield return null;
+        yield return CoroutineWizard.WaitForSeconds(projectileInfo.lifeTime);
 
-        rigidbody.velocity = transform.forward * projectileInfo.force;
+        _attackBox.Check((hitBox) => { if (hitBox != null) _actionOnHit.Invoke(hitBox); });
 
-        var lifeTimer = projectileInfo.lifeTime;
-
-        var damageableInfo = projectileInfo.damageableInfo;
-
-        while (lifeTimer >= 0f && damageableInfo.healthPoint >= 0f)
-        {
-            yield return null;
-
-            lifeTimer -= Time.deltaTime;
-        }
-
-        var explosionInfo = projectileInfo.explosionInfo;
-
-        RaycastHit[] raycastHits = Physics.SphereCastAll(transform.position, explosionInfo.range, Vector3.up, 0f, hostileLayer);
-
-        foreach(RaycastHit raycastHit in raycastHits)
-        {
-            Character victim = raycastHit.collider.GetComponentInParent<Character>();
-
-            if(victim != null)
-            {
-                victim.TakeAttack(attacker, explosionInfo.damage, projectileInfo.statusEffectInfos);
-
-                victim.TakeForce(transform.position, explosionInfo.force);
-            }
-        }
-
-        var particleEffec = ObjectPool.instance.Pop(explosionInfo.particleEffectCode);
-
-        particleEffec.transform.position = transform.position;
-
-        particleEffec.Play();
+        PlayParticleEffect(transform.position, ParticleEffectCode.Explosion);
 
         Disable();
     }

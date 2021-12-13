@@ -7,21 +7,19 @@ using UnityEngine;
 
 public abstract class Character : MonoBehaviour
 {
-    public abstract CharacterType characterType { get; }
-
-    public abstract CharacterCode characterCode { get; }
-
-    [SerializeField] protected LayerMask _attackable = default;
-
-    [SerializeField] protected Transform _aimTarget = null;
-
-    [SerializeField] protected Transform _aim = null;
+    [SerializeField] protected LayerMask _attackableLayers = default;
 
     [SerializeField] protected TransformWizard _model = null;
 
+    [SerializeField] protected Transform _head = null;
+
+    [SerializeField] protected GameObject _hitBoxs_GameObject = null;
+
+    [SerializeField] protected GameObject _inventoryItems_GameObject = null;
+
     [SerializeField] protected TransformWizard _ragDoll = null;
 
-    [SerializeField] protected GameObject _items = null;
+    [SerializeField] protected Transform _aim = null;
 
     [SerializeField] protected Canvas _canvas = null;
 
@@ -29,9 +27,17 @@ public abstract class Character : MonoBehaviour
 
     [SerializeField] protected ImageFillAmountController _experiencePointBar = null;
 
-    public LayerMask attackable { get => _attackable; }
+    public abstract CharacterType characterType { get; }
 
-    public Transform aimTarget { get => _aimTarget; }
+    public abstract CharacterCode characterCode { get; }
+
+    protected virtual string _motionTriggerName { get; } = "character";
+
+    public LayerMask attackableLayers { get => _attackableLayers; }
+
+    public Transform head { get => _head; }
+
+    public Transform aim { get => _aim; }
 
     protected Rigidbody _rigidbody;
 
@@ -47,7 +53,7 @@ public abstract class Character : MonoBehaviour
 
     protected MovementInfo _movementInfo  = null;
 
-    public DamageableInfo damageableInfo { get; protected set; } = null;
+    protected DamageableInfo _damageableInfo = null;
 
     protected ExperienceInfo _experienceInfo = null;
 
@@ -57,47 +63,37 @@ public abstract class Character : MonoBehaviour
 
     protected TransformInfo _transformInfo = null;
 
-    protected int _skillInfos_Count = 0;
-
-    protected string _animatorStance = "characterStance";
-
     protected SkillInfo _skillInfo = null;
 
-    protected Character _skillTarget = null;
+    protected bool _isRunning = false;
 
-    protected Transform _skillTarget_transform = null;
-
-    protected Transform _skillTarget_aimTarget = null;
-
-    protected Character skillTarget
+    protected bool isRunning
     {
         set
         {
-            _skillTarget = value;
+            _isRunning = value;
 
-            if (_skillTarget != null)
+            if(_isRunning == true)
             {
-                _skillTarget_transform = _skillTarget.transform;
-
-                _skillTarget_aimTarget = _skillTarget.aimTarget;
+                animator.SetFloat("isRunning", 1f);
             }
 
             else
             {
-                _skillTarget_transform = null;
-
-                _skillTarget_aimTarget = null;
+                animator.SetFloat("isRunning", 0f);
             }
         }
     }
 
-    protected Dictionary<ItemCode, InventoryItem> items = new Dictionary<ItemCode, InventoryItem>();
-
-    protected Dictionary<ItemType, int> selectedItemNumbers;
-
-    protected Dictionary<ItemType, InventoryItem> currentItems;
-
     protected Character _attacker = null;
+
+    protected int _skillInfos_Count = 0;
+
+    protected Dictionary<ItemCode, InventoryItem> _inventoryItems = null;
+
+    protected Dictionary<ItemType, InventoryItem> _currentInventoryItems = null;
+
+    protected RaycastHit _raycastHit;
 
     public virtual void Awaken()
     {
@@ -110,13 +106,22 @@ public abstract class Character : MonoBehaviour
         animatorWizard = skillWizard.animatorWizard;
 
         animator = skillWizard.animator;
+
+        var hitBoxs = _hitBoxs_GameObject.GetComponentsInChildren<HitBox>();
+
+        int index_Max = hitBoxs.Length;
+
+        for (int index = 0; index < index_Max; ++index)
+        {
+            hitBoxs[index].Awaken(this);
+        }
     }
 
-    public virtual void Initialize()
+    protected virtual void _Awaken_()
     {
         _movementInfo = _characterInfo.movementInfo;
 
-        damageableInfo = _characterInfo.damageableInfo;
+        _damageableInfo = _characterInfo.damageableInfo;
 
         _experienceInfo = _characterInfo.experienceInfo;
 
@@ -129,55 +134,46 @@ public abstract class Character : MonoBehaviour
 
         _inventoryInfo = _characterInfo.inventoryInfo;
 
-        if (_items != null)
+        if (_inventoryInfo != null)
         {
-            var items = _items.GetComponentsInChildren<InventoryItem>();
+            var items = _inventoryItems_GameObject.GetComponentsInChildren<InventoryItem>();
 
             if (items != null)
             {
                 int index_Max = items.Length;
 
+                _inventoryItems = new Dictionary<ItemCode, InventoryItem>();
+
                 for (int index = 0; index < index_Max; ++index)
                 {
-                    this.items.Add(items[index].itemCode, items[index]);
+                    _inventoryItems.Add(items[index].itemCode, items[index]);
 
                     items[index].Awaken(this);
                 }
-
-                selectedItemNumbers = new Dictionary<ItemType, int>()
-                {
-                    { ItemType.consumable, 0 },
-                    
-                    { ItemType.weapon, 0 },
-                };
-
-                currentItems = new Dictionary<ItemType, InventoryItem>()
-                {
-                    { ItemType.consumable, null },
-                    
-                    { ItemType.weapon, null },
-                };
-
-                int number = _inventoryInfo.currentItemNumbers[ItemType.consumable];
-
-                SelectItem(ItemType.consumable, number);
-
-                SetCurrentItem(ItemType.consumable, number);
-
-                number = _inventoryInfo.currentItemNumbers[ItemType.weapon];
-
-                SelectItem(ItemType.weapon, number);
-
-                SetCurrentItem(ItemType.weapon, number);
-
-                StartCoroutine(currentItems[ItemType.weapon].Draw());
             }
+
+            _currentInventoryItems = new Dictionary<ItemType, InventoryItem>()
+                {
+                    { ItemType.Consumable, null },
+
+                    { ItemType.Weapon, null },
+                };
+
+            int number = _inventoryInfo.currentItemNumbers[ItemType.Consumable];
+
+            _SetCurrentItem_(ItemType.Consumable, number);
+
+            number = _inventoryInfo.currentItemNumbers[ItemType.Weapon];
+
+            _SetCurrentItem_(ItemType.Weapon, number);
+
+            StartCoroutine(_currentInventoryItems[ItemType.Weapon].Draw());
         }
 
         _transformInfo = _characterInfo.transformInfo;
     }
 
-    public virtual void SetLevel(int characterLevel) { }
+    public virtual void Initialize(int characterLevel) { }
 
     public virtual void LevelUp(int characterLevel)
     {
@@ -191,24 +187,21 @@ public abstract class Character : MonoBehaviour
         _characterInfo.LevelUp(characterInfo_LevelUpData);
     }
 
+    public void Launch()
+    {
+        StartCoroutine(_Launce_());
+    }
+
+    protected virtual IEnumerator _Launce_() { yield return null; }
+
     public void TakeAttack(Character attacker, float damage, List<StatusEffectInfo> statusEffectInfos)
     {
         _attacker = attacker;
         
         GetHealthPoint(-damage);
+
+        TakeStatusEffect(statusEffectInfos);
     }
-
-    public void TakeStatusEffect(StatusEffectInfo statusEffectInfo)
-    {
-
-    }
-
-    protected Dictionary<StatusEffectCode, IEnumerator> statusEffect = new Dictionary<StatusEffectCode, IEnumerator>();
-
-    //protected IEnumerator StatusEffect(StatusEffectInfo statusEffectInfo)
-    //{
-
-    //}
 
     public void TakeForce(Vector3 position, float force)
     {
@@ -223,16 +216,16 @@ public abstract class Character : MonoBehaviour
         {
             if (healthPoint > 0f || IsInvincible() == false)
             {
-                damageableInfo.healthPoint += healthPoint;
+                _damageableInfo.healthPoint += healthPoint;
 
-                if (damageableInfo.healthPoint == 0f)
+                if (_damageableInfo.healthPoint == 0f)
                 {
                     Dead();
                 }
 
                 else
                 {
-                    _healthPointBar.StartFillByLerp(1f - damageableInfo.healthPoint / damageableInfo.healthPoint_Max, 0.1f);
+                    _healthPointBar.StartFillByLerp(1f - _damageableInfo.healthPoint / _damageableInfo.healthPoint_Max, 0.1f);
                 }
             }
         }
@@ -256,19 +249,37 @@ public abstract class Character : MonoBehaviour
 
     protected IEnumerator Invincible()
     {
-        damageableInfo.SetInvincibleTimer();
+        _damageableInfo.SetInvincibleTimer();
 
-        while (damageableInfo.invincibleTimer > 0f)
+        while (_damageableInfo.invincibleTimer > 0f)
         {
             yield return null;
 
-            damageableInfo.invincibleTimer -= Time.deltaTime;
+            _damageableInfo.invincibleTimer -= Time.deltaTime;
         }
 
         invincible = null;
     }
 
-    protected virtual void Dead() { }
+    protected virtual void Dead()
+    {
+        StopAllCoroutines();
+
+        TransformWizard.AlignTransforms(_ragDoll, _model);
+
+        _model.gameObject.SetActive(false);
+
+        _ragDoll.gameObject.SetActive(true);
+
+        StartCoroutine(_Dead_());
+    }
+
+    protected virtual IEnumerator _Dead_()
+    {
+        _healthPointBar.StartFillByLerp(1f - _damageableInfo.healthPoint / _damageableInfo.healthPoint_Max, 0.1f);
+
+        while (_healthPointBar.fillByLerp != null) yield return null;
+    }
 
     public void GetExperiencePoint(float experiencePoint)
     {
@@ -314,16 +325,103 @@ public abstract class Character : MonoBehaviour
         _getExperiencePoint = null;
     }
 
-    public virtual void GetMoney(float moneyAmount) { }
-
-    protected virtual bool SearchSkillTarget() { return false; }
-
-    protected bool IsSkillTargetWithinRange(float range)
+    public void TakeStatusEffect(List<StatusEffectInfo> statusEffectInfos)
     {
-        return Vector3.Distance(transform.position, _skillTarget_transform.position) <= range;
+        if (statusEffectInfos != null)
+        {
+            int index_Max = statusEffectInfos.Count;
+
+            for (int index = 0; index < index_Max; ++index)
+            {
+                var statusEffectInfo = statusEffectInfos[index];
+
+                var statusEffectCode = statusEffectInfo.statusEffectCode;
+
+                switch (statusEffectCode)
+                {
+                    case StatusEffectCode.Healing:
+
+                        GetHealthPoint(_damageableInfo.healthPoint_Max * statusEffectInfo.power);
+
+                        break;
+
+                    default:
+
+                        var characterInfo_StatusEffectInfos = _characterInfo.statusEffectInfos;
+
+                        if (characterInfo_StatusEffectInfos.ContainsKey(statusEffectCode) == true)
+                        {
+                            if (characterInfo_StatusEffectInfos[statusEffectCode].power < statusEffectInfo.power)
+                            {
+                                GainStatusEffect(statusEffectCode, statusEffectInfo.power - characterInfo_StatusEffectInfos[statusEffectCode].power);
+
+                                characterInfo_StatusEffectInfos[statusEffectCode].power = statusEffectInfo.power;
+
+                                if (characterInfo_StatusEffectInfos[statusEffectCode].durationTimer < statusEffectInfo.durationTime)
+                                {
+                                    characterInfo_StatusEffectInfos[statusEffectCode].durationTimer = statusEffectInfo.durationTime;
+                                }
+                            }
+                        }
+
+                        else
+                        {
+                            characterInfo_StatusEffectInfos.Add(statusEffectCode, statusEffectInfo);
+
+                            StartCoroutine(_StatusEffect_(statusEffectInfo));
+                        }
+
+                        break;
+                }
+            }
+        }
     }
 
-    protected virtual bool IsSkillValid() { return true; }
+    protected void GainStatusEffect(StatusEffectCode statusEffectCode, float power)
+    {
+        switch (statusEffectCode)
+        {
+            case StatusEffectCode.MovementSpeedDown:
+
+                _movementInfo.movingSpeed_Multiply -= power;
+
+                break;
+
+            case StatusEffectCode.MovementSpeedUp:
+
+                _movementInfo.movingSpeed_Multiply += power;
+
+                break;
+
+            default:
+
+                break;
+        }
+    }
+
+    protected IEnumerator _StatusEffect_(StatusEffectInfo statusEffectInfo)
+    {
+        var statusEffectCode = statusEffectInfo.statusEffectCode;
+
+        GainStatusEffect(statusEffectCode, statusEffectInfo.power);
+
+        statusEffectInfo.SetDurationTimer();
+
+        while (statusEffectInfo.durationTimer > 0f)
+        {
+            yield return null;
+
+            statusEffectInfo.durationTimer -= Time.deltaTime;
+        }
+
+        GainStatusEffect(statusEffectCode, -statusEffectInfo.power);
+
+        _characterInfo.statusEffectInfos.Remove(statusEffectCode);
+    }
+
+    public virtual void GetMoney(float moneyAmount) { }
+
+    protected virtual bool IsSkillValid(int skillNumber) { return true; }
 
     protected virtual void SkillEventAction() { }
 
@@ -333,7 +431,7 @@ public abstract class Character : MonoBehaviour
 
         if (itemInfo_ != null)
         {
-            float stackCount_Max = itemInfo_.stackCount_Max;
+            int stackCount_Max = itemInfo_.stackCount_Max;
 
             if (itemInfo_.stackCount < stackCount_Max)
             {
@@ -372,7 +470,43 @@ public abstract class Character : MonoBehaviour
         return null;
     }
 
-    protected int SelectItem(ItemType itemType, int number)
+    protected void StartSwitchingItem(ItemType itemType, int number)
+    {
+        switch(itemType)
+        {
+            case ItemType.Consumable:
+
+                _SetCurrentItem_(ItemType.Consumable, number);
+
+                break;
+
+            case ItemType.Weapon:
+
+                if(_switchingWeapon == null)
+                {
+                    _switchingWeapon = SwitchingWeapon_(number);
+
+                    StartCoroutine(_switchingWeapon);
+                }
+
+                break;
+        }
+    }
+
+    protected IEnumerator _switchingWeapon = null;
+
+    protected IEnumerator SwitchingWeapon_(int number)
+    {
+        yield return _currentInventoryItems[ItemType.Weapon].Store();
+
+        _SetCurrentItem_(ItemType.Weapon, number);
+
+        yield return _currentInventoryItems[ItemType.Weapon].Draw();
+
+        _switchingWeapon = null;
+    }
+
+    protected void _SetCurrentItem_(ItemType itemType, int number)
     {
         int number_Max = _inventoryInfo.itemInfos[itemType].Count - 1;
 
@@ -386,38 +520,25 @@ public abstract class Character : MonoBehaviour
             number = number_Max;
         }
 
-        return selectedItemNumbers[itemType] = number;
-    }
-
-    protected void SetCurrentItem(ItemType itemType, int number)
-    {
         _inventoryInfo.currentItemNumbers[itemType] = number;
 
-        currentItems[itemType] = items[_inventoryInfo.itemInfos[itemType][number].itemCode];
+        _currentInventoryItems[itemType] = _inventoryItems[_inventoryInfo.itemInfos[itemType][number].itemCode];
 
-        currentItems[itemType].Initialize(_inventoryInfo.itemInfos[itemType][number]);
+        _currentInventoryItems[itemType].Initialize(_inventoryInfo.itemInfos[itemType][number]);
     }
 
-    protected IEnumerator switchWeaponRoutine = null;
-
-    protected IEnumerator SwitchWeaponRoutine(int number)
+    protected void StartItemSkill(ItemType itemType, int skillNumber)
     {
-        yield return currentItems[ItemType.weapon].Store();
-
-        SetCurrentItem(ItemType.weapon, number);
-
-        yield return currentItems[ItemType.weapon].Draw();
-
-        switchWeaponRoutine = null;
+        _currentInventoryItems[itemType].StartSkill(skillNumber);
     }
 
-    protected void ItemSkill(ItemType itemType, int skillNumber)
+    protected void StopItemSkill(ItemType itemType, bool keepAiming)
     {
-        currentItems[itemType].StartSkill(skillNumber);
+        _currentInventoryItems[itemType].StopSkill(keepAiming);
     }
 
-    public void ReloadWeapon()
+    public void StartReloadWeapon()
     {
-        StartCoroutine(currentItems[ItemType.weapon].Reload());
+        _currentInventoryItems[ItemType.Weapon].StartReload();
     }
 }

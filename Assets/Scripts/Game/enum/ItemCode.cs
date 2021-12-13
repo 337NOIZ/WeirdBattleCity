@@ -1,29 +1,29 @@
 
 public enum ItemCode
 {
-    ammoPack,
+    AmmoPack,
 
-    arrow,
+    Arrow,
 
-    bow,
+    Bow,
 
-    crossbow,
+    Crossbow,
 
-    crossbowBolt,
+    CrossbowBolt,
 
-    grenade,
+    Crenade,
 
-    medikit,
+    Medikit,
 
-    pistol,
+    Pistol,
 
-    pistolAmmo,
+    PistolAmmo,
 
-    shotgun,
+    Shotgun,
 
-    shotgunAmmo,
+    ShotgunAmmo,
 
-    submachineGun,
+    SubmachineGun,
 
-    submachineGunAmmo,
+    SubmachineGunAmmo,
 }

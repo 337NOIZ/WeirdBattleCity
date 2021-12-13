@@ -1,16 +1,19 @@
 
-using System.Collections.Generic;
+using System.Collections;
 
 using UnityEngine;
+
 public sealed class Player : Character
 {
-    public override CharacterType characterType { get => CharacterType.player; }
+    public override CharacterType characterType { get => CharacterType.Player; }
 
-    public override CharacterCode characterCode { get => CharacterCode.player; }
+    public override CharacterCode characterCode { get => CharacterCode.Player; }
 
     public static Player instance { get; private set; }
 
-    [SerializeField] private ThirdPersonCamera _thirdPersonCamera = null;
+    [SerializeField] private Transform _cameraPivot = null;
+
+    [SerializeField] private Transform _cameraFollower = null;
 
     [SerializeField] private MoneyBox _moneyBox = null;
 
@@ -24,25 +27,9 @@ public sealed class Player : Character
 
     private Vector2 _moveDirection = Vector2.zero;
 
-    private bool _isRunKeyPressed = false;
-
-    public bool[] Item_unlock = new bool[3];
-
     private void Awake()
     {
         instance = this;
-    }
-
-    private void Update()
-    {
-        GroundedCheck();
-    }
-
-    private void FixedUpdate()
-    {
-        Look();
-
-        Move();
     }
 
     public override void Awaken()
@@ -50,10 +37,16 @@ public sealed class Player : Character
         base.Awaken();
 
         _groundedCheckSphere = GetComponent<GroundedCheckSphere>();
+
+        _groundedCheckSphere.Awaken();
+
+        _Awaken_();
     }
 
-    public override void Initialize()
+    protected override void _Awaken_()
     {
+        _characterData = GameMaster.instance.gameData.levelData.characterDatas[characterCode];
+
         _playerInfo = GameMaster.instance.gameInfo.levelInfo.playerInfo;
 
         _characterInfo = _playerInfo.characterInfo;
@@ -63,13 +56,13 @@ public sealed class Player : Character
             _characterInfo.transformInfo = new TransformInfo(transform.position, transform.localEulerAngles);
         }
 
-        base.Initialize();
+        base._Awaken_();
 
         if (_healthPointBar != null)
         {
             _healthPointBar.fillAmount = 1f;
 
-            _healthPointBar.StartFillByLerp(1f - damageableInfo.healthPoint / damageableInfo.healthPoint_Max, 0.1f);
+            _healthPointBar.StartFillByLerp(1f - _damageableInfo.healthPoint / _damageableInfo.healthPoint_Max, 0.1f);
         }
         
         if(_experiencePointBar != null)
@@ -91,38 +84,113 @@ public sealed class Player : Character
     {
         base.LevelUp(characterLevel);
 
-        _healthPointBar.StartFillByLerp(1f - damageableInfo.healthPoint / damageableInfo.healthPoint_Max, 0.1f);
+        _healthPointBar.StartFillByLerp(1f - _damageableInfo.healthPoint / _damageableInfo.healthPoint_Max, 0.1f);
+    }
+
+    protected override IEnumerator _Launce_()
+    {
+        while (true)
+        {
+            yield return CoroutineWizard.WaitForFixedUpdate;
+
+            if (_groundedCheckSphere.isGrounded == true)
+            {
+                _movementInfo.jumpCount = 0;
+
+                animator.SetBool("isGrounded", true);
+            }
+
+            else
+            {
+                if (_movementInfo.jumpCount == 0)
+                {
+                    ++_movementInfo.jumpCount;
+                }
+
+                animator.SetBool("isGrounded", false);
+            }
+
+            if (_lookDirection != Vector2.zero)
+            {
+                _playerInfo.cameraPivot_LocalEulerAngles += new Vector3(_lookDirection.y, _lookDirection.x, 0f) * _playerInfo.cameraPivot_Sensitivity * Time.deltaTime;
+
+                _playerInfo.cameraPivot_LocalEulerAngles = new Vector3(Mathf.Clamp(_playerInfo.cameraPivot_LocalEulerAngles.x, -55f, 55f), _playerInfo.cameraPivot_LocalEulerAngles.y, _playerInfo.cameraPivot_LocalEulerAngles.z);
+            }
+
+            _cameraPivot.transform.localEulerAngles = _playerInfo.cameraPivot_LocalEulerAngles;
+
+            if (Physics.Raycast(_cameraFollower.position, _cameraFollower.forward * 1000f, out _raycastHit, _attackableLayers) == true)
+            {
+                _aim.position = _raycastHit.point;
+            }
+
+            else
+            {
+                _aim.position = _cameraFollower.forward * 1000f;
+            }
+
+            Vector3 cameraForward = new Vector3(_cameraPivot.transform.forward.x, 0f, _cameraPivot.transform.forward.z).normalized;
+
+            Vector3 cameraRight = new Vector3(_cameraPivot.transform.right.x, 0f, _cameraPivot.transform.right.z).normalized;
+
+            if (_moveDirection == Vector2.zero)
+            {
+                animator.SetBool("isMoving", false);
+            }
+
+            else
+            {
+                _movePosition = cameraForward * _moveDirection.y + cameraRight * _moveDirection.x;
+
+                float movingSpeed = _movementInfo.movingSpeed_Walk;
+
+                if (animator.GetBool("isAiming") == true)
+                {
+                    animator.transform.forward = cameraForward;
+                }
+
+                else
+                {
+                    if (_isRunning == true)
+                    {
+                        movingSpeed = _movementInfo.movingSpeed_Run;
+                    }
+
+                    animator.transform.forward = _movePosition;
+                }
+
+                _rigidbody.MovePosition(_rigidbody.position + _movePosition * movingSpeed * Time.deltaTime);
+
+                animator.SetFloat("movingMotionSpeed", _movementInfo.movingSpeed_Multiply);
+
+                animator.SetBool("isMoving", true);
+            }
+
+            _playerInfo.animator_LocalEulerAngles = animator.transform.localEulerAngles;
+        }
+    }
+
+    protected override void Dead()
+    {
+        VirtualController.instance.interactable = false;
+
+        base.Dead();
+    }
+
+    protected override IEnumerator _Dead_()
+    {
+        yield return base._Dead_();
+
+        SceneMaster.instance.LoadScene(SceneCode.Title);
     }
 
     public override void GetMoney(float moneyAmount)
     {
         _characterInfo.moneyAmount += moneyAmount;
 
-        _moneyBox.SetMoneyAmountWithDirect(_characterInfo.moneyAmount, 1f);
-    }
-
-    protected override void Dead()
-    {
-        Debug.Log("YOU DIED");
-    }
-
-    private void GroundedCheck()
-    {
-        if (_groundedCheckSphere.isGrounded == true)
+        if (_moneyBox != null)
         {
-            _movementInfo.jumpCount = 0;
-
-            animator.SetBool("isGrounded", true);
-        }
-
-        else
-        {
-            if (_movementInfo.jumpCount == 0)
-            {
-                ++_movementInfo.jumpCount;
-            }
-
-            animator.SetBool("isGrounded", false);
+            _moneyBox.SetMoneyAmountWithDirect(_characterInfo.moneyAmount, 1f);
         }
     }
 
@@ -131,84 +199,14 @@ public sealed class Player : Character
         _lookDirection = lookDirection;
     }
 
-    private void Look()
-    {
-        if (_lookDirection != Vector2.zero)
-        {
-            _playerInfo.cameraPivot_LocalEulerAngles += new Vector3(_lookDirection.y, _lookDirection.x, 0f) * _playerInfo.cameraPivot_Sensitivity * Time.deltaTime;
-
-            _playerInfo.cameraPivot_LocalEulerAngles = new Vector3(Mathf.Clamp(_playerInfo.cameraPivot_LocalEulerAngles.x, -55f, 55f), _playerInfo.cameraPivot_LocalEulerAngles.y, _playerInfo.cameraPivot_LocalEulerAngles.z);
-        }
-
-        _thirdPersonCamera.transform.localEulerAngles = _playerInfo.cameraPivot_LocalEulerAngles;
-
-        _aim.position = _thirdPersonCamera.GetAimPosition();
-    }
-
     public void Move(Vector2 moveDirection)
     {
         _moveDirection = moveDirection;
     }
 
-    private void Move()
-    {
-        Vector3 cameraForward = new Vector3(_thirdPersonCamera.transform.forward.x, 0f, _thirdPersonCamera.transform.forward.z).normalized;
-
-        Vector3 cameraRight = new Vector3(_thirdPersonCamera.transform.right.x, 0f, _thirdPersonCamera.transform.right.z).normalized;
-
-        if (_moveDirection == Vector2.zero)
-        {
-            animator.SetFloat("movingMotionSpeed", 0f);
-        }
-
-        else
-        {
-            _movePosition = cameraForward * _moveDirection.y + cameraRight * _moveDirection.x;
-
-            float movingSpeed = _movementInfo.movingSpeed_Walk;
-
-            animator.SetFloat("movingMotionSpeed", _movementInfo.movingSpeed_Multiply);
-
-            if (animator.GetBool("isAiming") == false)
-            {
-                if (_isRunKeyPressed == false)
-                {
-                    animator.SetFloat("movingDirection_X", 1f);
-                }
-
-                else
-                {
-                    movingSpeed = _movementInfo.movingSpeed_Run;
-
-                    animator.SetFloat("movingDirection_X", 2f);
-                }
-
-                animator.SetFloat("movingDirection_Y", 0f);
-
-                animator.transform.forward = _movePosition;
-            }
-
-            else
-            {
-                animator.SetFloat("movingDirection_X", _movePosition.z);
-
-                animator.SetFloat("movingDirection_Y", -_movePosition.x);
-            }
-
-            GetComponent<Rigidbody>().MovePosition(GetComponent<Rigidbody>().position + _movePosition * movingSpeed * _movementInfo.movingSpeed_Multiply * Time.deltaTime);
-        }
-
-        if (animator.GetBool("isAiming") == true)
-        {
-            animator.transform.forward = cameraForward;
-        }
-
-        _playerInfo.animator_LocalEulerAngles = animator.transform.localEulerAngles;
-    }
-
     public void Run()
     {
-        _isRunKeyPressed = !_isRunKeyPressed;
+        isRunning = !_isRunning;
     }
 
     public void Jump()
@@ -227,52 +225,37 @@ public sealed class Player : Character
         }
     }
 
-    public void SelectItemNext(ItemType itemType)
+    public void StartSwitchingItemNext(ItemType itemType)
     {
-        SelectItem(itemType, selectedItemNumbers[itemType] + 1);
+        StartSwitchingItem(itemType, _inventoryInfo.currentItemNumbers[itemType] + 1);
     }
 
-    public void SelectItemPrevious(ItemType itemType)
+    public void StartSwitchingItemPrevious(ItemType itemType)
     {
-        SelectItem(itemType, selectedItemNumbers[itemType] - 1);
+        StartSwitchingItem(itemType, _inventoryInfo.currentItemNumbers[itemType] - 1);
     }
 
-    public void SwitchConsumableNext()
+    public void StartGrenadeSkill()
     {
-        SelectItemNext(ItemType.consumable);
+        StartSwitchingItem(ItemType.Consumable, 0);
 
-        SetCurrentItem(ItemType.consumable, selectedItemNumbers[ItemType.consumable]);
+        StartItemSkill(ItemType.Consumable, 0);
     }
 
-    public void SwitchConsumablePrevious()
+    public void StartMedikitSkill()
     {
-        SelectItemPrevious(ItemType.consumable);
+        StartSwitchingItem(ItemType.Consumable, 1);
 
-        SetCurrentItem(ItemType.consumable, selectedItemNumbers[ItemType.consumable]);
+        StartItemSkill(ItemType.Consumable, 0);
     }
 
-    public void SwitchWeapon()
+    public void StartWeaponSkill(int skillNumber)
     {
-        if (switchWeaponRoutine == null && _inventoryInfo.currentItemNumbers[ItemType.weapon] != selectedItemNumbers[ItemType.weapon])
-        {
-            switchWeaponRoutine = SwitchWeaponRoutine(selectedItemNumbers[ItemType.weapon]);
-
-            StartCoroutine(switchWeaponRoutine);
-        }
+        StartItemSkill(ItemType.Weapon, skillNumber);
     }
 
-    public void ConsumableSkill(int skillNumber)
+    public void StopWeaponSkill()
     {
-        ItemSkill(ItemType.consumable, skillNumber);
-    }
-
-    public void WeaponSkill(int skillNumber)
-    {
-        ItemSkill(ItemType.weapon, skillNumber);
-    }
-
-    public void StopWeaponSkill(bool keepAiming)
-    {
-        StartCoroutine(currentItems[ItemType.weapon].StopSkill(keepAiming));
+        StopItemSkill(ItemType.Weapon, true);
     }
 }

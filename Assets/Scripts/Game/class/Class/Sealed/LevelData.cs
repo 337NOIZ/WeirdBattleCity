@@ -1,6 +1,102 @@
 
 using System.Collections.Generic;
 
+public sealed class ShopItemData
+{
+    public readonly ItemCode itemCode;
+
+    public readonly int stackCount;
+
+    public readonly int stock;
+
+    public ShopItemData(ItemCode itemCode, int stackCount, int stock)
+    {
+        this.itemCode = itemCode;
+
+        this.stackCount = stackCount;
+
+        this.stock = stock;
+    }
+
+    public ShopItemData(ShopItemData shopItemData)
+    {
+        itemCode = shopItemData.itemCode;
+
+        stackCount = shopItemData.stackCount;
+
+        stock = shopItemData.stock;
+    }
+}
+
+public sealed class ShopItemInfo
+{
+    public readonly ItemCode itemCode;
+
+    public readonly int stackCount;
+
+    public int stock { get; set; }
+
+    public ShopItemInfo(ShopItemData shopItemData)
+    {
+        itemCode = shopItemData.itemCode;
+
+        stackCount = shopItemData.stackCount;
+
+        stock = shopItemData.stock;
+    }
+
+    public ShopItemInfo(ShopItemInfo shopItemInfo)
+    {
+        itemCode = shopItemInfo.itemCode;
+
+        stackCount = shopItemInfo.stackCount;
+
+        stock = shopItemInfo.stock;
+    }
+}
+
+public sealed class ShopData
+{
+    public readonly Dictionary<ItemType, List<ShopItemData>> shopItemDatasDictionary;
+
+    public ShopData(Dictionary<ItemType, List<ShopItemData>> shopItemDatasDictionary)
+    {
+        this.shopItemDatasDictionary = new Dictionary<ItemType, List<ShopItemData>>(shopItemDatasDictionary);
+    }
+}
+
+public sealed class ShopInfo
+{
+    public Dictionary<ItemType, List<ShopItemInfo>> shopItemInfosDictionary { get; private set; }
+
+    public ShopInfo(ShopData shopData)
+    {
+        var shopItemDatasDictionary = shopData.shopItemDatasDictionary;
+
+        if(shopItemDatasDictionary != null)
+        {
+            shopItemInfosDictionary = new Dictionary<ItemType, List<ShopItemInfo>>();
+
+            foreach (KeyValuePair<ItemType, List<ShopItemData>> keyValuePair in shopItemDatasDictionary)
+            {
+                shopItemInfosDictionary.Add(keyValuePair.Key, new List<ShopItemInfo>());
+
+                int index_Max = keyValuePair.Value.Count;
+
+                for (int index = 0; index < index_Max; ++index)
+                {
+                    shopItemInfosDictionary[keyValuePair.Key].Add(new ShopItemInfo(keyValuePair.Value[index]));
+                }
+            }
+        }
+    }
+
+    public ShopInfo(ShopInfo shopInfo)
+    {
+        shopItemInfosDictionary = new Dictionary<ItemType, List<ShopItemInfo>>(shopInfo.shopItemInfosDictionary);
+    }
+}
+
 public sealed class LevelData
 {
     public Dictionary<ItemCode, ItemData> itemDatas { get; private set; } = new Dictionary<ItemCode, ItemData>();
@@ -9,11 +105,15 @@ public sealed class LevelData
 
     public Dictionary<SceneCode, StageData> stageDatas { get; private set; } = new Dictionary<SceneCode, StageData>();
 
+    public ShopData shopData { get; private set; }
+
     public LevelData()
     {
         InitializeItemDatas();
 
         InitializeCharacterDatas();
+
+        InitializeShopData();
 
         InitializeStageDatas();
     }
@@ -24,70 +124,111 @@ public sealed class LevelData
 
         ItemCode itemCode;
 
+        List<StatusEffectData> statusEffectDatas;
+
         List<SkillData> skillDatas;
 
-        itemType = ItemType.ammo;
+        SkillData.RangedData skillData_RangedData;
 
-        itemCode = ItemCode.pistolAmmo;
+        #region Ammo
 
-        itemDatas.Add(itemCode, new ItemData(itemType, itemCode, 1f, 50f, 0f, 0f, 0f, 0f, null));
+        itemType = ItemType.Ammo;
 
-        itemCode = ItemCode.shotgunAmmo;
+        itemCode = ItemCode.PistolAmmo;
 
-        itemDatas.Add(itemCode, new ItemData(itemType, itemCode, 15f, 0f, 0f, 0f, 0f, 0f, null));
+        itemDatas.Add(itemCode, new ItemData(itemType, itemCode, 1, 50, 0f, 0f, 0f, 0f, null, 0f));
 
-        itemCode = ItemCode.submachineGunAmmo;
+        itemCode = ItemCode.ShotgunAmmo;
 
-        itemDatas.Add(itemCode, new ItemData(itemType, itemCode, 150f, 0f, 0f, 0f, 0f, 0f, null));
+        itemDatas.Add(itemCode, new ItemData(itemType, itemCode, 15, 0, 0f, 0f, 0f, 0f, null, 0f));
 
-        itemType = ItemType.consumable;
+        itemCode = ItemCode.SubmachineGunAmmo;
 
-        itemCode = ItemCode.grenade;
+        itemDatas.Add(itemCode, new ItemData(itemType, itemCode, 150, 0, 0f, 0f, 0f, 0f, null, 0f));
 
-        skillDatas = new List<SkillData>()
-        {
-            new SkillData(0, 0f, 10f, 0, 0f, 0f, 0f, 0, AnimatorWizard.FrameCountToSeconds(30), 1f, 0f, null, new SkillData.RangedData(ProjectileCode.grenade, 1f, 0f, new ProjectileData(10f, 3f, 0, new DamageableData(1f, 0f), new ExplosionData(ParticleEffectCode.explosion, 5f, 100, 1f, null), null)), null),
-        };
+        #endregion
 
-        itemDatas.Add(itemCode, new ItemData(itemType, itemCode, 5f, 0f, 0f, 0f, 0f, 0f, skillDatas));
+        #region Comsumable
 
-        itemCode = ItemCode.medikit;
+        itemType = ItemType.Consumable;
 
-        skillDatas = new List<SkillData>()
-        {
-            new SkillData(0, 0f, 0f, 0, 0f, 0f, 0f, 0, 0f, 0f, 0f, null, null, null),
-        };
+        #region Grenade
 
-        itemDatas.Add(itemCode, new ItemData(itemType, itemCode, 5f, 0f, 0f, 0f, 0f, 0f, skillDatas));
-
-        itemType = ItemType.weapon;
-
-        itemCode = ItemCode.pistol;
+        itemCode = ItemCode.Crenade;
 
         skillDatas = new List<SkillData>()
         {
-            new SkillData(0, 0f, 0f, 0, 0f, 0f, 0f, 0, AnimatorWizard.FrameCountToSeconds(10), 0.3f, 0f, null, new SkillData.RangedData(ProjectileCode.gunBullet, 1f, 0.5f, new ProjectileData(100f,  1f, 10, null, null, null)), null),
+            new SkillData(0f, 10f, 0, 0f, 0f, 0f, 0, AnimatorWizard.FrameCountToSeconds(30), 1f, 0f, null, null, new SkillData.RangedData(ProjectileCode.Grenade, 1f, 0f, new ProjectileData(10f, 3f, 0f, null, new ExplosionData(5f, 100, 1f, null)))),
         };
 
-        itemDatas.Add(itemCode, new ItemData(itemType, itemCode, 1f, 10f, AnimatorWizard.FrameCountToSeconds(40), 0.5f, AnimatorWizard.FrameCountToSeconds(125), 2f, skillDatas));
+        itemDatas.Add(itemCode, new ItemData(itemType, itemCode, 5, 0, 0f, 0f, 0f, 0f, skillDatas, 0f));
 
-        itemCode = ItemCode.shotgun;
+        #endregion
+
+        #region Medikit
+
+        itemCode = ItemCode.Medikit;
+
+        statusEffectDatas = new List<StatusEffectData>();
+
+        statusEffectDatas.Add(new StatusEffectData(StatusEffectCode.Healing, 0.2f, 0f));
 
         skillDatas = new List<SkillData>()
         {
-            new SkillData(0, 0f, 0f, 0, 0f, 0f, 0f, 0, AnimatorWizard.FrameCountToSeconds(45), 1f, 0f, null, new SkillData.RangedData(ProjectileCode.gunBullet, 15f, 5f, new ProjectileData(100f, 0.5f, 10, null, null, null)), null),
+            new SkillData(0f, 0f, 0, 0f, 0f, 0f, 0, 0f, 0f, 0f, statusEffectDatas, null, null),
         };
 
-        itemDatas.Add(itemCode, new ItemData(itemType, itemCode, 1f, 3f, AnimatorWizard.FrameCountToSeconds(40), 0.5f, AnimatorWizard.FrameCountToSeconds(125), 2.5f, skillDatas));
+        itemDatas.Add(itemCode, new ItemData(itemType, itemCode, 5, 0, 0f, 0f, 0f, 0f, skillDatas, 0f));
 
-        itemCode = ItemCode.submachineGun;
+        #endregion
 
-        skillDatas = new List<SkillData>()
-        {
-            new SkillData(0, 0f, 0f, 0, 0f, 0f, 0f, 0, AnimatorWizard.FrameCountToSeconds(10), 0.1f, 0f, null, new SkillData.RangedData(ProjectileCode.gunBullet, 1f, 0.5f, new ProjectileData(100f, 1f, 10, null, null, null)), null),
-        };
+        #endregion
 
-        itemDatas.Add(itemCode, new ItemData(itemType, itemCode, 1, 30, AnimatorWizard.FrameCountToSeconds(40), 0.5f, AnimatorWizard.FrameCountToSeconds(125), 2f, skillDatas));
+        #region Weapon
+
+        #region Pistol
+
+        itemCode = ItemCode.Pistol;
+
+        skillDatas = new List<SkillData>();
+
+        skillData_RangedData = new SkillData.RangedData(ProjectileCode.GunBullet, 1f, 0f, new ProjectileData(100f, 1f, 10f, null, null));
+
+        skillDatas.Add(new SkillData(0f, 0f, 0, 0f, 0f, 0f, 0, AnimatorWizard.FrameCountToSeconds(10), 0.5f, 0f, null, null, skillData_RangedData));
+
+        itemDatas.Add(itemCode, new ItemData(itemType, itemCode, 2, 10, AnimatorWizard.FrameCountToSeconds(40), 0.5f, AnimatorWizard.FrameCountToSeconds(125), 2f, skillDatas, 0f));
+
+        #endregion
+
+        #region Shotgun
+
+        itemCode = ItemCode.Shotgun;
+
+        skillDatas = new List<SkillData>();
+
+        skillData_RangedData = new SkillData.RangedData(ProjectileCode.GunBullet, 10f, 5f, new ProjectileData(100f, 0.25f, 5f, null, null));
+
+        skillDatas.Add(new SkillData(0f, 0f, 0, 0f, 0f, 0f, 0, AnimatorWizard.FrameCountToSeconds(45), 1f, 0f, null, null, skillData_RangedData));
+
+        itemDatas.Add(itemCode, new ItemData(itemType, itemCode, 1, 3, AnimatorWizard.FrameCountToSeconds(40), 0.5f, AnimatorWizard.FrameCountToSeconds(125), 2.5f, skillDatas, 0f));
+
+        #endregion
+
+        #region Submachine Gun
+
+        itemCode = ItemCode.SubmachineGun;
+
+        skillDatas = new List<SkillData>();
+
+        skillData_RangedData = new SkillData.RangedData(ProjectileCode.GunBullet, 1f, 1f, new ProjectileData(100f, 1f, 5f, null, null));
+
+        skillDatas.Add(new SkillData(0f, 0f, 0, 0f, 0f, 0f, 0, AnimatorWizard.FrameCountToSeconds(10), 0.1f, 0f, null, null, skillData_RangedData));
+
+        itemDatas.Add(itemCode, new ItemData(itemType, itemCode, 1, 30, AnimatorWizard.FrameCountToSeconds(40), 0.5f, AnimatorWizard.FrameCountToSeconds(125), 2f, skillDatas, 0f));
+
+        #endregion
+
+        #endregion
     }
 
     private void InitializeCharacterDatas()
@@ -96,9 +237,9 @@ public sealed class LevelData
 
         List<StatusEffectData> statusEffectDatas;
 
-        List<SkillInfo.LevelUpData> skillInfo_LevelUpDatas;
+        SkillData.RangedData skillData_RangedData;
 
-        List<StatusEffectInfo.LevelUpData> statusEffectInfo_LevelUpDatas;
+        List<SkillInfo.LevelUpData> skillInfo_LevelUpDatas;
 
         Dictionary<ItemType, List<ItemData>> itemDatas;
 
@@ -106,19 +247,47 @@ public sealed class LevelData
 
         CharacterInfo.LevelUpData characterInfo_LevelUpData;
 
-        #region Bird
+        #region CrazyRabbit
 
         skillDatas = new List<SkillData>();
 
-        skillDatas.Add(new SkillData(0, 0f, 0f, 0, 0f, 0f, 0f, 0, 0f, 0f, 0f, null, null, null));
+        skillDatas.Add(new SkillData(1f, 0f, 0, 0f, 0f, 0f, 0, AnimatorWizard.FrameCountToSeconds(35), 0f, 0f, null, new SkillData.MeleeData(5f, null), null));
 
         skillInfo_LevelUpDatas = new List<SkillInfo.LevelUpData>();
 
-        skillInfo_LevelUpDatas.Add(new SkillInfo.LevelUpData(null, null, null));
+        skillInfo_LevelUpDatas.Add(new SkillInfo.LevelUpData(new SkillInfo.MeleeInfo.LevelUpData(2.5f), null));
 
-        characterInfo_LevelUpData = new CharacterInfo.LevelUpData(new DamageableInfo.LevelUpData(0f), new ExperienceInfo.LevelUpData(0f, 0f), 0f, skillInfo_LevelUpDatas);
+        characterInfo_LevelUpData = new CharacterInfo.LevelUpData(new DamageableInfo.LevelUpData(5f), new ExperienceInfo.LevelUpData(0f, 2.5f), 2.5f, skillInfo_LevelUpDatas);
 
-        characterDatas.Add(CharacterCode.bird, new CharacterData(new MovementData(1f, 1f), new DamageableData(100, 0f), new ExperienceData(0f, 0f), 0f, skillDatas, null, characterInfo_LevelUpData));
+        characterDatas.Add(CharacterCode.CrazyRabbit, new CharacterData(new MovementData(3f, 3f), new DamageableData(10f, 0f), new ExperienceData(0f, 5f), 5f, skillDatas, null, characterInfo_LevelUpData));
+
+        #endregion
+
+        #region GiantSpider
+
+        skillDatas = new List<SkillData>();
+
+        statusEffectDatas = new List<StatusEffectData>();
+
+        statusEffectDatas.Add(new StatusEffectData(StatusEffectCode.MovementSpeedDown, 0.50f, 3f));
+
+        skillData_RangedData = new SkillData.RangedData(ProjectileCode.SpiderWeb, 1f, 0f, new ProjectileData(25f, 1f, 0f, statusEffectDatas, null));
+
+        skillDatas.Add(new SkillData(10f, 5f, 0, 0f, 0f, 0f, 0, AnimatorWizard.FrameCountToSeconds(13), 1f, 0f, null, null, skillData_RangedData));
+
+        skillData_RangedData = new SkillData.RangedData(ProjectileCode.PoisonBullet, 1f, 0f, new ProjectileData(25f, 1f, 5f, null, null));
+
+        skillDatas.Add(new SkillData(10f, 1f, 0, 0f, 0f, 0f, 0, AnimatorWizard.FrameCountToSeconds(13), 1f, 0f, null, null, skillData_RangedData));
+
+        skillInfo_LevelUpDatas = new List<SkillInfo.LevelUpData>();
+
+        skillInfo_LevelUpDatas.Add(new SkillInfo.LevelUpData(null, new SkillInfo.RangedInfo.LevelUpData(new ProjectileInfo.LevelUpData(0f, null))));
+
+        skillInfo_LevelUpDatas.Add(new SkillInfo.LevelUpData(null, new SkillInfo.RangedInfo.LevelUpData(new ProjectileInfo.LevelUpData(1f, null))));
+
+        characterInfo_LevelUpData = new CharacterInfo.LevelUpData(new DamageableInfo.LevelUpData(25f), new ExperienceInfo.LevelUpData(0f, 12.5f), 12.5f, skillInfo_LevelUpDatas);
+
+        characterDatas.Add(CharacterCode.GiantSpider, new CharacterData(new MovementData(3f, 3f), new DamageableData(50f, 0f), new ExperienceData(0f, 25f), 25f, skillDatas, null, characterInfo_LevelUpData));
 
         #endregion
 
@@ -126,51 +295,33 @@ public sealed class LevelData
 
         skillDatas = new List<SkillData>();
 
-        skillDatas.Add(new SkillData(0, 20f, 10f, 0, AnimatorWizard.FrameCountToSeconds(70), 0f, 0f, 3, AnimatorWizard.FrameCountToSeconds(20), 0f, 5f, null, null, null));
+        skillDatas.Add(new SkillData(2f, 1f, 0, 0f, 0f, 0f, 0, AnimatorWizard.FrameCountToSeconds(70), 0f, 0f, null, new SkillData.MeleeData(10f, null), null));
 
-        skillDatas.Add(new SkillData(1, 20f, 3f, 0, 0f, 0f, 0f, 2, AnimatorWizard.FrameCountToSeconds(30), 0f, 0f, null, null, null));
+        skillDatas.Add(new SkillData(2f, 1f, 0, 0f, 0f, 0f, 1, AnimatorWizard.FrameCountToSeconds(70), 0f, 0f, null, new SkillData.MeleeData(10f, null), null));
 
-        skillDatas.Add(new SkillData(2, 2f, 1.5f, 0, 0f, 0f, 0f, 0, AnimatorWizard.FrameCountToSeconds(70), 0f, 0f, null, null, null));
+        statusEffectDatas = new List<StatusEffectData>();
 
-        skillDatas.Add(new SkillData(2, 2f, 1.5f, 0, 0f, 0f, 0f, 1, AnimatorWizard.FrameCountToSeconds(70), 0f, 0f, null, null, null));
+        statusEffectDatas.Add(new StatusEffectData(StatusEffectCode.MovementSpeedUp, 2f, 5f));
 
-        skillInfo_LevelUpDatas = new List<SkillInfo.LevelUpData>();
+        skillDatas.Add(new SkillData(20f, 10f, 0, AnimatorWizard.FrameCountToSeconds(70), 0f, 0f, 3, AnimatorWizard.FrameCountToSeconds(20), 0f, 5f, statusEffectDatas, new SkillData.MeleeData(10f, null), null));
 
-        skillInfo_LevelUpDatas.Add(new SkillInfo.LevelUpData(null, null, null));
+        skillData_RangedData = new SkillData.RangedData(ProjectileCode.MinotaurossAxe, 1f, 0f, new ProjectileData(40f, 5f, 10f, null, null));
 
-        characterInfo_LevelUpData = new CharacterInfo.LevelUpData(new DamageableInfo.LevelUpData(0f), new ExperienceInfo.LevelUpData(0f, 0f), 0f, skillInfo_LevelUpDatas);
-
-        characterDatas.Add(CharacterCode.minotauros, new CharacterData(new MovementData(3f, 3f), new DamageableData(100f, 0f), new ExperienceData(0f, 0f), 0f, skillDatas, null, characterInfo_LevelUpData));
-
-        #endregion
-
-        #region Spider
-
-        skillDatas = new List<SkillData>();
-
-        statusEffectDatas = new List<StatusEffectData>()
-        {
-            new StatusEffectData(StatusEffectCode.slow, 0.25f, 3f),
-        };
-
-        skillDatas.Add(new SkillData(0, 10f, 5f, 0, 0f, 0f, 0f, 0, AnimatorWizard.FrameCountToSeconds(13), 1f, 0f, null, new SkillData.RangedData(ProjectileCode.spiderWebBullet, 0f, 0f, new ProjectileData(25f, 1f, 0f, null, null, statusEffectDatas)), null));
-
-        skillDatas.Add(new SkillData(1, 10f, 1.5f, 0, 0f, 0f, 0f, 0, AnimatorWizard.FrameCountToSeconds(13), 1f, 0f, null, new SkillData.RangedData(ProjectileCode.poisonBullet, 0f, 0f, new ProjectileData(25f, 1f, 3f, null, null, null)), null));
+        skillDatas.Add(new SkillData(20f, 5f, 0, 0f, 0f, 0f, 2, AnimatorWizard.FrameCountToSeconds(30), 0f, 0f, null, null, skillData_RangedData));
 
         skillInfo_LevelUpDatas = new List<SkillInfo.LevelUpData>();
 
-        statusEffectInfo_LevelUpDatas = new List<StatusEffectInfo.LevelUpData>()
-        {
-            new StatusEffectInfo.LevelUpData(0f, 0f),
-        };
+        skillInfo_LevelUpDatas.Add(new SkillInfo.LevelUpData(new SkillInfo.MeleeInfo.LevelUpData(2f), null));
 
-        skillInfo_LevelUpDatas.Add(new SkillInfo.LevelUpData(null, new SkillInfo.RangedInfo.LevelUpData(new ProjectileInfo.LevelUpData(0f, null, null, statusEffectInfo_LevelUpDatas)), null));
+        skillInfo_LevelUpDatas.Add(new SkillInfo.LevelUpData(new SkillInfo.MeleeInfo.LevelUpData(2f), null));
 
-        skillInfo_LevelUpDatas.Add(new SkillInfo.LevelUpData(null, new SkillInfo.RangedInfo.LevelUpData(new ProjectileInfo.LevelUpData(1f, null, null, null)), null));
+        skillInfo_LevelUpDatas.Add(new SkillInfo.LevelUpData(new SkillInfo.MeleeInfo.LevelUpData(2f), null));
 
-        characterInfo_LevelUpData = new CharacterInfo.LevelUpData(new DamageableInfo.LevelUpData(10f), new ExperienceInfo.LevelUpData(0f, 5f), 1f, skillInfo_LevelUpDatas);
+        skillInfo_LevelUpDatas.Add(new SkillInfo.LevelUpData(null, new SkillInfo.RangedInfo.LevelUpData(new ProjectileInfo.LevelUpData(2f, null))));
 
-        characterDatas.Add(CharacterCode.spider, new CharacterData(new MovementData(2f, 0f), new DamageableData(100f, 0f), new ExperienceData(0f, 15f), 10f, skillDatas, null, characterInfo_LevelUpData));
+        characterInfo_LevelUpData = new CharacterInfo.LevelUpData(new DamageableInfo.LevelUpData(100f), new ExperienceInfo.LevelUpData(0f, 100f), 100f, skillInfo_LevelUpDatas);
+
+        characterDatas.Add(CharacterCode.Minotauros, new CharacterData(new MovementData(3f, 3f), new DamageableData(500f, 0f), new ExperienceData(0f, 0f), 0f, skillDatas, null, characterInfo_LevelUpData));
 
         #endregion
 
@@ -179,33 +330,33 @@ public sealed class LevelData
         itemDatas = new Dictionary<ItemType, List<ItemData>>()
         {
             {
-                ItemType.ammo, new List<ItemData>()
+                ItemType.Ammo, new List<ItemData>()
                 {
-                    this.itemDatas[ItemCode.pistolAmmo],
+                    this.itemDatas[ItemCode.PistolAmmo],
 
-                    this.itemDatas[ItemCode.shotgunAmmo],
+                    this.itemDatas[ItemCode.ShotgunAmmo],
 
-                    this.itemDatas[ItemCode.submachineGunAmmo],
+                    this.itemDatas[ItemCode.SubmachineGunAmmo],
                 }
             },
 
             {
-                ItemType.consumable, new List<ItemData>()
+                ItemType.Consumable, new List<ItemData>()
                 {
-                    this.itemDatas[ItemCode.grenade],
+                    this.itemDatas[ItemCode.Crenade],
 
-                    this.itemDatas[ItemCode.medikit]
+                    this.itemDatas[ItemCode.Medikit]
                 }
             },
 
             {
-                ItemType.weapon, new List<ItemData>()
+                ItemType.Weapon, new List<ItemData>()
                 {
-                    this.itemDatas[ItemCode.pistol],
+                    this.itemDatas[ItemCode.Pistol],
 
-                    this.itemDatas[ItemCode.shotgun],
+                    this.itemDatas[ItemCode.Shotgun],
 
-                    this.itemDatas[ItemCode.submachineGun],
+                    this.itemDatas[ItemCode.SubmachineGun],
                 }
             },
         };
@@ -213,7 +364,7 @@ public sealed class LevelData
         counts = new Dictionary<ItemType, List<int>>()
         {
             {
-                ItemType.ammo, new List<int>()
+                ItemType.Ammo, new List<int>()
                 {
                     4000,
 
@@ -224,7 +375,7 @@ public sealed class LevelData
             },
 
             {
-                ItemType.consumable, new List<int>()
+                ItemType.Consumable, new List<int>()
                 {
                     500,
 
@@ -233,7 +384,7 @@ public sealed class LevelData
             },
 
             {
-                ItemType.weapon, new List<int>()
+                ItemType.Weapon, new List<int>()
                 {
                     10,
 
@@ -246,9 +397,57 @@ public sealed class LevelData
 
         characterInfo_LevelUpData = new CharacterInfo.LevelUpData(new DamageableInfo.LevelUpData(0f), new ExperienceInfo.LevelUpData(100f, 0f), 0f, null);
 
-        characterDatas.Add(CharacterCode.player, new CharacterData(new MovementData(3f, 6f, 1, 5f), new DamageableData(100f, 0f), new ExperienceData(100f, 0f), 0f, null, new InventoryData(itemDatas, counts), characterInfo_LevelUpData));
+        characterDatas.Add(CharacterCode.Player, new CharacterData(new MovementData(3f, 4.5f, 1, 5f), new DamageableData(100f, 0f), new ExperienceData(100f, 0f), 0f, null, new InventoryData(itemDatas, counts), characterInfo_LevelUpData));
 
         #endregion
+    }
+
+    private void InitializeShopData()
+    {
+        Dictionary<ItemType, List<ShopItemData>> shopItemInfosDictionary = new Dictionary<ItemType, List<ShopItemData>>();
+
+        List<ShopItemData> shopItemDatas;
+
+        #region Ammo
+
+        shopItemDatas = new List<ShopItemData>()
+        {
+            new ShopItemData(ItemCode.ShotgunAmmo, 3, -1),
+
+            new ShopItemData(ItemCode.SubmachineGunAmmo, 30, -1),
+        };
+
+        shopItemInfosDictionary.Add(ItemType.Ammo, shopItemDatas);
+
+        #endregion
+
+        #region Consumable
+
+        shopItemDatas = new List<ShopItemData>()
+        {
+            new ShopItemData(ItemCode.Crenade, 1, -1),
+
+            new ShopItemData(ItemCode.Medikit, 1, -1),
+        };
+
+        shopItemInfosDictionary.Add(ItemType.Consumable, shopItemDatas);
+
+        #endregion
+
+        #region Weapon
+
+        shopItemDatas = new List<ShopItemData>()
+        {
+            new ShopItemData(ItemCode.ShotgunAmmo, 1, 1),
+
+            new ShopItemData(ItemCode.SubmachineGunAmmo, 1, 1),
+        };
+
+        shopItemInfosDictionary.Add(ItemType.Weapon, shopItemDatas);
+
+        #endregion
+
+        shopData = new ShopData(shopItemInfosDictionary);
     }
 
     private void InitializeStageDatas()
@@ -271,10 +470,10 @@ public sealed class LevelData
 
         spawnEnemyData = new List<WaveData.EnemySpawnData.SpawnEnemyData>()
         {
-        new WaveData.EnemySpawnData.SpawnEnemyData(CharacterCode.spider, 1, 4, 0),
+        new WaveData.EnemySpawnData.SpawnEnemyData(CharacterCode.GiantSpider, 1, 2, 0),
         };
 
-        waveDatas.Add(new WaveData(180f, new WaveData.EnemySpawnData(1, spawnEnemyData), null));
+        waveDatas.Add(new WaveData(180f, new WaveData.EnemySpawnData(2, spawnEnemyData), null));
 
         #endregion
 
@@ -282,7 +481,7 @@ public sealed class LevelData
 
         spawnEnemyData = new List<WaveData.EnemySpawnData.SpawnEnemyData>()
         {
-            new WaveData.EnemySpawnData.SpawnEnemyData(CharacterCode.spider, 2, 4, 0),
+            new WaveData.EnemySpawnData.SpawnEnemyData(CharacterCode.GiantSpider, 2, 4, 0),
         };
 
         waveDatas.Add(new WaveData(180f, new WaveData.EnemySpawnData(4, spawnEnemyData), null));
@@ -301,59 +500,7 @@ public sealed class LevelData
 
         spawnEnemyData = new List<WaveData.EnemySpawnData.SpawnEnemyData>()
         {
-            new WaveData.EnemySpawnData.SpawnEnemyData(CharacterCode.spider, 3, 4, 0),
-        };
-
-        waveDatas.Add(new WaveData(180f, new WaveData.EnemySpawnData(1, spawnEnemyData), null));
-
-        #endregion
-
-        #region Wave 2
-
-        spawnEnemyData = new List<WaveData.EnemySpawnData.SpawnEnemyData>()
-        {
-            new WaveData.EnemySpawnData.SpawnEnemyData(CharacterCode.spider, 4, 4, 0),
-        };
-
-        waveDatas.Add(new WaveData(180f, new WaveData.EnemySpawnData(4, spawnEnemyData), null));
-
-        #endregion
-
-        roundDatas.Add(new RoundData(180f, waveDatas));
-
-        #endregion
-
-        #region Round 3
-
-        waveDatas = new List<WaveData>();
-
-        #region Wave 1
-
-        spawnEnemyData = new List<WaveData.EnemySpawnData.SpawnEnemyData>()
-        {
-           new WaveData.EnemySpawnData.SpawnEnemyData(CharacterCode.spider, 5, 4, 0),
-        };
-
-        waveDatas.Add(new WaveData(180f, new WaveData.EnemySpawnData(2, spawnEnemyData), null));
-
-        #endregion
-
-        #region Wave 2
-
-        spawnEnemyData = new List<WaveData.EnemySpawnData.SpawnEnemyData>()
-        {
-            new WaveData.EnemySpawnData.SpawnEnemyData(CharacterCode.spider, 6, 4, 0),
-        };
-
-        waveDatas.Add(new WaveData(180f, new WaveData.EnemySpawnData(8, spawnEnemyData), null));
-
-        #endregion
-
-        #region Wave 3
-
-        spawnEnemyData = new List<WaveData.EnemySpawnData.SpawnEnemyData>()
-        {
-            new WaveData.EnemySpawnData.SpawnEnemyData(CharacterCode.spider, 20, 1, 0),
+            new WaveData.EnemySpawnData.SpawnEnemyData(CharacterCode.Minotauros, 3, 1, 0),
         };
 
         waveDatas.Add(new WaveData(180f, new WaveData.EnemySpawnData(1, spawnEnemyData), null));
@@ -364,7 +511,7 @@ public sealed class LevelData
 
         #endregion
 
-        stageDatas.Add(SceneCode.city, new StageData(roundDatas));
+        stageDatas.Add(SceneCode.City, new StageData(roundDatas));
 
         #endregion
 
@@ -380,7 +527,39 @@ public sealed class LevelData
 
         spawnEnemyData = new List<WaveData.EnemySpawnData.SpawnEnemyData>()
         {
-            new WaveData.EnemySpawnData.SpawnEnemyData(CharacterCode.minotauros, 1, 1, 0),
+            new WaveData.EnemySpawnData.SpawnEnemyData(CharacterCode.CrazyRabbit, 1, 4, 0),
+        };
+
+        waveDatas.Add(new WaveData(180f, new WaveData.EnemySpawnData(4, spawnEnemyData), null));
+
+        #endregion
+
+        #region Wave 2
+
+        spawnEnemyData = new List<WaveData.EnemySpawnData.SpawnEnemyData>()
+        {
+            new WaveData.EnemySpawnData.SpawnEnemyData(CharacterCode.CrazyRabbit, 1, 2, 0),
+
+            new WaveData.EnemySpawnData.SpawnEnemyData(CharacterCode.GiantSpider, 1, 2, 0),
+        };
+
+        waveDatas.Add(new WaveData(180f, new WaveData.EnemySpawnData(4, spawnEnemyData), null));
+
+        #endregion
+
+        roundDatas.Add(new RoundData(180f, waveDatas));
+
+        #endregion
+
+        #region Round 2
+
+        waveDatas = new List<WaveData>();
+
+        #region Wave 1
+
+        spawnEnemyData = new List<WaveData.EnemySpawnData.SpawnEnemyData>()
+        {
+            new WaveData.EnemySpawnData.SpawnEnemyData(CharacterCode.Minotauros, 3, 1, 0),
         };
 
         waveDatas.Add(new WaveData(180f, new WaveData.EnemySpawnData(1, spawnEnemyData), null));
@@ -391,7 +570,7 @@ public sealed class LevelData
 
         #endregion
 
-        stageDatas.Add(SceneCode.desert, new StageData(roundDatas));
+        stageDatas.Add(SceneCode.Desert, new StageData(roundDatas));
 
         #endregion
     }

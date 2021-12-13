@@ -9,7 +9,7 @@ public sealed class StageMaster : MonoBehaviour
 {
     public static StageMaster instance { get; private set; }
 
-    [SerializeField] private TimerDisplayer _stageTimer = null;
+    [SerializeField] private TimerDisplayer _timerDisplayer = null;
 
     [SerializeField] private Button _turnRoundButton = null;
 
@@ -22,7 +22,7 @@ public sealed class StageMaster : MonoBehaviour
         _turnRoundButton.onClick.AddListener(TurnRound);
     }
 
-    public IEnumerator Routine(SceneCode stageSceneCode)
+    public IEnumerator Stage(SceneCode stageSceneCode)
     {
         GameMaster.instance.StartRecordPlayTime();
 
@@ -39,7 +39,6 @@ public sealed class StageMaster : MonoBehaviour
             while (_roundInfo.waveNumber < waveCount)
             {
                 var waveInfo = _roundInfo.waveInfos[_roundInfo.waveNumber];
-
 
                 if (waveInfo.enemySpawnData != null)
                 {
@@ -79,11 +78,11 @@ public sealed class StageMaster : MonoBehaviour
                     }
                 }
 
-                _stageTimer.SetTimer(string.Format("WAVE {0:0}", _roundInfo.waveNumber + 1), waveInfo.waveTimer);
+                _timerDisplayer.SetTimer(string.Format("WAVE {0:0}", _roundInfo.waveNumber + 1), waveInfo.waveTimer);
 
                 while (EnemySpawner.instance.spawnCount > 0 && waveInfo.waveTimer > 0f)
                 {
-                    waveInfo.waveTimer = _stageTimer.timer;
+                    waveInfo.waveTimer = _timerDisplayer.timer;
 
                     yield return null;
                 }
@@ -97,11 +96,11 @@ public sealed class StageMaster : MonoBehaviour
             {
                 _turnRoundButton.gameObject.SetActive(true);
 
-                _stageTimer.SetTimer("NEXT ROUND", _roundInfo.roundTimer);
+                _timerDisplayer.SetTimer("NEXT ROUND", _roundInfo.roundTimer);
 
                 while (_roundInfo.roundTimer > 0f)
                 {
-                    _roundInfo.roundTimer = _stageTimer.timer;
+                    _roundInfo.roundTimer = _timerDisplayer.timer;
 
                     yield return null;
                 }
@@ -111,7 +110,7 @@ public sealed class StageMaster : MonoBehaviour
             
             else
             {
-                _stageTimer.gameObject.SetActive(false);
+                _timerDisplayer.gameObject.SetActive(false);
             }
 
             ++stageInfo.roundNumber;

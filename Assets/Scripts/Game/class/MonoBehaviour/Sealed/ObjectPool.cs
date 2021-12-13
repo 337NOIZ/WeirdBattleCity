@@ -68,8 +68,6 @@ public sealed class ObjectPool : MonoBehaviour
         if (characterPool[characterCode].Count > 0)
         {
             character = characterPool[characterCode].Pop();
-
-            character.gameObject.SetActive(true);
         }
 
         else
@@ -77,8 +75,6 @@ public sealed class ObjectPool : MonoBehaviour
             character = Instantiate(characterPrefabs[characterCode], transform);
 
             character.Awaken();
-
-            character.Initialize();
         }
 
         return character;
@@ -91,13 +87,13 @@ public sealed class ObjectPool : MonoBehaviour
         if (droppedItemPool[itemCode].Count > 0)
         {
             droppedItem = droppedItemPool[itemCode].Pop();
-
-            droppedItem.gameObject.SetActive(true);
         }
 
         else
         {
             droppedItem = Instantiate(droppedItemPrefabs[itemCode], transform);
+
+            droppedItem.Awaken();
         }
 
         return droppedItem;
@@ -110,13 +106,13 @@ public sealed class ObjectPool : MonoBehaviour
         if (projectilePool[projectileCode].Count > 0)
         {
             projectile = projectilePool[projectileCode].Pop();
-
-            projectile.gameObject.SetActive(true);
         }
 
         else
         {
             projectile = Instantiate(projectilePrefabs[projectileCode], transform);
+
+            projectile.Awaken();
         }
 
         return projectile;
@@ -129,8 +125,6 @@ public sealed class ObjectPool : MonoBehaviour
         if (particleEffectPool[particleEffectCode].Count > 0)
         {
             particleEffect = particleEffectPool[particleEffectCode].Pop();
-
-            particleEffect.gameObject.SetActive(true);
         }
 
         else

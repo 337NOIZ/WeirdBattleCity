@@ -1,9 +1,9 @@
 
 public enum SceneCode
 {
-    city,
+    City,
     
-    desert,
+    Desert,
     
-    title,
+    Title,
 }

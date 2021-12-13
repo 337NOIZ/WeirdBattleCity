@@ -1,9 +1,9 @@
 
 public enum ItemType
 {
-    ammo,
+    Ammo,
     
-    consumable,
+    Consumable,
     
-    weapon,
+    Weapon,
 }

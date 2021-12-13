@@ -45,9 +45,9 @@ public sealed class MovementInfo
         {
             _movingSpeed_Multiply_ = value;
 
-            movingSpeed_Walk = _movingSpeed_Walk_Origin * _movingSpeed_Multiply_;
+            _movingSpeed_Walk_ = _movingSpeed_Walk_Origin * _movingSpeed_Multiply_;
 
-            movingSpeed_Run = _movingSpeed_Run_Origin * _movingSpeed_Multiply_;
+            _movingSpeed_Run_ = _movingSpeed_Run_Origin * _movingSpeed_Multiply_;
         }
     }
 

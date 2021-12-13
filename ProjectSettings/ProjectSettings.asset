@@ -12,7 +12,7 @@ PlayerSettings:
   targetDevice: 2
   useOnDemandResources: 0
   accelerometerFrequency: 60
-  companyName: Project WBC
+  companyName: Team 7
   productName: Weird Battle City
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
@@ -136,7 +136,7 @@ PlayerSettings:
     16:10: 1
     16:9: 1
     Others: 1
-  bundleVersion: 0.6
+  bundleVersion: 1.0
   preloadedAssets:
   - {fileID: 0}
   - {fileID: 11400000, guid: 7e79e3998a276b6438f19601459a46fa, type: 2}
@@ -157,7 +157,7 @@ PlayerSettings:
   androidSupportedAspectRatio: 1
   androidMaxAspectRatio: 2.1
   applicationIdentifier:
-    Android: com.ProjectWBC.WeirdBattleCity
+    Android: com.Team7.WeirdBattleCity
     Standalone: com.ProjectWBC.WeirdBattleCity
   buildNumber:
     Standalone: 0

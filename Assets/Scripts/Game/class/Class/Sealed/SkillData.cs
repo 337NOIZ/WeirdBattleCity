@@ -3,10 +3,6 @@ using System.Collections.Generic;
 
 public sealed class SkillData
 {
-    public int number { get; private set; }
-
-    public int priority { get; private set; }
-
     public float range { get; private set; }
 
     public float cooldownTime { get; private set; }
@@ -31,26 +27,17 @@ public sealed class SkillData
 
     public float skillMotionLoopTime { get; private set; }
 
+    public List<StatusEffectData> statusEffectDatas { get; private set; } = null;
+
     public sealed class MeleeData
     {
-        public float range { get; private set; }
-
-        public int damage { get; private set; }
-
-        public ExplosionData explosionData { get; private set; }
+        public float damage { get; private set; }
 
         public List<StatusEffectData> statusEffectDatas { get; private set; } = null;
 
-        public MeleeData(float range, int damage, ExplosionData explosionData, List<StatusEffectData> statusEffectDatas)
+        public MeleeData(float damage, List<StatusEffectData> statusEffectDatas)
         {
-            this.range = range;
-
             this.damage = damage;
-
-            if (explosionData != null)
-            {
-                this.explosionData = new ExplosionData(explosionData);
-            }
 
             if (statusEffectDatas != null)
             {
@@ -60,14 +47,7 @@ public sealed class SkillData
 
         public MeleeData(MeleeData meleeData)
         {
-            range = meleeData.range;
-
             damage = meleeData.damage;
-
-            if (meleeData.explosionData != null)
-            {
-                explosionData = new ExplosionData(meleeData.explosionData);
-            }
 
             if (meleeData.statusEffectDatas != null)
             {
@@ -113,12 +93,8 @@ public sealed class SkillData
 
     public RangedData rangedData { get; private set; } = null;
 
-    public List<StatusEffectData> statusEffectDatas { get; private set; } = null;
-
-    public SkillData(int priority, float range, float cooldownTime, int castingMotionNumber, float castingMotionTime_Origin, float castingMotionTime, float castingMotionLoopTime, int skillMotionNumber, float skillMotionTime_Origin, float skillMotionTime, float skillMotionLoopTime, MeleeData meleeData, RangedData rangedData, List<StatusEffectData> statusEffectDatas)
+    public SkillData(float range, float cooldownTime, int castingMotionNumber, float castingMotionTime_Origin, float castingMotionTime, float castingMotionLoopTime, int skillMotionNumber, float skillMotionTime_Origin, float skillMotionTime, float skillMotionLoopTime, List<StatusEffectData> statusEffectDatas, MeleeData meleeData, RangedData rangedData)
     {
-        this.priority = priority;
-
         this.range = range;
 
         this.cooldownTime = cooldownTime;
@@ -163,6 +139,11 @@ public sealed class SkillData
 
         this.skillMotionLoopTime = skillMotionLoopTime;
 
+        if (statusEffectDatas != null)
+        {
+            this.statusEffectDatas = new List<StatusEffectData>(statusEffectDatas);
+        }
+
         if (meleeData != null)
         {
             this.meleeData = new MeleeData(meleeData);
@@ -172,17 +153,10 @@ public sealed class SkillData
         {
             this.rangedData = new RangedData(rangedData);
         }
-
-        if (statusEffectDatas != null)
-        {
-            this.statusEffectDatas = new List<StatusEffectData>(statusEffectDatas);
-        }
     }
 
     public SkillData(SkillData skillData)
     {
-        priority = skillData.priority;
-
         range = skillData.range;
 
         cooldownTime = skillData.cooldownTime;
