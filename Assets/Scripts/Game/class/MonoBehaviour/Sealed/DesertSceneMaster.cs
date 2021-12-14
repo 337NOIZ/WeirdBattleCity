@@ -14,6 +14,10 @@ public sealed class DesertSceneMaster : SceneMaster
 
         Player.instance.Launch();
 
+        backgroundMusic = AudioMaster.instance.Pop(AudioClipCode.Desert_0);
+
+        backgroundMusic.Play(1.5f);
+
         yield return base._Opening_();
 
         yield return StageMaster.instance.Stage(SceneCode.Desert);

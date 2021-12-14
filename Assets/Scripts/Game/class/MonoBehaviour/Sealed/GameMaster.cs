@@ -19,14 +19,6 @@ public sealed class GameMaster : MonoBehaviour
 
     public Dictionary<string, Sprite> sprites { get; private set; } = new Dictionary<string, Sprite>();
 
-    public Dictionary<CharacterCode, Character> characterPrefabs { get; private set; } = new Dictionary<CharacterCode, Character>();
-
-    public Dictionary<ItemCode, DroppedItem> droppedItemPrefabs { get; private set; } = new Dictionary<ItemCode, DroppedItem>();
-
-    public Dictionary<ProjectileCode, Projectile> projectilePrefabs { get; private set; } = new Dictionary<ProjectileCode, Projectile>();
-
-    public Dictionary<ParticleEffectCode, ParticleEffect> particleEffectPrefabs { get; private set; } = new Dictionary<ParticleEffectCode, ParticleEffect>();
-
     public GameData gameData { get; private set; } = new GameData();
 
     public GameInfo gameInfo { get; private set; }
@@ -71,47 +63,11 @@ public sealed class GameMaster : MonoBehaviour
     {
         var sprites = Resources.LoadAll<Sprite>("Sprites");
         
-        var length = sprites.Length;
+        var index_Max = sprites.Length;
 
-        for (int index = 0; index < length; ++index)
+        for (int index = 0; index < index_Max; ++index)
         {
             this.sprites.Add(sprites[index].name, sprites[index]);
-        }
-
-        var characterPrefabs = Resources.LoadAll<Character>("Prefabs/Character");
-
-        length = characterPrefabs.Length;
-
-        for (int index = 0; index < length; ++index)
-        {
-            this.characterPrefabs.Add(characterPrefabs[index].characterCode, characterPrefabs[index]);
-        }
-
-        var droppedItemPrefabs = Resources.LoadAll<DroppedItem>("Prefabs/Item/DroppedItem");
-
-        length = droppedItemPrefabs.Length;
-
-        for (int index = 0; index < length; ++index)
-        {
-            this.droppedItemPrefabs.Add(droppedItemPrefabs[index].itemCode, droppedItemPrefabs[index]);
-        }
-
-        var projectilePrefabs = Resources.LoadAll<Projectile>("Prefabs/Projectile");
-
-        length = projectilePrefabs.Length;
-
-        for (int index = 0; index < length; ++index)
-        {
-            this.projectilePrefabs.Add(projectilePrefabs[index].projectileCode, projectilePrefabs[index]);
-        }
-
-        var particleEffectPrefabs = Resources.LoadAll<ParticleEffect>("Prefabs/ParticleEffect");
-
-        length = particleEffectPrefabs.Length;
-
-        for (int index = 0; index < length; ++index)
-        {
-            this.particleEffectPrefabs.Add(particleEffectPrefabs[index].particleEffectCode, particleEffectPrefabs[index]);
         }
     }
 

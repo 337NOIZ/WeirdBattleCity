@@ -12,7 +12,7 @@ public sealed class CanvasGroupController : MonoBehaviour
         canvasGroup = GetComponent<CanvasGroup>();
     }
 
-    public IEnumerator FadeAlpha(float virtualAlpha, float targetAlpha, float fadeTime)
+    public IEnumerator FadeAlpha(float virtualCurrentAlpha, float targetAlpha, float fadeTime)
     {
         if (_fadeAlpha != null)
         {
@@ -23,7 +23,7 @@ public sealed class CanvasGroupController : MonoBehaviour
             yield return null;
         }
 
-        _fadeAlpha = _FadeAlpha(virtualAlpha, targetAlpha, fadeTime);
+        _fadeAlpha = FadeAlpha_(virtualCurrentAlpha, targetAlpha, fadeTime);
 
         StartCoroutine(_fadeAlpha);
 
@@ -32,7 +32,7 @@ public sealed class CanvasGroupController : MonoBehaviour
 
     private IEnumerator _fadeAlpha = null;
 
-    private IEnumerator _FadeAlpha(float virtualAlpha, float targetAlpha, float fadeTime)
+    private IEnumerator FadeAlpha_(float virtualCurrentAlpha, float targetAlpha, float fadeTime)
     {
         if(targetAlpha < 0f)
         {
@@ -46,13 +46,13 @@ public sealed class CanvasGroupController : MonoBehaviour
 
         if (fadeTime > 0f)
         {
-            float maxDelta = (virtualAlpha >= targetAlpha ? virtualAlpha - targetAlpha : targetAlpha - virtualAlpha) / fadeTime;
+            float maxDelta = (virtualCurrentAlpha >= targetAlpha ? virtualCurrentAlpha - targetAlpha : targetAlpha - virtualCurrentAlpha) / fadeTime;
 
-            while (canvasGroup.alpha == targetAlpha)
+            while (canvasGroup.alpha != targetAlpha)
             {
-                yield return null;
-
                 canvasGroup.alpha = Mathf.MoveTowards(canvasGroup.alpha, targetAlpha, maxDelta * Time.deltaTime);
+
+                yield return null;
             }
         }
 

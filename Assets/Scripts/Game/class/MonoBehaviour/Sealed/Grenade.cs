@@ -7,7 +7,7 @@ public sealed class Grenade : Consumable
 {
     [SerializeField] private Muzzle _muzzle = null;
 
-    public override ItemCode itemCode { get => ItemCode.Crenade; }
+    public override ItemCode itemCode { get => ItemCode.Grenade; }
 
     public override void Awaken(Character character)
     {
@@ -18,53 +18,52 @@ public sealed class Grenade : Consumable
 
     protected override IEnumerator Skill_(int skillNumber)
     {
-        var skillInfo = _itemInfo.skillInfos[skillNumber];
-
-        if (skillInfo.cooldownTimer == 0f)
+        if (skillNumber > -1 && skillNumber < _skillInfos.Count)
         {
-            var skillInfo_RangedInfo = skillInfo.rangedInfo;
+            var skillInfo = _skillInfos[skillNumber];
 
-            var explosionInfo = skillInfo_RangedInfo.projectileInfo.explosionInfo;
-
-            switch (skillNumber)
+            if (skillInfo.cooldownTimer == 0f)
             {
-                case 0:
+                switch (skillNumber)
+                {
+                    case 0:
 
-                    if (_itemInfo.stackCount > 0)
-                    {
-                        --_itemInfo.stackCount;
+                        if (_itemInfo.stackCount > 0)
+                        {
+                            --_itemInfo.stackCount;
 
-                        _animator.SetBool("isAiming", true);
+                            var skillInfo_RangedInfo = skillInfo.rangedInfo;
 
-                        _muzzle.LaunchProjectile
-                        (
-                            _character,
+                            var explosionInfo = skillInfo_RangedInfo.projectileInfo.explosionInfo;
 
-                            (hitBox) =>
-                            {
-                                hitBox.character.TakeAttack(_character, explosionInfo.damage, null);
-                            },
+                            _muzzle.LaunchProjectile
+                            (
+                                _character,
 
-                            skillInfo_RangedInfo
-                        );
+                                (hitBox) =>
+                                {
+                                    hitBox.character.TakeAttack(_character, explosionInfo.damage, null);
+                                },
 
-                        _animator.SetBool("isAiming", false);
-                    }
+                                skillInfo_RangedInfo
+                            );
 
-                    skillInfo.SetCoolTimer();
+                            skillInfo.SetCoolTimer();
 
-                    _skillWizard.StartSkillCooldown(skillInfo);
+                            _skillWizard.StartSkillCooldown(skillInfo);
+                        }
 
-                    break;
+                        break;
 
-                default:
+                    default:
 
-                    break;
+                        break;
+                }
             }
         }
 
         _skill = null;
 
-        yield return null;
+        yield break;
     }
 }

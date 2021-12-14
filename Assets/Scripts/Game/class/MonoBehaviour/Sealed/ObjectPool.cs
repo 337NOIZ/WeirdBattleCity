@@ -9,70 +9,95 @@ public sealed class ObjectPool : MonoBehaviour
 {
     public static ObjectPool instance { get; private set; }
 
-    private Dictionary<CharacterCode, Stack<Character>> characterPool = new Dictionary<CharacterCode, Stack<Character>>();
+    private Dictionary<CharacterCode, Character> _characterPrefabDictionary = new Dictionary<CharacterCode, Character>();
 
-    private Dictionary<ItemCode, Stack<DroppedItem>> droppedItemPool = new Dictionary<ItemCode, Stack<DroppedItem>>();
+    private Dictionary<ItemCode, DroppedItem> _droppedItemPrefabDictionary = new Dictionary<ItemCode, DroppedItem>();
 
-    private Dictionary<ProjectileCode, Stack<Projectile>> projectilePool = new Dictionary<ProjectileCode, Stack<Projectile>>();
+    private Dictionary<ProjectileCode, Projectile> _projectilePrefabDictionary = new Dictionary<ProjectileCode, Projectile>();
 
-    private Dictionary<ParticleEffectCode, Stack<ParticleEffect>> particleEffectPool = new Dictionary<ParticleEffectCode, Stack<ParticleEffect>>();
+    private Dictionary<ParticleEffectCode, ParticleEffect> _particleEffectPrefabDictionary = new Dictionary<ParticleEffectCode, ParticleEffect>();
 
-    private Dictionary<CharacterCode, Character> characterPrefabs;
+    private Dictionary<CharacterCode, Stack<Character>> _characterPool = new Dictionary<CharacterCode, Stack<Character>>();
 
-    private Dictionary<ItemCode, DroppedItem> droppedItemPrefabs;
+    private Dictionary<ItemCode, Stack<DroppedItem>> _droppedItemPool = new Dictionary<ItemCode, Stack<DroppedItem>>();
 
-    private Dictionary<ProjectileCode, Projectile> projectilePrefabs;
+    private Dictionary<ProjectileCode, Stack<Projectile>> _projectilePool = new Dictionary<ProjectileCode, Stack<Projectile>>();
 
-    private Dictionary<ParticleEffectCode, ParticleEffect> particleEffectPrefabs;
+    private Dictionary<ParticleEffectCode, Stack<ParticleEffect>> _particleEffectPool = new Dictionary<ParticleEffectCode, Stack<ParticleEffect>>();
 
     private void Awake()
     {
         instance = this;
 
+        var characterPrefabArray = Resources.LoadAll<Character>("Prefabs/Characters");
+
+        var index_Max = characterPrefabArray.Length;
+
+        for (int index = 0; index < index_Max; ++index)
+        {
+            _characterPrefabDictionary.Add(characterPrefabArray[index].characterCode, characterPrefabArray[index]);
+        }
+
+        var droppedItemPrefabArray = Resources.LoadAll<DroppedItem>("Prefabs/Item/DroppedItems");
+
+        index_Max = droppedItemPrefabArray.Length;
+
+        for (int index = 0; index < index_Max; ++index)
+        {
+            _droppedItemPrefabDictionary.Add(droppedItemPrefabArray[index].itemCode, droppedItemPrefabArray[index]);
+        }
+
+        var projectilePrefabArray = Resources.LoadAll<Projectile>("Prefabs/Projectiles");
+
+        index_Max = projectilePrefabArray.Length;
+
+        for (int index = 0; index < index_Max; ++index)
+        {
+            _projectilePrefabDictionary.Add(projectilePrefabArray[index].projectileCode, projectilePrefabArray[index]);
+        }
+
+        var particleEffectArray = Resources.LoadAll<ParticleEffect>("Prefabs/ParticleEffects");
+
+        index_Max = particleEffectArray.Length;
+
+        for (int index = 0; index < index_Max; ++index)
+        {
+            _particleEffectPrefabDictionary.Add(particleEffectArray[index].particleEffectCode, particleEffectArray[index]);
+        }
+
         foreach (CharacterCode characterCode in Enum.GetValues(typeof(CharacterCode)))
         {
-            characterPool.Add(characterCode, new Stack<Character>());
+            _characterPool.Add(characterCode, new Stack<Character>());
         }
 
         foreach (ItemCode itemCode in Enum.GetValues(typeof(ItemCode)))
         {
-            droppedItemPool.Add(itemCode, new Stack<DroppedItem>());
+            _droppedItemPool.Add(itemCode, new Stack<DroppedItem>());
         }
 
         foreach (ProjectileCode projectileCode in Enum.GetValues(typeof(ProjectileCode)))
         {
-            projectilePool.Add(projectileCode, new Stack<Projectile>());
+            _projectilePool.Add(projectileCode, new Stack<Projectile>());
         }
 
         foreach (ParticleEffectCode particleEffectCode in Enum.GetValues(typeof(ParticleEffectCode)))
         {
-            particleEffectPool.Add(particleEffectCode, new Stack<ParticleEffect>());
+            _particleEffectPool.Add(particleEffectCode, new Stack<ParticleEffect>());
         }
-    }
-
-    private void Start()
-    {
-        characterPrefabs = GameMaster.instance.characterPrefabs;
-
-        droppedItemPrefabs = GameMaster.instance.droppedItemPrefabs;
-
-        projectilePrefabs = GameMaster.instance.projectilePrefabs;
-
-        particleEffectPrefabs = GameMaster.instance.particleEffectPrefabs;
     }
 
     public Character Pop(CharacterCode characterCode)
     {
         Character character;
 
-        if (characterPool[characterCode].Count > 0)
+        if (_characterPool[characterCode].Count > 0)
         {
-            character = characterPool[characterCode].Pop();
+            character = _characterPool[characterCode].Pop();
         }
 
         else
         {
-            character = Instantiate(characterPrefabs[characterCode], transform);
+            character = Instantiate(_characterPrefabDictionary[characterCode]);
 
             character.Awaken();
         }
@@ -84,14 +109,14 @@ public sealed class ObjectPool : MonoBehaviour
     {
         DroppedItem droppedItem;
 
-        if (droppedItemPool[itemCode].Count > 0)
+        if (_droppedItemPool[itemCode].Count > 0)
         {
-            droppedItem = droppedItemPool[itemCode].Pop();
+            droppedItem = _droppedItemPool[itemCode].Pop();
         }
 
         else
         {
-            droppedItem = Instantiate(droppedItemPrefabs[itemCode], transform);
+            droppedItem = Instantiate(_droppedItemPrefabDictionary[itemCode]);
 
             droppedItem.Awaken();
         }
@@ -103,14 +128,14 @@ public sealed class ObjectPool : MonoBehaviour
     {
         Projectile projectile;
 
-        if (projectilePool[projectileCode].Count > 0)
+        if (_projectilePool[projectileCode].Count > 0)
         {
-            projectile = projectilePool[projectileCode].Pop();
+            projectile = _projectilePool[projectileCode].Pop();
         }
 
         else
         {
-            projectile = Instantiate(projectilePrefabs[projectileCode], transform);
+            projectile = Instantiate(_projectilePrefabDictionary[projectileCode]);
 
             projectile.Awaken();
         }
@@ -122,14 +147,14 @@ public sealed class ObjectPool : MonoBehaviour
     {
         ParticleEffect particleEffect;
 
-        if (particleEffectPool[particleEffectCode].Count > 0)
+        if (_particleEffectPool[particleEffectCode].Count > 0)
         {
-            particleEffect = particleEffectPool[particleEffectCode].Pop();
+            particleEffect = _particleEffectPool[particleEffectCode].Pop();
         }
 
         else
         {
-            particleEffect = Instantiate(particleEffectPrefabs[particleEffectCode], transform);
+            particleEffect = Instantiate(_particleEffectPrefabDictionary[particleEffectCode]);
         }
 
         return particleEffect;
@@ -137,21 +162,29 @@ public sealed class ObjectPool : MonoBehaviour
 
     public void Push(Character character)
     {
-        characterPool[character.characterCode].Push(character);
+        character.transform.parent = transform;
+
+        _characterPool[character.characterCode].Push(character);
     }
 
     public void Push(DroppedItem droppedItem)
     {
-        droppedItemPool[droppedItem.itemCode].Push(droppedItem);
+        droppedItem.transform.parent = transform;
+
+        _droppedItemPool[droppedItem.itemCode].Push(droppedItem);
     }
 
     public void Push(Projectile projectile)
     {
-        projectilePool[projectile.projectileCode].Push(projectile);
+        projectile.transform.parent = transform;
+
+        _projectilePool[projectile.projectileCode].Push(projectile);
     }
 
     public void Push(ParticleEffect particleEffect)
     {
-        particleEffectPool[particleEffect.particleEffectCode].Push(particleEffect);
+        particleEffect.transform.parent = transform;
+
+        _particleEffectPool[particleEffect.particleEffectCode].Push(particleEffect);
     }
 }

@@ -1,4 +1,6 @@
 
+using System.Collections;
+
 using UnityEngine;
 
 public sealed class Minotauros : Enemy
@@ -38,7 +40,7 @@ public sealed class Minotauros : Enemy
             {
                 float range = skillInfo.range;
 
-                if (Vector3.Distance(transform.position, _destination.position) <= range == true)
+                if (Vector3.Distance(transform.position, _destination.position) <= range)
                 {
                     switch(skillNumber)
                     {
@@ -114,6 +116,16 @@ public sealed class Minotauros : Enemy
                         TakeStatusEffect(skillInfo.statusEffectInfos);
 
                         isMoving = true;
+
+                        var audioSourceMaster = AudioMaster.instance.Pop(AudioClipCode.Minotauros_Rush_0);
+
+                        audioSourceMaster.transform.parent = transform;
+
+                        audioSourceMaster.transform.position = Vector3.zero;
+
+                        audioSourceMaster.gameObject.SetActive(true);
+
+                        audioSourceMaster.Play();
 
                         var particleEffect = ObjectPool.instance.Pop(ParticleEffectCode.Minotauros_Dash);
 

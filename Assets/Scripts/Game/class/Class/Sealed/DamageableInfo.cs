@@ -69,21 +69,18 @@ public sealed class DamageableInfo
 
         set
         {
-            if(value > _healthPoint_Max_)
+            _healthPoint_ = value;
+
+            if (_healthPoint_ > _healthPoint_Max_)
             {
                 _healthPoint_ = _healthPoint_Max_;
                 
             }
 
-            if (value < 0f)
+            if (_healthPoint_ < 0f)
             {
                 _healthPoint_ = 0f;
 
-            }
-
-            else
-            {
-                _healthPoint_ = value;
             }
         }
     }

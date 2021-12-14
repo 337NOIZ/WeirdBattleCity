@@ -1,6 +1,8 @@
 
 using System.Collections;
 
+using UnityEngine;
+
 public sealed class Medikit : Consumable
 {
     public override ItemCode itemCode { get => ItemCode.Medikit; }
@@ -17,31 +19,49 @@ public sealed class Medikit : Consumable
 
     protected override IEnumerator Skill_(int skillNumber)
     {
-        var skillInfo = _skillInfos[skillNumber];
-
-        switch (skillNumber)
+        if (skillNumber > -1 && skillNumber < _skillInfos.Count)
         {
-            case 0:
+            var skillInfo = _skillInfos[skillNumber];
 
-                if (_itemInfo.stackCount > 0)
+            if (skillInfo.cooldownTimer == 0f)
+            {
+                switch (skillNumber)
                 {
-                    /*if (_character._damageableInfo.healthPoint < _character._damageableInfo.healthPoint_Max)
-                    {
-                        --_itemInfo.stackCount;
+                    case 0:
 
-                        _character.GetHealthPoint(_character._damageableInfo.healthPoint_Max * 0.25f);
+                        if (_itemInfo.stackCount > 0)
+                        {
+                            var damageableInfo = _character.damageableInfo;
 
+                            if (damageableInfo.healthPoint < damageableInfo.healthPoint_Max)
+                            {
+                                --_itemInfo.stackCount;
 
-                    }*/
+                                var audioSourceMaster = AudioMaster.instance.Pop(AudioClipCode.Healing_0);
 
-                    _character.TakeStatusEffect(skillInfo.statusEffectInfos);
+                                audioSourceMaster.transform.parent = _character.transform;
+
+                                audioSourceMaster.transform.localPosition = Vector3.zero;
+
+                                audioSourceMaster.gameObject.SetActive(true);
+
+                                audioSourceMaster.Play();
+
+                                _character.TakeStatusEffect(skillInfo.statusEffectInfos);
+
+                                //skillInfo.SetCoolTimer();
+
+                                //_skillWizard.StartSkillCooldown(skillInfo);
+                            }
+                        }
+
+                        break;
+
+                    default:
+
+                        break;
                 }
-
-                break;
-
-            default:
-
-                break;
+            }
         }
 
         _skill = null;

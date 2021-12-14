@@ -5,30 +5,24 @@ using UnityEngine.UI;
 
 public class VolumeController : MonoBehaviour
 {
-    [Space]
+    [SerializeField] private Slider _backgroundMusicVolumeSlider = null;
 
-    [SerializeField]
-    
-    private Slider backgroundMusicVolumeSlider = null;
-
-    [SerializeField]
-    
-    private Slider soundEffectVolumeSlider = null;
+    [SerializeField] private Slider _soundEffectVolumeSlider = null;
 
     private void Start()
     {
-        backgroundMusicVolumeSlider.value = AudioMaster.instance.backgroundMusicMasterVolume;
+        _backgroundMusicVolumeSlider.value = AudioMaster.instance.backgroundMusicVolume;
 
-        soundEffectVolumeSlider.value = AudioMaster.instance.backgroundMusicMasterVolume;
+        _soundEffectVolumeSlider.value = AudioMaster.instance.backgroundMusicVolume;
     }
 
     public void UpdateBackgroundMusicVolume()
     {
-        AudioMaster.instance.backgroundMusicMasterVolume = backgroundMusicVolumeSlider.value;
+        AudioMaster.instance.backgroundMusicVolume = _backgroundMusicVolumeSlider.value;
     }
 
     public void UpdateSoundEffectVolume()
     {
-        AudioMaster.instance.soundEffectMasterVolume = soundEffectVolumeSlider.value;
+        AudioMaster.instance.soundEffectVolume = _soundEffectVolumeSlider.value;
     }
 }

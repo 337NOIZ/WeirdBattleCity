@@ -7,6 +7,8 @@ public sealed class StatusEffectInfo
 
     public float durationTime { get; set; }
 
+    
+
     public float durationTimer { get; set; }
 
     public StatusEffectInfo(StatusEffectData statusEffectData)

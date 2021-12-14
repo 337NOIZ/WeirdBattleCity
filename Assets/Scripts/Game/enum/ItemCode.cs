@@ -11,7 +11,7 @@ public enum ItemCode
 
     CrossbowBolt,
 
-    Crenade,
+    Grenade,
 
     Medikit,
 

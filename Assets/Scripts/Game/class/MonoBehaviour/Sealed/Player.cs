@@ -49,20 +49,22 @@ public sealed class Player : Character
 
         _playerInfo = GameMaster.instance.gameInfo.levelInfo.playerInfo;
 
-        _characterInfo = _playerInfo.characterInfo;
-
-        if (_characterInfo.transformInfo == null)
-        {
-            _characterInfo.transformInfo = new TransformInfo(transform.position, transform.localEulerAngles);
-        }
+        characterInfo = _playerInfo.characterInfo;
 
         base._Awaken_();
+
+        if (characterInfo.transformInfo == null)
+        {
+            characterInfo.transformInfo = new TransformInfo(transform.position, transform.localEulerAngles);
+        }
+
+        _transformInfo = characterInfo.transformInfo;
 
         if (_healthPointBar != null)
         {
             _healthPointBar.fillAmount = 1f;
 
-            _healthPointBar.StartFillByLerp(1f - _damageableInfo.healthPoint / _damageableInfo.healthPoint_Max, 0.1f);
+            _healthPointBar.StartFillByLerp(1f - damageableInfo.healthPoint / damageableInfo.healthPoint_Max, 0.1f);
         }
         
         if(_experiencePointBar != null)
@@ -76,7 +78,7 @@ public sealed class Player : Character
         {
             _moneyBox.moneyAmount = 0f;
 
-            _moneyBox.SetMoneyAmountWithDirect(_characterInfo.moneyAmount, 1f);
+            _moneyBox.StartMoveTowardsMoneyAmount(characterInfo.moneyAmount, 1f);
         }
     }
 
@@ -84,7 +86,7 @@ public sealed class Player : Character
     {
         base.LevelUp(characterLevel);
 
-        _healthPointBar.StartFillByLerp(1f - _damageableInfo.healthPoint / _damageableInfo.healthPoint_Max, 0.1f);
+        _healthPointBar.StartFillByLerp(1f - damageableInfo.healthPoint / damageableInfo.healthPoint_Max, 0.1f);
     }
 
     protected override IEnumerator _Launce_()
@@ -170,15 +172,18 @@ public sealed class Player : Character
         }
     }
 
-    protected override void Dead()
+    protected override IEnumerator _Dead_()
     {
         VirtualController.instance.interactable = false;
 
-        base.Dead();
-    }
+        var audioSourceMaster = AudioMaster.instance.Pop(AudioClipCode.Die_0);
 
-    protected override IEnumerator _Dead_()
-    {
+        audioSourceMaster.transform.position = transform.position;
+
+        audioSourceMaster.gameObject.SetActive(true);
+
+        audioSourceMaster.Play();
+
         yield return base._Dead_();
 
         SceneMaster.instance.LoadScene(SceneCode.Title);
@@ -186,11 +191,11 @@ public sealed class Player : Character
 
     public override void GetMoney(float moneyAmount)
     {
-        _characterInfo.moneyAmount += moneyAmount;
+        characterInfo.moneyAmount += moneyAmount;
 
         if (_moneyBox != null)
         {
-            _moneyBox.SetMoneyAmountWithDirect(_characterInfo.moneyAmount, 1f);
+            _moneyBox.StartMoveTowardsMoneyAmount(characterInfo.moneyAmount, 1f);
         }
     }
 

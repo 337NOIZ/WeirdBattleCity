@@ -154,7 +154,7 @@ public sealed class LevelData
 
         #region Grenade
 
-        itemCode = ItemCode.Crenade;
+        itemCode = ItemCode.Grenade;
 
         skillDatas = new List<SkillData>()
         {
@@ -257,9 +257,9 @@ public sealed class LevelData
 
         skillInfo_LevelUpDatas.Add(new SkillInfo.LevelUpData(new SkillInfo.MeleeInfo.LevelUpData(2.5f), null));
 
-        characterInfo_LevelUpData = new CharacterInfo.LevelUpData(new DamageableInfo.LevelUpData(5f), new ExperienceInfo.LevelUpData(0f, 2.5f), 2.5f, skillInfo_LevelUpDatas);
+        characterInfo_LevelUpData = new CharacterInfo.LevelUpData(new DamageableInfo.LevelUpData(12.5f), new ExperienceInfo.LevelUpData(0f, 7.25f), 7.25f, skillInfo_LevelUpDatas);
 
-        characterDatas.Add(CharacterCode.CrazyRabbit, new CharacterData(new MovementData(3f, 3f), new DamageableData(10f, 0f), new ExperienceData(0f, 5f), 5f, skillDatas, null, characterInfo_LevelUpData));
+        characterDatas.Add(CharacterCode.CrazyRabbit, new CharacterData(new MovementData(3f, 3f), new DamageableData(25f, 0f), new ExperienceData(0f, 12.5f), 12.5f, skillDatas, null, characterInfo_LevelUpData));
 
         #endregion
 
@@ -305,23 +305,23 @@ public sealed class LevelData
 
         skillDatas.Add(new SkillData(20f, 10f, 0, AnimatorWizard.FrameCountToSeconds(70), 0f, 0f, 3, AnimatorWizard.FrameCountToSeconds(20), 0f, 5f, statusEffectDatas, new SkillData.MeleeData(10f, null), null));
 
-        skillData_RangedData = new SkillData.RangedData(ProjectileCode.MinotaurossAxe, 1f, 0f, new ProjectileData(40f, 5f, 10f, null, null));
+        skillData_RangedData = new SkillData.RangedData(ProjectileCode.MinotaurossAxe, 1f, 0f, new ProjectileData(35f, 5f, 10f, null, null));
 
         skillDatas.Add(new SkillData(20f, 5f, 0, 0f, 0f, 0f, 2, AnimatorWizard.FrameCountToSeconds(30), 0f, 0f, null, null, skillData_RangedData));
 
         skillInfo_LevelUpDatas = new List<SkillInfo.LevelUpData>();
 
-        skillInfo_LevelUpDatas.Add(new SkillInfo.LevelUpData(new SkillInfo.MeleeInfo.LevelUpData(2f), null));
+        skillInfo_LevelUpDatas.Add(new SkillInfo.LevelUpData(new SkillInfo.MeleeInfo.LevelUpData(5f), null));
 
-        skillInfo_LevelUpDatas.Add(new SkillInfo.LevelUpData(new SkillInfo.MeleeInfo.LevelUpData(2f), null));
+        skillInfo_LevelUpDatas.Add(new SkillInfo.LevelUpData(new SkillInfo.MeleeInfo.LevelUpData(5f), null));
 
-        skillInfo_LevelUpDatas.Add(new SkillInfo.LevelUpData(new SkillInfo.MeleeInfo.LevelUpData(2f), null));
+        skillInfo_LevelUpDatas.Add(new SkillInfo.LevelUpData(new SkillInfo.MeleeInfo.LevelUpData(5f), null));
 
         skillInfo_LevelUpDatas.Add(new SkillInfo.LevelUpData(null, new SkillInfo.RangedInfo.LevelUpData(new ProjectileInfo.LevelUpData(2f, null))));
 
-        characterInfo_LevelUpData = new CharacterInfo.LevelUpData(new DamageableInfo.LevelUpData(100f), new ExperienceInfo.LevelUpData(0f, 100f), 100f, skillInfo_LevelUpDatas);
+        characterInfo_LevelUpData = new CharacterInfo.LevelUpData(new DamageableInfo.LevelUpData(250f), new ExperienceInfo.LevelUpData(0f, 75f), 75f, skillInfo_LevelUpDatas);
 
-        characterDatas.Add(CharacterCode.Minotauros, new CharacterData(new MovementData(3f, 3f), new DamageableData(500f, 0f), new ExperienceData(0f, 0f), 0f, skillDatas, null, characterInfo_LevelUpData));
+        characterDatas.Add(CharacterCode.Minotauros, new CharacterData(new MovementData(3f, 3f), new DamageableData(500f, 0f), new ExperienceData(0f, 250f), 250f, skillDatas, null, characterInfo_LevelUpData));
 
         #endregion
 
@@ -343,7 +343,7 @@ public sealed class LevelData
             {
                 ItemType.Consumable, new List<ItemData>()
                 {
-                    this.itemDatas[ItemCode.Crenade],
+                    this.itemDatas[ItemCode.Grenade],
 
                     this.itemDatas[ItemCode.Medikit]
                 }
@@ -395,7 +395,7 @@ public sealed class LevelData
             },
         };
 
-        characterInfo_LevelUpData = new CharacterInfo.LevelUpData(new DamageableInfo.LevelUpData(0f), new ExperienceInfo.LevelUpData(100f, 0f), 0f, null);
+        characterInfo_LevelUpData = new CharacterInfo.LevelUpData(new DamageableInfo.LevelUpData(20f), new ExperienceInfo.LevelUpData(20f, 0f), 0f, null);
 
         characterDatas.Add(CharacterCode.Player, new CharacterData(new MovementData(3f, 4.5f, 1, 5f), new DamageableData(100f, 0f), new ExperienceData(100f, 0f), 0f, null, new InventoryData(itemDatas, counts), characterInfo_LevelUpData));
 
@@ -425,7 +425,7 @@ public sealed class LevelData
 
         shopItemDatas = new List<ShopItemData>()
         {
-            new ShopItemData(ItemCode.Crenade, 1, -1),
+            new ShopItemData(ItemCode.Grenade, 1, -1),
 
             new ShopItemData(ItemCode.Medikit, 1, -1),
         };
@@ -470,7 +470,7 @@ public sealed class LevelData
 
         spawnEnemyData = new List<WaveData.EnemySpawnData.SpawnEnemyData>()
         {
-        new WaveData.EnemySpawnData.SpawnEnemyData(CharacterCode.GiantSpider, 1, 2, 0),
+        new WaveData.EnemySpawnData.SpawnEnemyData(CharacterCode.GiantSpider, 1, 4, 0),
         };
 
         waveDatas.Add(new WaveData(180f, new WaveData.EnemySpawnData(2, spawnEnemyData), null));
@@ -481,7 +481,7 @@ public sealed class LevelData
 
         spawnEnemyData = new List<WaveData.EnemySpawnData.SpawnEnemyData>()
         {
-            new WaveData.EnemySpawnData.SpawnEnemyData(CharacterCode.GiantSpider, 2, 4, 0),
+            new WaveData.EnemySpawnData.SpawnEnemyData(CharacterCode.GiantSpider, 2, 8, 0),
         };
 
         waveDatas.Add(new WaveData(180f, new WaveData.EnemySpawnData(4, spawnEnemyData), null));
@@ -527,10 +527,12 @@ public sealed class LevelData
 
         spawnEnemyData = new List<WaveData.EnemySpawnData.SpawnEnemyData>()
         {
-            new WaveData.EnemySpawnData.SpawnEnemyData(CharacterCode.CrazyRabbit, 1, 4, 0),
+            new WaveData.EnemySpawnData.SpawnEnemyData(CharacterCode.CrazyRabbit, 2, 4, 0),
+
+            new WaveData.EnemySpawnData.SpawnEnemyData(CharacterCode.GiantSpider, 2, 1, 0),
         };
 
-        waveDatas.Add(new WaveData(180f, new WaveData.EnemySpawnData(4, spawnEnemyData), null));
+        waveDatas.Add(new WaveData(180f, new WaveData.EnemySpawnData(8, spawnEnemyData), null));
 
         #endregion
 
@@ -538,12 +540,12 @@ public sealed class LevelData
 
         spawnEnemyData = new List<WaveData.EnemySpawnData.SpawnEnemyData>()
         {
-            new WaveData.EnemySpawnData.SpawnEnemyData(CharacterCode.CrazyRabbit, 1, 2, 0),
+            new WaveData.EnemySpawnData.SpawnEnemyData(CharacterCode.CrazyRabbit, 2, 8, 0),
 
-            new WaveData.EnemySpawnData.SpawnEnemyData(CharacterCode.GiantSpider, 1, 2, 0),
+            new WaveData.EnemySpawnData.SpawnEnemyData(CharacterCode.GiantSpider, 2, 2, 0),
         };
 
-        waveDatas.Add(new WaveData(180f, new WaveData.EnemySpawnData(4, spawnEnemyData), null));
+        waveDatas.Add(new WaveData(180f, new WaveData.EnemySpawnData(10, spawnEnemyData), null));
 
         #endregion
 
@@ -559,7 +561,7 @@ public sealed class LevelData
 
         spawnEnemyData = new List<WaveData.EnemySpawnData.SpawnEnemyData>()
         {
-            new WaveData.EnemySpawnData.SpawnEnemyData(CharacterCode.Minotauros, 3, 1, 0),
+            new WaveData.EnemySpawnData.SpawnEnemyData(CharacterCode.Minotauros, 2, 1, 0),
         };
 
         waveDatas.Add(new WaveData(180f, new WaveData.EnemySpawnData(1, spawnEnemyData), null));

@@ -39,7 +39,7 @@ public abstract class Enemy : Character
         }
     }
 
-    protected bool _isMoving;
+    [SerializeField] protected bool _isMoving;
 
     protected bool isMoving
     {
@@ -91,19 +91,19 @@ public abstract class Enemy : Character
     {
         _characterData = GameMaster.instance.gameData.levelData.characterDatas[characterCode];
 
-        _characterInfo = new CharacterInfo(_characterData);
+        characterInfo = new CharacterInfo(_characterData);
 
         base._Awaken_();
     }
 
     public override void Initialize(int characterLevel)
     {
-        if (characterLevel != _characterInfo.characterLevel)
+        if (characterLevel != characterInfo.characterLevel)
         {
-            LevelUp(characterLevel - _characterInfo.characterLevel);
+            LevelUp(characterLevel - characterInfo.characterLevel);
         }
 
-        _characterInfo.Initialize();
+        characterInfo.Initialize();
     }
 
     protected override IEnumerator _Dead_()
@@ -117,10 +117,26 @@ public abstract class Enemy : Character
                 _attacker.GetExperiencePoint(_experienceInfo.experiencePoint_Drop);
             }
 
-            _attacker.GetMoney(_characterInfo.moneyAmount);
+            _attacker.GetMoney(characterInfo.moneyAmount);
         }
 
         _navMeshAgent.isStopped = true;
+
+        _navMeshAgent.velocity = Vector3.zero;
+
+        skillWizard.Rebind();
+
+        _skillInfo = null;
+
+        _attacker = null;
+
+        _destination = null;
+
+        _skillTarget = null;
+
+        _skillTarget_Head = null;
+
+        _isMoving = false;
 
         yield return base._Dead_();
 
@@ -137,18 +153,6 @@ public abstract class Enemy : Character
         _canvas.gameObject.SetActive(true);
 
         _healthPointBar.fillAmount = 0f;
-
-        skillWizard.Rebind();
-
-        _attacker = null;
-
-        _destination = null;
-
-        _skillTarget = null;
-
-        _skillTarget_Head = null;
-
-        _isMoving = false;
 
         ObjectPool.instance.Push(this);
     }
@@ -182,7 +186,7 @@ public abstract class Enemy : Character
                         _navMeshAgent.speed = _movementInfo.movingSpeed_Walk;
                     }
 
-                    animator.SetFloat("movingMotionSpeed", _characterInfo.movementInfo.movingSpeed_Multiply);
+                    animator.SetFloat("movingMotionSpeed", characterInfo.movementInfo.movingSpeed_Multiply);
                 }
 
                 else

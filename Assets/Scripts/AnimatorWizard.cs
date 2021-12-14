@@ -1,4 +1,6 @@
 
+using System;
+
 using System.Collections.Generic;
 
 using UnityEngine;
@@ -43,6 +45,19 @@ public sealed class AnimatorWizard : MonoBehaviour
     public void SetTrigger(string name)
     {
         animator.SetTrigger(name);
+    }
+
+    public void PlaySoundEffect(AudioClipCode audioClipCode)
+    {
+        var audioSourceMaster = AudioMaster.instance.Pop(audioClipCode);
+
+        audioSourceMaster.transform.parent = transform;
+
+        audioSourceMaster.transform.localPosition = Vector3.zero;
+
+        audioSourceMaster.gameObject.SetActive(true);
+
+        audioSourceMaster.Play();
     }
 
     public void AddEventAction(string key, UnityAction eventAction)

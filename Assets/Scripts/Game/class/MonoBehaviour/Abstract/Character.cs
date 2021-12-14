@@ -47,13 +47,13 @@ public abstract class Character : MonoBehaviour
 
     public SkillWizard skillWizard { get; protected set; } = null;
 
-    public CharacterData _characterData;
+    protected CharacterData _characterData;
 
-    protected CharacterInfo _characterInfo;
+    public CharacterInfo characterInfo { get; protected set; }
 
     protected MovementInfo _movementInfo  = null;
 
-    protected DamageableInfo _damageableInfo = null;
+    public DamageableInfo damageableInfo { get; set; } = null;
 
     protected ExperienceInfo _experienceInfo = null;
 
@@ -119,36 +119,36 @@ public abstract class Character : MonoBehaviour
 
     protected virtual void _Awaken_()
     {
-        _movementInfo = _characterInfo.movementInfo;
+        _movementInfo = characterInfo.movementInfo;
 
-        _damageableInfo = _characterInfo.damageableInfo;
+        damageableInfo = characterInfo.damageableInfo;
 
-        _experienceInfo = _characterInfo.experienceInfo;
+        _experienceInfo = characterInfo.experienceInfo;
 
-        _skillInfos = _characterInfo.skillInfos;
+        _skillInfos = characterInfo.skillInfos;
 
         if(_skillInfos != null)
         {
             _skillInfos_Count = _skillInfos.Count;
         }
 
-        _inventoryInfo = _characterInfo.inventoryInfo;
+        _inventoryInfo = characterInfo.inventoryInfo;
 
         if (_inventoryInfo != null)
         {
-            var items = _inventoryItems_GameObject.GetComponentsInChildren<InventoryItem>();
+            var inventoryitems = _inventoryItems_GameObject.GetComponentsInChildren<InventoryItem>();
 
-            if (items != null)
+            if (inventoryitems != null)
             {
-                int index_Max = items.Length;
+                int index_Max = inventoryitems.Length;
 
                 _inventoryItems = new Dictionary<ItemCode, InventoryItem>();
 
                 for (int index = 0; index < index_Max; ++index)
                 {
-                    _inventoryItems.Add(items[index].itemCode, items[index]);
+                    _inventoryItems.Add(inventoryitems[index].itemCode, inventoryitems[index]);
 
-                    items[index].Awaken(this);
+                    inventoryitems[index].Awaken(this);
                 }
             }
 
@@ -159,18 +159,12 @@ public abstract class Character : MonoBehaviour
                     { ItemType.Weapon, null },
                 };
 
-            int number = _inventoryInfo.currentItemNumbers[ItemType.Consumable];
+            _SetCurrentItem_(ItemType.Consumable, _inventoryInfo.currentItemNumbers[ItemType.Consumable]);
 
-            _SetCurrentItem_(ItemType.Consumable, number);
-
-            number = _inventoryInfo.currentItemNumbers[ItemType.Weapon];
-
-            _SetCurrentItem_(ItemType.Weapon, number);
+            _SetCurrentItem_(ItemType.Weapon, _inventoryInfo.currentItemNumbers[ItemType.Weapon]);
 
             StartCoroutine(_currentInventoryItems[ItemType.Weapon].Draw());
         }
-
-        _transformInfo = _characterInfo.transformInfo;
     }
 
     public virtual void Initialize(int characterLevel) { }
@@ -184,7 +178,7 @@ public abstract class Character : MonoBehaviour
             characterInfo_LevelUpData.level = characterLevel;
         }
 
-        _characterInfo.LevelUp(characterInfo_LevelUpData);
+        characterInfo.LevelUp(characterInfo_LevelUpData);
     }
 
     public void Launch()
@@ -216,16 +210,16 @@ public abstract class Character : MonoBehaviour
         {
             if (healthPoint > 0f || IsInvincible() == false)
             {
-                _damageableInfo.healthPoint += healthPoint;
+                damageableInfo.healthPoint += healthPoint;
 
-                if (_damageableInfo.healthPoint == 0f)
+                if (damageableInfo.healthPoint == 0f)
                 {
                     Dead();
                 }
 
                 else
                 {
-                    _healthPointBar.StartFillByLerp(1f - _damageableInfo.healthPoint / _damageableInfo.healthPoint_Max, 0.1f);
+                    _healthPointBar.StartFillByLerp(1f - damageableInfo.healthPoint / damageableInfo.healthPoint_Max, 0.1f);
                 }
             }
         }
@@ -249,13 +243,13 @@ public abstract class Character : MonoBehaviour
 
     protected IEnumerator Invincible()
     {
-        _damageableInfo.SetInvincibleTimer();
+        damageableInfo.SetInvincibleTimer();
 
-        while (_damageableInfo.invincibleTimer > 0f)
+        while (damageableInfo.invincibleTimer > 0f)
         {
             yield return null;
 
-            _damageableInfo.invincibleTimer -= Time.deltaTime;
+            damageableInfo.invincibleTimer -= Time.deltaTime;
         }
 
         invincible = null;
@@ -276,7 +270,7 @@ public abstract class Character : MonoBehaviour
 
     protected virtual IEnumerator _Dead_()
     {
-        _healthPointBar.StartFillByLerp(1f - _damageableInfo.healthPoint / _damageableInfo.healthPoint_Max, 0.1f);
+        _healthPointBar.StartFillByLerp(1f - damageableInfo.healthPoint / damageableInfo.healthPoint_Max, 0.1f);
 
         while (_healthPointBar.fillByLerp != null) yield return null;
     }
@@ -337,17 +331,29 @@ public abstract class Character : MonoBehaviour
 
                 var statusEffectCode = statusEffectInfo.statusEffectCode;
 
+                ParticleEffect particleEffect = null;
+
                 switch (statusEffectCode)
                 {
                     case StatusEffectCode.Healing:
 
-                        GetHealthPoint(_damageableInfo.healthPoint_Max * statusEffectInfo.power);
+                        particleEffect = ObjectPool.instance.Pop(ParticleEffectCode.Healing);
+
+                        particleEffect.transform.parent = transform;
+
+                        particleEffect.transform.localPosition = Vector3.zero;
+
+                        particleEffect.gameObject.SetActive(true);
+
+                        particleEffect.Play();
+
+                        GetHealthPoint(damageableInfo.healthPoint_Max * statusEffectInfo.power);
 
                         break;
 
                     default:
 
-                        var characterInfo_StatusEffectInfos = _characterInfo.statusEffectInfos;
+                        var characterInfo_StatusEffectInfos = characterInfo.statusEffectInfos;
 
                         if (characterInfo_StatusEffectInfos.ContainsKey(statusEffectCode) == true)
                         {
@@ -366,9 +372,30 @@ public abstract class Character : MonoBehaviour
 
                         else
                         {
+                            switch(statusEffectCode)
+                            {
+                                case StatusEffectCode.MovementSpeedDown:
+
+                                    particleEffect = ObjectPool.instance.Pop(ParticleEffectCode.MovementSpeedDown);
+
+                                    particleEffect.transform.parent = transform;
+
+                                    particleEffect.transform.position = head.position;
+
+                                    particleEffect.gameObject.SetActive(true);
+
+                                    particleEffect.Play();
+
+                                    break;
+
+                                default:
+
+                                    break;
+                            }
+
                             characterInfo_StatusEffectInfos.Add(statusEffectCode, statusEffectInfo);
 
-                            StartCoroutine(_StatusEffect_(statusEffectInfo));
+                            StartCoroutine(_StatusEffect_(statusEffectInfo, particleEffect));
                         }
 
                         break;
@@ -399,7 +426,7 @@ public abstract class Character : MonoBehaviour
         }
     }
 
-    protected IEnumerator _StatusEffect_(StatusEffectInfo statusEffectInfo)
+    protected IEnumerator _StatusEffect_(StatusEffectInfo statusEffectInfo, ParticleEffect particleEffect)
     {
         var statusEffectCode = statusEffectInfo.statusEffectCode;
 
@@ -416,7 +443,12 @@ public abstract class Character : MonoBehaviour
 
         GainStatusEffect(statusEffectCode, -statusEffectInfo.power);
 
-        _characterInfo.statusEffectInfos.Remove(statusEffectCode);
+        characterInfo.statusEffectInfos.Remove(statusEffectCode);
+
+        if(particleEffect != null)
+        {
+            particleEffect.Stop();
+        }
     }
 
     public virtual void GetMoney(float moneyAmount) { }

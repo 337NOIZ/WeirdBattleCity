@@ -3,9 +3,9 @@ public sealed class StatusEffectData
 {
     public readonly StatusEffectCode statusEffectCode;
 
-    public float power { get; private set; }
+    public readonly float power;
 
-    public float duration { get; private set; }
+    public readonly float duration;
 
     public StatusEffectData(StatusEffectCode statusEffectCode, float power, float duration)
     {

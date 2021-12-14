@@ -1,4 +1,6 @@
 
+using System.Collections;
+
 using UnityEngine;
 
 public sealed class GiantSpider : Enemy
@@ -16,6 +18,19 @@ public sealed class GiantSpider : Enemy
 
     protected override bool IsInvincible() { return false; }
 
+    protected override IEnumerator _Dead_()
+    {
+        var audioSourceMaster = AudioMaster.instance.Pop(AudioClipCode.Spider_Chirping_1);
+
+        audioSourceMaster.transform.position = transform.position;
+
+        audioSourceMaster.gameObject.SetActive(true);
+
+        audioSourceMaster.Play();
+
+        yield return base._Dead_();
+    }
+
     protected override bool IsSkillValid(int skillNumber)
     {
         var skillInfo = _skillInfos[skillNumber];
@@ -26,7 +41,7 @@ public sealed class GiantSpider : Enemy
             {
                 float range = skillInfo.range;
 
-                if (Vector3.Distance(transform.position, _destination.position) <= range == true)
+                if (Vector3.Distance(transform.position, _destination.position) <= range)
                 {
                     return PhysicsWizard.LineCast(_muzzle_0.transform.position, _skillTarget_Head.position, range, attackableLayers, _skillTarget);
                 }

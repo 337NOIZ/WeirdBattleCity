@@ -5,15 +5,18 @@ public sealed class TitleSceneMaster : SceneMaster
 {
     protected override IEnumerator _Opening_()
     {
+        backgroundMusic = AudioMaster.instance.Pop(AudioClipCode.Title_0);
+
+        backgroundMusic.gameObject.SetActive(true);
+
+        backgroundMusic.Play(1.5f);
+
         yield return base._Opening_();
     }
 
     public void Play()
     {
-        if(GameMaster.instance.gameInfo.levelInfo == null)
-        {
-            GameMaster.instance.NewLevelInfo();
-        }
+        GameMaster.instance.NewLevelInfo();
 
         LoadScene(GameMaster.instance.gameInfo.levelInfo.stageSceneCode);
     }

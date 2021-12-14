@@ -36,9 +36,7 @@ public sealed class Shotgun : Weapon
 
                     _animator.SetBool("isReloading", true);
 
-                    yield return CoroutineWizard.WaitForSeconds(_itemInfo.reloadingMotionTime);
-
-                    _animator.SetBool("isReloading", false);
+                    while (_animator.GetBool("isReloading") == true) yield return null;
                 }
             }
         }

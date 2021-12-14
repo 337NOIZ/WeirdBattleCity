@@ -7,7 +7,11 @@ public enum ParticleEffectCode
 
     GunBullet_Hit,
 
+    Healing,
+
     Minotauros_Dash,
+
+    MovementSpeedDown,
 
     PoisonBullet,
 }

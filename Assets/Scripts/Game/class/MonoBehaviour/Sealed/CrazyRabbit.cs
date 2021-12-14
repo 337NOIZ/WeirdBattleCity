@@ -42,6 +42,16 @@ public sealed class CrazyRabbit : Enemy
         (
             (hitBox) =>
             {
+                var audioSourceMaster = AudioMaster.instance.Pop(AudioClipCode.Bonk_0);
+
+                audioSourceMaster.transform.parent = transform;
+
+                audioSourceMaster.transform.position = Vector3.zero;
+
+                audioSourceMaster.gameObject.SetActive(true);
+
+                audioSourceMaster.Play();
+
                 hitBox.character.TakeAttack(this, _skillInfo.meleeInfo.damage, null);
             },
 
