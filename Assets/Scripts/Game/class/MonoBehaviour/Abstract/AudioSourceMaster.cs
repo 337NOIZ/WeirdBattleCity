@@ -25,22 +25,22 @@ public sealed class AudioSourceMaster : MonoBehaviour
 
     public void Play(float time)
     {
-        if (_Play != null)
+        if (_play != null)
         {
             _timer = time;
         }
 
         else
         {
-            _Play = Play_(time);
+            _play = _Play(time);
 
-            StartCoroutine(_Play);
+            StartCoroutine(_play);
         }
     }
 
-    private IEnumerator _Play = null;
+    private IEnumerator _play = null;
 
-    private IEnumerator Play_(float time)
+    private IEnumerator _Play(float time)
     {
         _timer = time;
 
@@ -62,14 +62,14 @@ public sealed class AudioSourceMaster : MonoBehaviour
 
     public void Stop()
     {
-        if(_Play != null)
+        if(_play != null)
         {
-            StopCoroutine(_Play);
+            StopCoroutine(_play);
 
             _timer = 0f;
         }
 
-        _Play = null;
+        _play = null;
 
         _audioSource.Stop();
 

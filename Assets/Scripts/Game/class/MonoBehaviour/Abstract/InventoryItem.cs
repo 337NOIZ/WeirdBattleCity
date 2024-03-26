@@ -54,7 +54,7 @@ public abstract class InventoryItem : Item
     {
         if (_skill == null)
         {
-            _skill = Skill_(skillNumber);
+            _skill = _Skill(skillNumber);
 
             StartCoroutine(_skill);
         }
@@ -62,13 +62,13 @@ public abstract class InventoryItem : Item
 
     protected IEnumerator _skill = null;
 
-    protected virtual IEnumerator Skill_(int skillNumber) { yield return _skill = null; }
+    protected virtual IEnumerator _Skill(int skillNumber) { yield return _skill = null; }
 
     public void StopSkill(bool keepAiming)
     {
         if (_stopSkill == null)
         {
-            _stopSkill = StopSkill_(keepAiming);
+            _stopSkill = _StopSkill(keepAiming);
 
             StartCoroutine(_stopSkill);
         }
@@ -76,11 +76,11 @@ public abstract class InventoryItem : Item
 
     protected IEnumerator _stopSkill = null;
 
-    protected virtual IEnumerator StopSkill_(bool keepAiming) { yield return _stopSkill = null; }
+    protected virtual IEnumerator _StopSkill(bool keepAiming) { yield return _stopSkill = null; }
 
     public virtual void StartReload() { }
 
     protected IEnumerator _reload = null;
 
-    protected virtual IEnumerator Reload_() { yield return null; }
+    protected virtual IEnumerator _Reload() { yield return null; }
 }

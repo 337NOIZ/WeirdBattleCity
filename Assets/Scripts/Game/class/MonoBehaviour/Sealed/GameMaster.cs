@@ -110,7 +110,7 @@ public sealed class GameMaster : MonoBehaviour
     {
         if (_recordPlayTime == null)
         {
-            _recordPlayTime = RecordPlayTime();
+            _recordPlayTime = _RecordPlayTime();
 
             StartCoroutine(_recordPlayTime);
         }
@@ -118,7 +118,7 @@ public sealed class GameMaster : MonoBehaviour
 
     private IEnumerator _recordPlayTime = null;
 
-    private IEnumerator RecordPlayTime()
+    private IEnumerator _RecordPlayTime()
     {
         while (true)
         {

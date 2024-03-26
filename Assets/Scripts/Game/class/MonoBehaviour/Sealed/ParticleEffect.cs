@@ -15,14 +15,14 @@ public sealed class ParticleEffect : MonoBehaviour
     {
         Stop();
 
-        _play = Play_();
+        _play = _Play();
 
         StartCoroutine(_play);
     }
 
     private IEnumerator _play = null;
 
-    private IEnumerator Play_()
+    private IEnumerator _Play()
     {
         _particleSystem.Play();
 

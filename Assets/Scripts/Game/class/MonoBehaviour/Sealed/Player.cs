@@ -89,7 +89,7 @@ public sealed class Player : Character
         _healthPointBar.StartFillByLerp(1f - damageableInfo.healthPoint / damageableInfo.healthPoint_Max, 0.1f);
     }
 
-    protected override IEnumerator _Launce_()
+    protected override IEnumerator _Launce()
     {
         while (true)
         {
@@ -172,7 +172,7 @@ public sealed class Player : Character
         }
     }
 
-    protected override IEnumerator _Dead_()
+    protected override IEnumerator _Dead()
     {
         VirtualController.instance.interactable = false;
 
@@ -184,7 +184,7 @@ public sealed class Player : Character
 
         audioSourceMaster.Play();
 
-        yield return base._Dead_();
+        yield return base._Dead();
 
         SceneMaster.instance.LoadScene(SceneCode.Title);
     }

@@ -11,13 +11,13 @@ public sealed class Medikit : Consumable
     {
         if (_skill == null)
         {
-            _skill = Skill_(skillNumber);
+            _skill = _Skill(skillNumber);
 
             StartCoroutine(_skill);
         }
     }
 
-    protected override IEnumerator Skill_(int skillNumber)
+    protected override IEnumerator _Skill(int skillNumber)
     {
         if (skillNumber > -1 && skillNumber < _skillInfos.Count)
         {

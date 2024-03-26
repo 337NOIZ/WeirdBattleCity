@@ -61,24 +61,22 @@ public class FadeScreen : MonoBehaviour
         fadeProgress = startFadeProgress;
     }
 
-    private IEnumerator fade = null;
-
     public IEnumerator Fade(string fadePatternName, float fadeSmoothness, float virtualFadeProgress, float targetFadeProgress, float fadeTime)
     {
-        if (fade != null)
+        if (_fade != null)
         {
-            StopCoroutine(fade);
+            StopCoroutine(_fade);
 
-            fade = null;
+            _fade = null;
 
             yield return null;
         }
 
-        fade = _Fade(fadePatternName, fadeSmoothness, virtualFadeProgress, targetFadeProgress, fadeTime);
+        _fade = _Fade(fadePatternName, fadeSmoothness, virtualFadeProgress, targetFadeProgress, fadeTime);
 
-        StartCoroutine(fade);
+        StartCoroutine(_fade);
 
-        while (fade != null)
+        while (_fade != null)
         {
             yield return null;
         }
@@ -98,6 +96,8 @@ public class FadeScreen : MonoBehaviour
     {
         yield return Fade(null, fadeSmoothness, fadeProgress, targetFadeProgress, fadeTime);
     }
+
+    private IEnumerator _fade = null;
 
     private IEnumerator _Fade(string fadePatternName, float fadeSmoothness, float virtualFadeProgress, float targetFadeProgress, float fadeTime)
     {
@@ -167,6 +167,6 @@ public class FadeScreen : MonoBehaviour
             image.raycastTarget = false;
         }
 
-        fade = null;
+        _fade = null;
     }
 }

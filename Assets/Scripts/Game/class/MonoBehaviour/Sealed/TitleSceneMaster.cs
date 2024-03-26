@@ -3,7 +3,7 @@ using System.Collections;
 
 public sealed class TitleSceneMaster : SceneMaster
 {
-    protected override IEnumerator _Opening_()
+    protected override IEnumerator _Opening()
     {
         backgroundMusic = AudioMaster.instance.Pop(AudioClipCode.Title_0);
 
@@ -11,7 +11,7 @@ public sealed class TitleSceneMaster : SceneMaster
 
         backgroundMusic.Play(1.5f);
 
-        yield return base._Opening_();
+        yield return base._Opening();
     }
 
     public void Play()

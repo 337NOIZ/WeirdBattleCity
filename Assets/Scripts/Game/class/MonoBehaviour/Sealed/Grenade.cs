@@ -16,7 +16,7 @@ public sealed class Grenade : Consumable
         _muzzle.Awaken(character.aim);
     }
 
-    protected override IEnumerator Skill_(int skillNumber)
+    protected override IEnumerator _Skill(int skillNumber)
     {
         if (skillNumber > -1 && skillNumber < _skillInfos.Count)
         {

@@ -3,7 +3,7 @@ using System.Collections;
 
 public sealed class CitySceneMaster : SceneMaster
 {
-    protected override IEnumerator _Opening_()
+    protected override IEnumerator _Opening()
     {
         if (GameMaster.instance.gameInfo.levelInfo == null)
         {
@@ -18,7 +18,7 @@ public sealed class CitySceneMaster : SceneMaster
 
         backgroundMusic.Play(1.5f);
 
-        yield return base._Opening_();
+        yield return base._Opening();
 
         yield return StageMaster.instance.Stage(SceneCode.City);
 

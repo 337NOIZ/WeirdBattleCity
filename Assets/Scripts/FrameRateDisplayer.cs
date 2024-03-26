@@ -28,12 +28,12 @@ public sealed class FrameRateDisplayer : MonoBehaviour
 
             if(_display == true)
             {
-                StartCoroutine(updateFrameRate);
+                StartCoroutine(_updateFrameRate);
             }
 
             else
             {
-                StopCoroutine(updateFrameRate);
+                StopCoroutine(_updateFrameRate);
             }
 
             frameRate_Text.gameObject.SetActive(_display);
@@ -42,14 +42,14 @@ public sealed class FrameRateDisplayer : MonoBehaviour
 
     private void Awake()
     {
-        updateFrameRate = UpdateFrameRate();
+        _updateFrameRate = _UpdateFrameRate();
 
         display = _display;
     }
 
-    private IEnumerator updateFrameRate = null;
+    private IEnumerator _updateFrameRate = null;
 
-    private IEnumerator UpdateFrameRate()
+    private IEnumerator _UpdateFrameRate()
     {
         var deltaTime = 0f;
 

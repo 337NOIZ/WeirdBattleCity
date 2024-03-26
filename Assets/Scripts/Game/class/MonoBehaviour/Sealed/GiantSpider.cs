@@ -18,7 +18,7 @@ public sealed class GiantSpider : Enemy
 
     protected override bool IsInvincible() { return false; }
 
-    protected override IEnumerator _Dead_()
+    protected override IEnumerator _Dead()
     {
         var audioSourceMaster = AudioMaster.instance.Pop(AudioClipCode.Spider_Chirping_1);
 
@@ -28,7 +28,7 @@ public sealed class GiantSpider : Enemy
 
         audioSourceMaster.Play();
 
-        yield return base._Dead_();
+        yield return base._Dead();
     }
 
     protected override bool IsSkillValid(int skillNumber)

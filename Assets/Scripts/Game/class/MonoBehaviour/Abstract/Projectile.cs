@@ -34,14 +34,14 @@ public abstract class Projectile : MonoBehaviour
 
         _actionOnHit = actionOnHit;
 
-        _launch = Launch_(projectileInfo);
+        _launch = _Launch(projectileInfo);
 
         StartCoroutine(_launch);
     }
 
     protected IEnumerator _launch = null;
 
-    protected virtual IEnumerator Launch_(ProjectileInfo projectileInfo)
+    protected virtual IEnumerator _Launch(ProjectileInfo projectileInfo)
     {
         _rigidbody.velocity = transform.forward * projectileInfo.force;
 

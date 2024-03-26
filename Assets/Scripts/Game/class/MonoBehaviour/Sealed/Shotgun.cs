@@ -16,7 +16,7 @@ public sealed class Shotgun : Weapon
         _muzzle.Awaken(_character.aim);
     }
 
-    protected override IEnumerator Reload_()
+    protected override IEnumerator _Reload()
     {
         StopSkill(false);
 

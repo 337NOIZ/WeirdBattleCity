@@ -20,7 +20,7 @@ public sealed class SubmachineGun : Weapon
         _muzzle.Awaken(_character.aim);
     }
 
-    protected override IEnumerator Skill_(int skillNumber)
+    protected override IEnumerator _Skill(int skillNumber)
     {
         _animator.SetBool("isAiming", true);
 
@@ -79,10 +79,10 @@ public sealed class SubmachineGun : Weapon
         _skill = null;
     }
 
-    protected override IEnumerator StopSkill_(bool keepAiming)
+    protected override IEnumerator _StopSkill(bool keepAiming)
     {
         isUsingSkill = false;
 
-        yield return base.StopSkill_(keepAiming);
+        yield return base._StopSkill(keepAiming);
     }
 }

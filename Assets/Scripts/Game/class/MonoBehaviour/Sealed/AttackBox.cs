@@ -89,7 +89,7 @@ public sealed class AttackBox : MonoBehaviour
 
             _allowNullHitBox = allowNullHitBox;
 
-            _trailCasting = TrailCasting_();
+            _trailCasting = _TrailCasting();
 
             StartCoroutine(_trailCasting);
         }
@@ -109,7 +109,7 @@ public sealed class AttackBox : MonoBehaviour
 
     private IEnumerator _trailCasting = null;
 
-    private IEnumerator TrailCasting_()
+    private IEnumerator _TrailCasting()
     {
         var attackableLayers = _attacker.attackableLayers;
 

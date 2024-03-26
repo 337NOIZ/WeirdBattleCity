@@ -52,7 +52,7 @@ public sealed class SkillWizard : MonoBehaviour
     {
         if (_skill == null)
         {
-            _skill = Skill_(animatorStance);
+            _skill = _Skill(animatorStance);
 
             StartCoroutine(_skill);
         }
@@ -60,7 +60,7 @@ public sealed class SkillWizard : MonoBehaviour
 
     private IEnumerator _skill = null;
 
-    private IEnumerator Skill_(string motionTriggerName)
+    private IEnumerator _Skill(string motionTriggerName)
     {
         if (_skillInfo.castingMotionTime > 0f)
         {
@@ -138,10 +138,10 @@ public sealed class SkillWizard : MonoBehaviour
 
     public void StartSkillCooldown(SkillInfo skillInfo)
     {
-        StartCoroutine(_SkillCooldown_(skillInfo));
+        StartCoroutine(_SkillCooldown(skillInfo));
     }
 
-    private IEnumerator _SkillCooldown_(SkillInfo skillInfo)
+    private IEnumerator _SkillCooldown(SkillInfo skillInfo)
     {
         do
         {

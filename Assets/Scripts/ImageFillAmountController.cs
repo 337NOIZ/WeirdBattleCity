@@ -28,7 +28,7 @@ public class ImageFillAmountController : MonoBehaviour
             StopFillByLerp();
         }
 
-        fillByLerp = FillByLerp(targetFillAmount, fillSpeed);
+        fillByLerp = _FillByLerp(targetFillAmount, fillSpeed);
 
         StartCoroutine(fillByLerp);
     }
@@ -45,7 +45,7 @@ public class ImageFillAmountController : MonoBehaviour
 
     public IEnumerator fillByLerp { get; private set; } = null;
 
-    private IEnumerator FillByLerp(float targetFillAmount, float fillSpeed)
+    private IEnumerator _FillByLerp(float targetFillAmount, float fillSpeed)
     {
         if(targetFillAmount > 1f)
         {

@@ -106,7 +106,7 @@ public abstract class Enemy : Character
         characterInfo.Initialize();
     }
 
-    protected override IEnumerator _Dead_()
+    protected override IEnumerator _Dead()
     {
         --EnemySpawner.instance.spawnCount;
 
@@ -138,7 +138,7 @@ public abstract class Enemy : Character
 
         _isMoving = false;
 
-        yield return base._Dead_();
+        yield return base._Dead();
 
         _canvas.gameObject.SetActive(false);
 
@@ -157,9 +157,9 @@ public abstract class Enemy : Character
         ObjectPool.instance.Push(this);
     }
 
-    protected override IEnumerator _Launce_()
+    protected override IEnumerator _Launce()
     {
-        StartCoroutine(_Thinking_());
+        StartCoroutine(_Thinking());
 
         while (true)
         {
@@ -202,9 +202,9 @@ public abstract class Enemy : Character
         }
     }
 
-    protected IEnumerator _Thinking_()
+    protected IEnumerator _Thinking()
     {
-        StartCoroutine(_SearchSkillTarget_());
+        StartCoroutine(_SearchSkillTarget());
 
         while (true)
         {
@@ -241,7 +241,7 @@ public abstract class Enemy : Character
         }
     }
 
-    protected IEnumerator _SearchSkillTarget_()
+    protected IEnumerator _SearchSkillTarget()
     {
         skillTarget = Player.instance;
 

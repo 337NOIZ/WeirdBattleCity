@@ -56,7 +56,7 @@ public sealed class GroundedCheckSphere : MonoBehaviour
                 StopCoroutine(_check);
             }
 
-            _check = Check_();
+            _check = _Check();
 
             StartCoroutine(_check);
         }
@@ -78,7 +78,7 @@ public sealed class GroundedCheckSphere : MonoBehaviour
     }
 
     private IEnumerator _check = null;
-    private IEnumerator Check_()
+    private IEnumerator _Check()
     {
         while (isCollision == true)
         {

@@ -24,19 +24,19 @@ public class MoneyBox : MonoBehaviour
     {
         if (_moneyAmount != moneyAmount)
 
-        if (_MoveTowardsMoneyAmount != null)
+        if (_moveTowardsMoneyAmount != null)
         {
-            StopCoroutine(_MoveTowardsMoneyAmount);
+            StopCoroutine(_moveTowardsMoneyAmount);
         }
 
-        _MoveTowardsMoneyAmount = MoveTowardsMoneyAmount_(moneyAmount, movingTime);
+        _moveTowardsMoneyAmount = _MoveTowardsMoneyAmount(moneyAmount, movingTime);
 
-        StartCoroutine(_MoveTowardsMoneyAmount);
+        StartCoroutine(_moveTowardsMoneyAmount);
     }
 
-    private IEnumerator _MoveTowardsMoneyAmount = null;
+    private IEnumerator _moveTowardsMoneyAmount = null;
 
-    private IEnumerator MoveTowardsMoneyAmount_(float moneyAmount, float movingTime)
+    private IEnumerator _MoveTowardsMoneyAmount(float moneyAmount, float movingTime)
     {
         if (movingTime > 0f)
         {
@@ -50,6 +50,6 @@ public class MoneyBox : MonoBehaviour
             }
         }
 
-        _MoveTowardsMoneyAmount = null;
+        _moveTowardsMoneyAmount = null;
     }
 }

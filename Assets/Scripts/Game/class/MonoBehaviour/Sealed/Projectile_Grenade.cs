@@ -5,7 +5,7 @@ public class Projectile_Grenade : Projectile
 {
     public override ProjectileCode projectileCode => ProjectileCode.Grenade;
 
-    protected override IEnumerator Launch_(ProjectileInfo projectileInfo)
+    protected override IEnumerator _Launch(ProjectileInfo projectileInfo)
     {
         _rigidbody.velocity = transform.forward * projectileInfo.force;
 

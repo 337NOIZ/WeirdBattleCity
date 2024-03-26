@@ -15,14 +15,14 @@ public sealed class SpinAndFloat : MonoBehaviour
 
         originalLocalPosition = transform.localPosition;
 
-        floatingRoutine = FloatingRoutine(delta, speed);
+        _floating = _Floating(delta, speed);
 
-        StartCoroutine(floatingRoutine);
+        StartCoroutine(_floating);
     }
 
-    private IEnumerator floatingRoutine = null;
+    private IEnumerator _floating = null;
 
-    private IEnumerator FloatingRoutine(Vector3 delta, float speed)
+    private IEnumerator _Floating(Vector3 delta, float speed)
     {
         while (true)
         {
@@ -34,11 +34,11 @@ public sealed class SpinAndFloat : MonoBehaviour
 
     public void StopFloating()
     {
-        if (floatingRoutine != null)
+        if (_floating != null)
         {
-            StopCoroutine(floatingRoutine);
+            StopCoroutine(_floating);
 
-            floatingRoutine = null;
+            _floating = null;
 
             transform.localPosition = originalLocalPosition;
         }
@@ -50,14 +50,14 @@ public sealed class SpinAndFloat : MonoBehaviour
 
         originalLocalEulerAngles = transform.localEulerAngles;
 
-        spiningRoutine = SpiningRoutine(direction);
+        _spining = _Spining(direction);
 
-        StartCoroutine(spiningRoutine);
+        StartCoroutine(_spining);
     }
 
-    private IEnumerator spiningRoutine = null;
+    private IEnumerator _spining = null;
 
-    private IEnumerator SpiningRoutine(Vector3 direction)
+    private IEnumerator _Spining(Vector3 direction)
     {
         while (true)
         {
@@ -69,11 +69,11 @@ public sealed class SpinAndFloat : MonoBehaviour
 
     public void StopSpining()
     {
-        if (spiningRoutine != null)
+        if (_spining != null)
         {
-            StopCoroutine(spiningRoutine);
+            StopCoroutine(_spining);
 
-            spiningRoutine = null;
+            _spining = null;
 
             transform.localEulerAngles = originalLocalEulerAngles;
         }

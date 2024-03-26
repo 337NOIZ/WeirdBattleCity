@@ -23,7 +23,7 @@ public sealed class CanvasGroupController : MonoBehaviour
             yield return null;
         }
 
-        _fadeAlpha = FadeAlpha_(virtualCurrentAlpha, targetAlpha, fadeTime);
+        _fadeAlpha = _FadeAlpha(virtualCurrentAlpha, targetAlpha, fadeTime);
 
         StartCoroutine(_fadeAlpha);
 
@@ -32,7 +32,7 @@ public sealed class CanvasGroupController : MonoBehaviour
 
     private IEnumerator _fadeAlpha = null;
 
-    private IEnumerator FadeAlpha_(float virtualCurrentAlpha, float targetAlpha, float fadeTime)
+    private IEnumerator _FadeAlpha(float virtualCurrentAlpha, float targetAlpha, float fadeTime)
     {
         if(targetAlpha < 0f)
         {

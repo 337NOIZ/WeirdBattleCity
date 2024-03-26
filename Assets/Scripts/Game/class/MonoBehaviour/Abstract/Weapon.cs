@@ -39,7 +39,7 @@ public abstract class Weapon : InventoryItem
 
     public override IEnumerator Store()
     {
-        yield return StopSkill_(false);
+        yield return _StopSkill(false);
 
         StopReload();
 
@@ -62,7 +62,7 @@ public abstract class Weapon : InventoryItem
         base.StartSkill(skillNumber);
     }
 
-    protected override IEnumerator Skill_(int skillNumber)
+    protected override IEnumerator _Skill(int skillNumber)
     {
         _animator.SetBool("isAiming", true);
 
@@ -110,7 +110,7 @@ public abstract class Weapon : InventoryItem
         _skill = null;
     }
 
-    protected override IEnumerator StopSkill_(bool keepAiming)
+    protected override IEnumerator _StopSkill(bool keepAiming)
     {
         _skillWizard.StopSkill();
 
@@ -133,13 +133,13 @@ public abstract class Weapon : InventoryItem
     {
         if (_reload == null)
         {
-            _reload = Reload_();
+            _reload = _Reload();
 
             StartCoroutine(_reload);
         }
     }
 
-    protected override IEnumerator Reload_()
+    protected override IEnumerator _Reload()
     {
         StopSkill(false);
 
@@ -199,7 +199,7 @@ public abstract class Weapon : InventoryItem
 
         else
         {
-            _keepAiming = KeepAiming_();
+            _keepAiming = _KeepAiming();
 
             StartCoroutine(_keepAiming);
         }
@@ -207,7 +207,7 @@ public abstract class Weapon : InventoryItem
 
     protected IEnumerator _keepAiming = null;
 
-    protected IEnumerator KeepAiming_()
+    protected IEnumerator _KeepAiming()
     {
         _keepAimingTimer = _keepAimingTime;
 

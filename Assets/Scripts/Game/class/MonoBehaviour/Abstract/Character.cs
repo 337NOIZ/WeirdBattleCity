@@ -159,9 +159,9 @@ public abstract class Character : MonoBehaviour
                     { ItemType.Weapon, null },
                 };
 
-            _SetCurrentItem_(ItemType.Consumable, _inventoryInfo.currentItemNumbers[ItemType.Consumable]);
+            SetCurrentItem(ItemType.Consumable, _inventoryInfo.currentItemNumbers[ItemType.Consumable]);
 
-            _SetCurrentItem_(ItemType.Weapon, _inventoryInfo.currentItemNumbers[ItemType.Weapon]);
+            SetCurrentItem(ItemType.Weapon, _inventoryInfo.currentItemNumbers[ItemType.Weapon]);
 
             StartCoroutine(_currentInventoryItems[ItemType.Weapon].Draw());
         }
@@ -183,10 +183,10 @@ public abstract class Character : MonoBehaviour
 
     public void Launch()
     {
-        StartCoroutine(_Launce_());
+        StartCoroutine(_Launce());
     }
 
-    protected virtual IEnumerator _Launce_() { yield return null; }
+    protected virtual IEnumerator _Launce() { yield return null; }
 
     public void TakeAttack(Character attacker, float damage, List<StatusEffectInfo> statusEffectInfos)
     {
@@ -227,11 +227,11 @@ public abstract class Character : MonoBehaviour
 
     protected virtual bool IsInvincible()
     {
-        if(invincible == null)
+        if(_invincible == null)
         {
-            invincible = Invincible();
+            _invincible = _Invincible();
 
-            StartCoroutine(invincible);
+            StartCoroutine(_invincible);
 
             return false;
         }
@@ -239,9 +239,9 @@ public abstract class Character : MonoBehaviour
         return true;
     }
 
-    protected IEnumerator invincible = null;
+    protected IEnumerator _invincible = null;
 
-    protected IEnumerator Invincible()
+    protected IEnumerator _Invincible()
     {
         damageableInfo.SetInvincibleTimer();
 
@@ -252,7 +252,7 @@ public abstract class Character : MonoBehaviour
             damageableInfo.invincibleTimer -= Time.deltaTime;
         }
 
-        invincible = null;
+        _invincible = null;
     }
 
     protected virtual void Dead()
@@ -265,10 +265,10 @@ public abstract class Character : MonoBehaviour
 
         _ragDoll.gameObject.SetActive(true);
 
-        StartCoroutine(_Dead_());
+        StartCoroutine(_Dead());
     }
 
-    protected virtual IEnumerator _Dead_()
+    protected virtual IEnumerator _Dead()
     {
         _healthPointBar.StartFillByLerp(1f - damageableInfo.healthPoint / damageableInfo.healthPoint_Max, 0.1f);
 
@@ -284,7 +284,7 @@ public abstract class Character : MonoBehaviour
 
         else
         {
-            _getExperiencePoint = GetExperiencePointRoutine_(experiencePoint);
+            _getExperiencePoint = _GetExperiencePoint(experiencePoint);
 
             StartCoroutine(_getExperiencePoint);
         }
@@ -292,7 +292,7 @@ public abstract class Character : MonoBehaviour
 
     protected IEnumerator _getExperiencePoint = null;
 
-    protected IEnumerator GetExperiencePointRoutine_(float experiencePoint)
+    protected IEnumerator _GetExperiencePoint(float experiencePoint)
     {
         _experienceInfo.experiencePoint += experiencePoint;
 
@@ -395,7 +395,7 @@ public abstract class Character : MonoBehaviour
 
                             characterInfo_StatusEffectInfos.Add(statusEffectCode, statusEffectInfo);
 
-                            StartCoroutine(_StatusEffect_(statusEffectInfo, particleEffect));
+                            StartCoroutine(_StatusEffect(statusEffectInfo, particleEffect));
                         }
 
                         break;
@@ -426,7 +426,7 @@ public abstract class Character : MonoBehaviour
         }
     }
 
-    protected IEnumerator _StatusEffect_(StatusEffectInfo statusEffectInfo, ParticleEffect particleEffect)
+    protected IEnumerator _StatusEffect(StatusEffectInfo statusEffectInfo, ParticleEffect particleEffect)
     {
         var statusEffectCode = statusEffectInfo.statusEffectCode;
 
@@ -508,7 +508,7 @@ public abstract class Character : MonoBehaviour
         {
             case ItemType.Consumable:
 
-                _SetCurrentItem_(ItemType.Consumable, number);
+                SetCurrentItem(ItemType.Consumable, number);
 
                 break;
 
@@ -516,7 +516,7 @@ public abstract class Character : MonoBehaviour
 
                 if(_switchingWeapon == null)
                 {
-                    _switchingWeapon = SwitchingWeapon_(number);
+                    _switchingWeapon = _SwitchingWeapon(number);
 
                     StartCoroutine(_switchingWeapon);
                 }
@@ -527,18 +527,18 @@ public abstract class Character : MonoBehaviour
 
     protected IEnumerator _switchingWeapon = null;
 
-    protected IEnumerator SwitchingWeapon_(int number)
+    protected IEnumerator _SwitchingWeapon(int number)
     {
         yield return _currentInventoryItems[ItemType.Weapon].Store();
 
-        _SetCurrentItem_(ItemType.Weapon, number);
+        SetCurrentItem(ItemType.Weapon, number);
 
         yield return _currentInventoryItems[ItemType.Weapon].Draw();
 
         _switchingWeapon = null;
     }
 
-    protected void _SetCurrentItem_(ItemType itemType, int number)
+    protected void SetCurrentItem(ItemType itemType, int number)
     {
         int number_Max = _inventoryInfo.itemInfos[itemType].Count - 1;
 
