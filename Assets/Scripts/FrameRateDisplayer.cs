@@ -1,4 +1,3 @@
-
 using System.Collections;
 
 using UnityEngine;
@@ -7,11 +6,7 @@ using UnityEngine.UI;
 
 public sealed class FrameRateDisplayer : MonoBehaviour
 {
-    [Space]
-
     [SerializeField] private bool _display = false;
-
-    [Space]
 
     [SerializeField] private Text frameRate_Text = null;
 

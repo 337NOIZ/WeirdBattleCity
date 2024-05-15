@@ -1,5 +1,4 @@
-﻿
-using UnityEngine;
+﻿using UnityEngine;
 
 public sealed class CameraResolution : MonoBehaviour
 {

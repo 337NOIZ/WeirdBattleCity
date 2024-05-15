@@ -1,4 +1,3 @@
-
 using System.Collections;
 
 using UnityEngine;
@@ -7,8 +6,6 @@ using UnityEngine.UI;
 
 public sealed class TimerDisplayer : Timer
 {
-    [Space]
-
     [SerializeField] private Text _text_Explain = null;
 
     [SerializeField] private Text _text_Timer = null;

@@ -1,23 +1,22 @@
-
 using System.Collections;
 
 using UnityEngine;
 
 using UnityEngine.UI;
 
-public class ImageFillAmountController : MonoBehaviour
+public sealed class ImageFillAmountController : MonoBehaviour
 {
     [SerializeField] private Image _image = null;
 
-    private float _fillAmount_;
+    private float _fillAmount;
 
     public float fillAmount
     {
         set
         {
-            _fillAmount_ = value;
+            _fillAmount = value;
 
-            _image.fillAmount = _fillAmount_;
+            _image.fillAmount = _fillAmount;
         }
     }
 
@@ -65,25 +64,25 @@ public class ImageFillAmountController : MonoBehaviour
             {
                 time += Time.deltaTime;
 
-                fillAmount = Mathf.Lerp(_fillAmount_, targetFillAmount, time * fillSpeed);
+                fillAmount = Mathf.Lerp(_fillAmount, targetFillAmount, time * fillSpeed);
 
                 yield return null;
             }
 
             float targetFillAmount_Adjusted = targetFillAmount;
 
-            if (_fillAmount_ < targetFillAmount)
+            if (_fillAmount < targetFillAmount)
             {
                 targetFillAmount_Adjusted -= 0.001f;
 
-                while (_fillAmount_ < targetFillAmount_Adjusted) yield return Fill();
+                while (_fillAmount < targetFillAmount_Adjusted) yield return Fill();
             }
 
-            else if(_fillAmount_ > targetFillAmount)
+            else if(_fillAmount > targetFillAmount)
             {
                 targetFillAmount_Adjusted += 0.001f;
 
-                while (_fillAmount_ > targetFillAmount_Adjusted) yield return Fill();
+                while (_fillAmount > targetFillAmount_Adjusted) yield return Fill();
             }
         }
 

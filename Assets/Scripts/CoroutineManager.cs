@@ -1,9 +1,8 @@
-
 using System.Collections.Generic;
 
 using UnityEngine;
 
-internal static class CoroutineManager
+public static class CoroutineManager
 {
     private class FloatComparer : IEqualityComparer<float>
     {

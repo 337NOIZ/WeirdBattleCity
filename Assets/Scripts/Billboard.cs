@@ -1,7 +1,6 @@
-
 using UnityEngine;
 
-public class Billboard : MonoBehaviour
+public sealed class Billboard : MonoBehaviour
 {
     [SerializeField] private Camera _camera = null;
 

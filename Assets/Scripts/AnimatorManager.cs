@@ -1,6 +1,3 @@
-
-using System;
-
 using System.Collections.Generic;
 
 using UnityEngine;
@@ -49,15 +46,15 @@ public sealed class AnimatorManager : MonoBehaviour
 
     public void PlaySoundEffect(AudioClipCode audioClipCode)
     {
-        var audioSourceMaster = AudioMaster.instance.Pop(audioClipCode);
+        var audioSource = AudioManager.instance.Pop(audioClipCode);
 
-        audioSourceMaster.transform.parent = transform;
+        audioSource.transform.parent = transform;
 
-        audioSourceMaster.transform.localPosition = Vector3.zero;
+        audioSource.transform.localPosition = Vector3.zero;
 
-        audioSourceMaster.gameObject.SetActive(true);
+        audioSource.gameObject.SetActive(true);
 
-        audioSourceMaster.Play();
+        audioSource.Play();
     }
 
     public void AddEventAction(string key, UnityAction eventAction)
