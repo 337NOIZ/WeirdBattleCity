@@ -43,7 +43,7 @@ public sealed class GiantSpider : Enemy
 
                 if (Vector3.Distance(transform.position, _destination.position) <= range)
                 {
-                    return PhysicsWizard.LineCast(_muzzle_0.transform.position, _skillTarget_Head.position, range, attackableLayers, _skillTarget);
+                    return PhysicsManager.LineCast(_muzzle_0.transform.position, _skillTarget_Head.position, range, attackableLayers, _skillTarget);
                 }
             }
         }

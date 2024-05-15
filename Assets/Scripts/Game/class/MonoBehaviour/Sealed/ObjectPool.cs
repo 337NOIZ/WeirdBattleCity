@@ -162,29 +162,21 @@ public sealed class ObjectPool : MonoBehaviour
 
     public void Push(Character character)
     {
-        character.transform.parent = transform;
-
         _characterPool[character.characterCode].Push(character);
     }
 
     public void Push(DroppedItem droppedItem)
     {
-        droppedItem.transform.parent = transform;
-
         _droppedItemPool[droppedItem.itemCode].Push(droppedItem);
     }
 
     public void Push(Projectile projectile)
     {
-        projectile.transform.parent = transform;
-
         _projectilePool[projectile.projectileCode].Push(projectile);
     }
 
     public void Push(ParticleEffect particleEffect)
     {
-        particleEffect.transform.parent = transform;
-
         _particleEffectPool[particleEffect.particleEffectCode].Push(particleEffect);
     }
 }

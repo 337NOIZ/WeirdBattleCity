@@ -7,7 +7,7 @@ using UnityEngine;
 
 using UnityEngine.Events;
 
-public sealed class AnimatorWizard : MonoBehaviour
+public sealed class AnimatorManager : MonoBehaviour
 {
     public static readonly float secondsPerFrame = 0.01666667f;
 

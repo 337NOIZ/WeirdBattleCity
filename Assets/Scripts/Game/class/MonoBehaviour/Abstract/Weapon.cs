@@ -68,7 +68,7 @@ public abstract class Weapon : InventoryItem
 
         yield return new WaitForSeconds(0.05f);
 
-        if (_skillWizard.TrySetSkill(_skillInfos[skillNumber]) == true)
+        if (_skillManager.TrySetSkill(_skillInfos[skillNumber]) == true)
         {
             var skillInfo_RangedInfo = _skillInfos[skillNumber].rangedInfo;
 
@@ -94,9 +94,9 @@ public abstract class Weapon : InventoryItem
                             skillInfo_RangedInfo
                         );
 
-                        _skillWizard.StartSkill(_motionTriggerName);
+                        _skillManager.StartSkill(_motionTriggerName);
 
-                        yield return _skillWizard.WaitForSkillEnd();
+                        yield return _skillManager.WaitForSkillEnd();
                     }
 
                     break;
@@ -112,7 +112,7 @@ public abstract class Weapon : InventoryItem
 
     protected override IEnumerator _StopSkill(bool keepAiming)
     {
-        _skillWizard.StopSkill();
+        _skillManager.StopSkill();
 
         while (_skill != null) yield return null;
 

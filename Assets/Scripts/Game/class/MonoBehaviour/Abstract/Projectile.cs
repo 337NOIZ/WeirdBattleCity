@@ -47,7 +47,7 @@ public abstract class Projectile : MonoBehaviour
 
         _attackBox.StartTrailCasting(ActionOnHit, true);
 
-        yield return CoroutineWizard.WaitForSeconds(projectileInfo.lifeTime);
+        yield return CoroutineManager.WaitForSeconds(projectileInfo.lifeTime);
 
         Disable();
     }

@@ -15,9 +15,9 @@ public abstract class InventoryItem : Item
 
     protected Animator _animator;
 
-    protected AnimatorWizard _animatorWizard;
+    protected AnimatorManager AnimatorManager;
 
-    protected SkillWizard _skillWizard;
+    protected SkillManager _skillManager;
 
     protected List<SkillInfo> _skillInfos;
 
@@ -29,9 +29,9 @@ public abstract class InventoryItem : Item
 
         _animator = character.animator;
 
-        _animatorWizard = character.animatorWizard;
+        AnimatorManager = character.animatorManager;
 
-        _skillWizard = character.skillWizard;
+        _skillManager = character.skillManager;
     }
 
     public virtual void Initialize(ItemInfo itemInfo)

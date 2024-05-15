@@ -32,7 +32,7 @@ public sealed class Shotgun : Weapon
 
                     _animator.SetFloat("reloadingMotionSpeed", _itemInfo.reloadingMotionSpeed);
 
-                    _animatorWizard.AddEventAction(_motionTriggerName, ReloadingEventAction);
+                    AnimatorManager.AddEventAction(_motionTriggerName, ReloadingEventAction);
 
                     _animator.SetBool("isReloading", true);
 
@@ -54,7 +54,7 @@ public sealed class Shotgun : Weapon
         {
             _animator.SetTrigger("finishReloading");
 
-            _animatorWizard.RemoveEventAction(_motionTriggerName);
+            AnimatorManager.RemoveEventAction(_motionTriggerName);
         }
     }
 }

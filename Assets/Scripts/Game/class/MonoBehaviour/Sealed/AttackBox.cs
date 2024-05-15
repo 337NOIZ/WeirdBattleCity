@@ -127,19 +127,19 @@ public sealed class AttackBox : MonoBehaviour
                 {
                     case AttackBoxType.BoxCast:
 
-                        isHit = PhysicsWizard.BoxCast(_tranformPosition_Previous, transform.position, transform.rotation, _scale, attackableLayers, out _raycastHit);
+                        isHit = PhysicsManager.BoxCast(_tranformPosition_Previous, transform.position, transform.rotation, _scale, attackableLayers, out _raycastHit);
 
                         break;
 
                     case AttackBoxType.LineCast:
 
-                        isHit = PhysicsWizard.LineCast(_tranformPosition_Previous, transform.position, _radius, attackableLayers, out _raycastHit);
+                        isHit = PhysicsManager.LineCast(_tranformPosition_Previous, transform.position, _radius, attackableLayers, out _raycastHit);
 
                         break;
 
                     case AttackBoxType.SphereCast:
 
-                        isHit = PhysicsWizard.SphereCast(_tranformPosition_Previous, transform.position, _radius, attackableLayers, out _raycastHit);
+                        isHit = PhysicsManager.SphereCast(_tranformPosition_Previous, transform.position, _radius, attackableLayers, out _raycastHit);
 
                         break;
 
@@ -160,19 +160,19 @@ public sealed class AttackBox : MonoBehaviour
                 {
                     case AttackBoxType.BoxCast:
 
-                        isHit = PhysicsWizard.BoxCastAll(_tranformPosition_Previous, transform.position, transform.rotation, _scale, attackableLayers, out _raycastHits);
+                        isHit = PhysicsManager.BoxCastAll(_tranformPosition_Previous, transform.position, transform.rotation, _scale, attackableLayers, out _raycastHits);
 
                         break;
 
                     case AttackBoxType.LineCast:
 
-                        isHit = PhysicsWizard.LineCastAll(_tranformPosition_Previous, transform.position, _radius, attackableLayers, out _raycastHits);
+                        isHit = PhysicsManager.LineCastAll(_tranformPosition_Previous, transform.position, _radius, attackableLayers, out _raycastHits);
 
                         break;
 
                     case AttackBoxType.SphereCast:
 
-                        isHit = PhysicsWizard.SphereCastAll(_tranformPosition_Previous, transform.position, _radius, attackableLayers, out _raycastHits);
+                        isHit = PhysicsManager.SphereCastAll(_tranformPosition_Previous, transform.position, _radius, attackableLayers, out _raycastHits);
 
                         break;
 
@@ -208,13 +208,13 @@ public sealed class AttackBox : MonoBehaviour
             {
                 case AttackBoxType.BoxCast:
 
-                    isHit = PhysicsWizard.BoxCast(transform.position, transform.rotation, _scale, attackableLayers, out _raycastHit);
+                    isHit = PhysicsManager.BoxCast(transform.position, transform.rotation, _scale, attackableLayers, out _raycastHit);
 
                     break;
 
                 case AttackBoxType.SphereCast:
 
-                    isHit = PhysicsWizard.SphereCast(transform.position, _radius, attackableLayers, out _raycastHit);
+                    isHit = PhysicsManager.SphereCast(transform.position, _radius, attackableLayers, out _raycastHit);
 
                     break;
 
@@ -235,13 +235,13 @@ public sealed class AttackBox : MonoBehaviour
             {
                 case AttackBoxType.BoxCast:
 
-                    isHit = PhysicsWizard.BoxCastAll(transform.position, transform.rotation, _scale, attackableLayers, out _raycastHits);
+                    isHit = PhysicsManager.BoxCastAll(transform.position, transform.rotation, _scale, attackableLayers, out _raycastHits);
 
                     break;
 
                 case AttackBoxType.SphereCast:
 
-                    isHit = PhysicsWizard.SphereCastAll(transform.position, _radius, attackableLayers, out _raycastHits);
+                    isHit = PhysicsManager.SphereCastAll(transform.position, _radius, attackableLayers, out _raycastHits);
 
                     break;
 

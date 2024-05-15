@@ -58,6 +58,6 @@ public sealed class CrazyRabbit : Enemy
             false
         );
 
-        animatorWizard.AddEventAction(_motionTriggerName, _attackBox_0.StopTrailCasting);
+        animatorManager.AddEventAction(_motionTriggerName, _attackBox_0.StopTrailCasting);
     }
 }

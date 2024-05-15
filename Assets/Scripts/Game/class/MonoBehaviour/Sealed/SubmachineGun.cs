@@ -26,7 +26,7 @@ public sealed class SubmachineGun : Weapon
 
         yield return new WaitForSeconds(0.05f);
 
-        if (_skillWizard.TrySetSkill(_skillInfos[skillNumber]) == true)
+        if (_skillManager.TrySetSkill(_skillInfos[skillNumber]) == true)
         {
             var skillInfo_RangedInfo = _skillInfos[skillNumber].rangedInfo;
 
@@ -56,9 +56,9 @@ public sealed class SubmachineGun : Weapon
                                 skillInfo_RangedInfo
                             );
 
-                            _skillWizard.StartSkill(_motionTriggerName);
+                            _skillManager.StartSkill(_motionTriggerName);
 
-                            yield return _skillWizard.WaitForSkillEnd();
+                            yield return _skillManager.WaitForSkillEnd();
                         }
 
                         else

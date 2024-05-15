@@ -50,7 +50,7 @@ public sealed class Grenade : Consumable
 
                             skillInfo.SetCoolTimer();
 
-                            _skillWizard.StartSkillCooldown(skillInfo);
+                            _skillManager.StartSkillCooldown(skillInfo);
                         }
 
                         break;

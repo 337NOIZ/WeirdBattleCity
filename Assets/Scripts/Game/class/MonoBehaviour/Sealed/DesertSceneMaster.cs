@@ -22,7 +22,7 @@ public sealed class DesertSceneMaster : SceneMaster
 
         yield return StageMaster.instance.Stage(SceneCode.Desert);
 
-        yield return CoroutineWizard.WaitForSeconds(5f);
+        yield return CoroutineManager.WaitForSeconds(5f);
 
         LoadScene(SceneCode.Title);
     }

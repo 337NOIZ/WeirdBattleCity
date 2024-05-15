@@ -1,7 +1,7 @@
 
 using UnityEngine;
 
-public sealed class PhysicsWizard : MonoBehaviour
+public static class PhysicsManager
 {
     private static RaycastHit raycastHit;
 

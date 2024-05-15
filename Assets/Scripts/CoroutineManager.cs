@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 using UnityEngine;
 
-internal static class CoroutineWizard
+internal static class CoroutineManager
 {
     private class FloatComparer : IEqualityComparer<float>
     {

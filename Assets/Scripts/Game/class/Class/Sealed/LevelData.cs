@@ -158,7 +158,7 @@ public sealed class LevelData
 
         skillDatas = new List<SkillData>()
         {
-            new SkillData(0f, 10f, 0, 0f, 0f, 0f, 0, AnimatorWizard.FrameCountToSeconds(30), 1f, 0f, null, null, new SkillData.RangedData(ProjectileCode.Grenade, 1f, 0f, new ProjectileData(10f, 3f, 0f, null, new ExplosionData(5f, 100, 1f, null)))),
+            new SkillData(0f, 10f, 0, 0f, 0f, 0f, 0, AnimatorManager.FrameCountToSeconds(30), 1f, 0f, null, null, new SkillData.RangedData(ProjectileCode.Grenade, 1f, 0f, new ProjectileData(10f, 3f, 0f, null, new ExplosionData(5f, 100, 1f, null)))),
         };
 
         itemDatas.Add(itemCode, new ItemData(itemType, itemCode, 5, 0, 0f, 0f, 0f, 0f, skillDatas, 0f));
@@ -194,9 +194,9 @@ public sealed class LevelData
 
         skillData_RangedData = new SkillData.RangedData(ProjectileCode.GunBullet, 1f, 0f, new ProjectileData(100f, 1f, 10f, null, null));
 
-        skillDatas.Add(new SkillData(0f, 0f, 0, 0f, 0f, 0f, 0, AnimatorWizard.FrameCountToSeconds(10), 0.5f, 0f, null, null, skillData_RangedData));
+        skillDatas.Add(new SkillData(0f, 0f, 0, 0f, 0f, 0f, 0, AnimatorManager.FrameCountToSeconds(10), 0.5f, 0f, null, null, skillData_RangedData));
 
-        itemDatas.Add(itemCode, new ItemData(itemType, itemCode, 2, 10, AnimatorWizard.FrameCountToSeconds(40), 0.5f, AnimatorWizard.FrameCountToSeconds(125), 2f, skillDatas, 0f));
+        itemDatas.Add(itemCode, new ItemData(itemType, itemCode, 2, 10, AnimatorManager.FrameCountToSeconds(40), 0.5f, AnimatorManager.FrameCountToSeconds(125), 2f, skillDatas, 0f));
 
         #endregion
 
@@ -208,9 +208,9 @@ public sealed class LevelData
 
         skillData_RangedData = new SkillData.RangedData(ProjectileCode.GunBullet, 10f, 5f, new ProjectileData(100f, 0.25f, 5f, null, null));
 
-        skillDatas.Add(new SkillData(0f, 0f, 0, 0f, 0f, 0f, 0, AnimatorWizard.FrameCountToSeconds(45), 1f, 0f, null, null, skillData_RangedData));
+        skillDatas.Add(new SkillData(0f, 0f, 0, 0f, 0f, 0f, 0, AnimatorManager.FrameCountToSeconds(45), 1f, 0f, null, null, skillData_RangedData));
 
-        itemDatas.Add(itemCode, new ItemData(itemType, itemCode, 1, 3, AnimatorWizard.FrameCountToSeconds(40), 0.5f, AnimatorWizard.FrameCountToSeconds(125), 2.5f, skillDatas, 0f));
+        itemDatas.Add(itemCode, new ItemData(itemType, itemCode, 1, 3, AnimatorManager.FrameCountToSeconds(40), 0.5f, AnimatorManager.FrameCountToSeconds(125), 2.5f, skillDatas, 0f));
 
         #endregion
 
@@ -222,9 +222,9 @@ public sealed class LevelData
 
         skillData_RangedData = new SkillData.RangedData(ProjectileCode.GunBullet, 1f, 1f, new ProjectileData(100f, 1f, 5f, null, null));
 
-        skillDatas.Add(new SkillData(0f, 0f, 0, 0f, 0f, 0f, 0, AnimatorWizard.FrameCountToSeconds(10), 0.1f, 0f, null, null, skillData_RangedData));
+        skillDatas.Add(new SkillData(0f, 0f, 0, 0f, 0f, 0f, 0, AnimatorManager.FrameCountToSeconds(10), 0.1f, 0f, null, null, skillData_RangedData));
 
-        itemDatas.Add(itemCode, new ItemData(itemType, itemCode, 1, 30, AnimatorWizard.FrameCountToSeconds(40), 0.5f, AnimatorWizard.FrameCountToSeconds(125), 2f, skillDatas, 0f));
+        itemDatas.Add(itemCode, new ItemData(itemType, itemCode, 1, 30, AnimatorManager.FrameCountToSeconds(40), 0.5f, AnimatorManager.FrameCountToSeconds(125), 2f, skillDatas, 0f));
 
         #endregion
 
@@ -251,7 +251,7 @@ public sealed class LevelData
 
         skillDatas = new List<SkillData>();
 
-        skillDatas.Add(new SkillData(1f, 0f, 0, 0f, 0f, 0f, 0, AnimatorWizard.FrameCountToSeconds(35), 0f, 0f, null, new SkillData.MeleeData(5f, null), null));
+        skillDatas.Add(new SkillData(1f, 0f, 0, 0f, 0f, 0f, 0, AnimatorManager.FrameCountToSeconds(35), 0f, 0f, null, new SkillData.MeleeData(5f, null), null));
 
         skillInfo_LevelUpDatas = new List<SkillInfo.LevelUpData>();
 
@@ -273,11 +273,11 @@ public sealed class LevelData
 
         skillData_RangedData = new SkillData.RangedData(ProjectileCode.SpiderWeb, 1f, 0f, new ProjectileData(25f, 1f, 0f, statusEffectDatas, null));
 
-        skillDatas.Add(new SkillData(10f, 5f, 0, 0f, 0f, 0f, 0, AnimatorWizard.FrameCountToSeconds(13), 1f, 0f, null, null, skillData_RangedData));
+        skillDatas.Add(new SkillData(10f, 5f, 0, 0f, 0f, 0f, 0, AnimatorManager.FrameCountToSeconds(13), 1f, 0f, null, null, skillData_RangedData));
 
         skillData_RangedData = new SkillData.RangedData(ProjectileCode.PoisonBullet, 1f, 0f, new ProjectileData(25f, 1f, 5f, null, null));
 
-        skillDatas.Add(new SkillData(10f, 1f, 0, 0f, 0f, 0f, 0, AnimatorWizard.FrameCountToSeconds(13), 1f, 0f, null, null, skillData_RangedData));
+        skillDatas.Add(new SkillData(10f, 1f, 0, 0f, 0f, 0f, 0, AnimatorManager.FrameCountToSeconds(13), 1f, 0f, null, null, skillData_RangedData));
 
         skillInfo_LevelUpDatas = new List<SkillInfo.LevelUpData>();
 
@@ -295,19 +295,19 @@ public sealed class LevelData
 
         skillDatas = new List<SkillData>();
 
-        skillDatas.Add(new SkillData(2f, 1f, 0, 0f, 0f, 0f, 0, AnimatorWizard.FrameCountToSeconds(70), 0f, 0f, null, new SkillData.MeleeData(10f, null), null));
+        skillDatas.Add(new SkillData(2f, 1f, 0, 0f, 0f, 0f, 0, AnimatorManager.FrameCountToSeconds(70), 0f, 0f, null, new SkillData.MeleeData(10f, null), null));
 
-        skillDatas.Add(new SkillData(2f, 1f, 0, 0f, 0f, 0f, 1, AnimatorWizard.FrameCountToSeconds(70), 0f, 0f, null, new SkillData.MeleeData(10f, null), null));
+        skillDatas.Add(new SkillData(2f, 1f, 0, 0f, 0f, 0f, 1, AnimatorManager.FrameCountToSeconds(70), 0f, 0f, null, new SkillData.MeleeData(10f, null), null));
 
         statusEffectDatas = new List<StatusEffectData>();
 
         statusEffectDatas.Add(new StatusEffectData(StatusEffectCode.MovementSpeedUp, 2f, 5f));
 
-        skillDatas.Add(new SkillData(20f, 10f, 0, AnimatorWizard.FrameCountToSeconds(70), 0f, 0f, 3, AnimatorWizard.FrameCountToSeconds(20), 0f, 5f, statusEffectDatas, new SkillData.MeleeData(10f, null), null));
+        skillDatas.Add(new SkillData(20f, 10f, 0, AnimatorManager.FrameCountToSeconds(70), 0f, 0f, 3, AnimatorManager.FrameCountToSeconds(20), 0f, 5f, statusEffectDatas, new SkillData.MeleeData(10f, null), null));
 
         skillData_RangedData = new SkillData.RangedData(ProjectileCode.MinotaurossAxe, 1f, 0f, new ProjectileData(35f, 5f, 10f, null, null));
 
-        skillDatas.Add(new SkillData(20f, 5f, 0, 0f, 0f, 0f, 2, AnimatorWizard.FrameCountToSeconds(30), 0f, 0f, null, null, skillData_RangedData));
+        skillDatas.Add(new SkillData(20f, 5f, 0, 0f, 0f, 0f, 2, AnimatorManager.FrameCountToSeconds(30), 0f, 0f, null, null, skillData_RangedData));
 
         skillInfo_LevelUpDatas = new List<SkillInfo.LevelUpData>();
 

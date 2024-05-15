@@ -46,11 +46,11 @@ public sealed class Minotauros : Enemy
                     {
                         case 2:
 
-                            return PhysicsWizard.LineCast(_head.position, _skillTarget_Head.position, range, attackableLayers, _skillTarget);
+                            return PhysicsManager.LineCast(_head.position, _skillTarget_Head.position, range, attackableLayers, _skillTarget);
 
                         case 3:
 
-                            return PhysicsWizard.LineCast(_minotaurossAxe_Right_Muzzle.transform.position, _skillTarget_Head.position, range, attackableLayers, _skillTarget);
+                            return PhysicsManager.LineCast(_minotaurossAxe_Right_Muzzle.transform.position, _skillTarget_Head.position, range, attackableLayers, _skillTarget);
 
                         default:
 
@@ -91,7 +91,7 @@ public sealed class Minotauros : Enemy
                             false
                         );
 
-                        animatorWizard.AddEventAction(_motionTriggerName, _minotaurossAxe_Left_AttackBox.StopTrailCasting);
+                        animatorManager.AddEventAction(_motionTriggerName, _minotaurossAxe_Left_AttackBox.StopTrailCasting);
 
                         break;
 
@@ -107,7 +107,7 @@ public sealed class Minotauros : Enemy
                             false
                         );
 
-                        animatorWizard.AddEventAction(_motionTriggerName, _minotaurossAxe_Right_AttackBox.StopTrailCasting);
+                        animatorManager.AddEventAction(_motionTriggerName, _minotaurossAxe_Right_AttackBox.StopTrailCasting);
 
                         break;
 
@@ -149,7 +149,7 @@ public sealed class Minotauros : Enemy
                             false
                         );
 
-                        animatorWizard.AddEventAction
+                        animatorManager.AddEventAction
                         (
                             _motionTriggerName,
 
@@ -161,7 +161,7 @@ public sealed class Minotauros : Enemy
 
                                 isMoving = false;
 
-                                animatorWizard.RemoveEventAction(_motionTriggerName);
+                                animatorManager.RemoveEventAction(_motionTriggerName);
                             }
                         );
 

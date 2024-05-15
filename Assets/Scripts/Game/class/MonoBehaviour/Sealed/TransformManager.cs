@@ -1,7 +1,7 @@
 
 using UnityEngine;
 
-public sealed class TransformWizard : MonoBehaviour
+public sealed class TransformManager : MonoBehaviour
 {
     [SerializeField] private Transform[] _transforms = null;
 
@@ -19,7 +19,7 @@ public sealed class TransformWizard : MonoBehaviour
         }
     }
 
-    public static void AlignTransforms(TransformWizard target, TransformWizard idol)
+    public static void AlignTransforms(TransformManager target, TransformManager idol)
     {
         AlignTransforms(target.transforms, idol.transforms);
     }

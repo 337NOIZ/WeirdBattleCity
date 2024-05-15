@@ -49,9 +49,9 @@ public sealed class Medikit : Consumable
 
                                 _character.TakeStatusEffect(skillInfo.statusEffectInfos);
 
-                                //skillInfo.SetCoolTimer();
+                                skillInfo.SetCoolTimer();
 
-                                //_skillWizard.StartSkillCooldown(skillInfo);
+                                _skillManager.StartSkillCooldown(skillInfo);
                             }
                         }
 

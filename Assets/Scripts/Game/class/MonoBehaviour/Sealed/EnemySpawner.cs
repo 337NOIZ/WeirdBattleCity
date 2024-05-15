@@ -1,6 +1,4 @@
 
-using UnityEngine;
-
 public sealed class EnemySpawner : Spawner
 {
     public static EnemySpawner instance { get; private set; }
@@ -16,11 +14,7 @@ public sealed class EnemySpawner : Spawner
     {
         var character = ObjectPool.instance.Pop(characterCode);
 
-        character.transform.parent = _spots[spotNumber];
-
-        character.transform.localPosition = Vector3.zero;
-
-        character.transform.localEulerAngles = Vector3.zero;
+        character.transform.position = _spots[spotNumber].position;
 
         character.gameObject.SetActive(true);
 

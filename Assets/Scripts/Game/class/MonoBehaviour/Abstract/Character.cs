@@ -9,7 +9,7 @@ public abstract class Character : MonoBehaviour
 {
     [SerializeField] protected LayerMask _attackableLayers = default;
 
-    [SerializeField] protected TransformWizard _model = null;
+    [SerializeField] protected TransformManager _model = null;
 
     [SerializeField] protected Transform _head = null;
 
@@ -17,7 +17,7 @@ public abstract class Character : MonoBehaviour
 
     [SerializeField] protected GameObject _inventoryItems_GameObject = null;
 
-    [SerializeField] protected TransformWizard _ragDoll = null;
+    [SerializeField] protected TransformManager _ragDoll = null;
 
     [SerializeField] protected Transform _aim = null;
 
@@ -43,9 +43,9 @@ public abstract class Character : MonoBehaviour
 
     public Animator animator { get; protected set; } = null;
 
-    public AnimatorWizard animatorWizard { get; protected set; } = null;
+    public AnimatorManager animatorManager { get; protected set; } = null;
 
-    public SkillWizard skillWizard { get; protected set; } = null;
+    public SkillManager skillManager { get; protected set; } = null;
 
     protected CharacterData _characterData;
 
@@ -99,13 +99,13 @@ public abstract class Character : MonoBehaviour
     {
         _rigidbody = GetComponent<Rigidbody>();
 
-        skillWizard = GetComponentInChildren<SkillWizard>();
+        skillManager = GetComponentInChildren<SkillManager>();
 
-        skillWizard.Awaken();
+        skillManager.Awaken();
 
-        animatorWizard = skillWizard.animatorWizard;
+        animatorManager = skillManager.animatorManager;
 
-        animator = skillWizard.animator;
+        animator = skillManager.animator;
 
         var hitBoxs = _hitBoxs_GameObject.GetComponentsInChildren<HitBox>();
 
@@ -183,10 +183,10 @@ public abstract class Character : MonoBehaviour
 
     public void Launch()
     {
-        StartCoroutine(_Launce());
+        StartCoroutine(_Launch());
     }
 
-    protected virtual IEnumerator _Launce() { yield return null; }
+    protected virtual IEnumerator _Launch() { yield return null; }
 
     public void TakeAttack(Character attacker, float damage, List<StatusEffectInfo> statusEffectInfos)
     {
@@ -259,7 +259,7 @@ public abstract class Character : MonoBehaviour
     {
         StopAllCoroutines();
 
-        TransformWizard.AlignTransforms(_ragDoll, _model);
+        TransformManager.AlignTransforms(_ragDoll, _model);
 
         _model.gameObject.SetActive(false);
 

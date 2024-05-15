@@ -27,7 +27,7 @@ public abstract class SceneMaster : MonoBehaviour
     {
         yield return ScreenEffecter.instance.primaryFadeScreen.Fade(2f, 0f, 1f, 2f);
 
-        yield return CoroutineWizard.WaitForSeconds(2f);
+        yield return CoroutineManager.WaitForSeconds(2f);
     }
 
     public void LoadScene(SceneCode sceneCode)

@@ -120,11 +120,11 @@ public abstract class Enemy : Character
             _attacker.GetMoney(characterInfo.moneyAmount);
         }
 
-        _navMeshAgent.isStopped = true;
-
         _navMeshAgent.velocity = Vector3.zero;
 
-        skillWizard.Rebind();
+        _navMeshAgent.enabled = false;
+
+        skillManager.Rebind();
 
         _skillInfo = null;
 
@@ -146,6 +146,8 @@ public abstract class Enemy : Character
 
         gameObject.SetActive(false);
 
+        _navMeshAgent.enabled = true;
+
         _model.gameObject.SetActive(true);
 
         _ragDoll.gameObject.SetActive(false);
@@ -157,13 +159,13 @@ public abstract class Enemy : Character
         ObjectPool.instance.Push(this);
     }
 
-    protected override IEnumerator _Launce()
+    protected override IEnumerator _Launch()
     {
         StartCoroutine(_Thinking());
 
         while (true)
         {
-            yield return CoroutineWizard.WaitForFixedUpdate;
+            yield return CoroutineManager.WaitForFixedUpdate;
 
             if (_skillTarget_Head != null)
             {
@@ -225,15 +227,15 @@ public abstract class Enemy : Character
                 isMoving = false;
             }
 
-            animatorWizard.AddEventAction(_motionTriggerName, SkillEventAction);
+            animatorManager.AddEventAction(_motionTriggerName, SkillEventAction);
 
-            skillWizard.TrySetSkill(_skillInfo);
+            skillManager.TrySetSkill(_skillInfo);
 
-            skillWizard.StartSkill(_motionTriggerName);
+            skillManager.StartSkill(_motionTriggerName);
 
-            yield return skillWizard.WaitForSkillEnd();
+            yield return skillManager.WaitForSkillEnd();
 
-            animatorWizard.RemoveEventAction(_motionTriggerName);
+            animatorManager.RemoveEventAction(_motionTriggerName);
 
             _skillInfo = null;
 

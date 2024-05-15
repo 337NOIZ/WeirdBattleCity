@@ -2121,7 +2121,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4400785878822792907, guid: 35788bc2c81338446b92fceb7d43013f, type: 3}
       propertyPath: m_RootOrder
-      value: 11
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4564560903165263256, guid: 35788bc2c81338446b92fceb7d43013f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -2297,7 +2297,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6704491622294884925, guid: 35788bc2c81338446b92fceb7d43013f, type: 3}
       propertyPath: m_Lens.m_SensorSize.x
-      value: 1.7777778
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6704491622440499451, guid: 35788bc2c81338446b92fceb7d43013f, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6704491622628758643, guid: 35788bc2c81338446b92fceb7d43013f, type: 3}
       propertyPath: m_Name

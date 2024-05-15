@@ -89,11 +89,11 @@ public sealed class Player : Character
         _healthPointBar.StartFillByLerp(1f - damageableInfo.healthPoint / damageableInfo.healthPoint_Max, 0.1f);
     }
 
-    protected override IEnumerator _Launce()
+    protected override IEnumerator _Launch()
     {
         while (true)
         {
-            yield return CoroutineWizard.WaitForFixedUpdate;
+            yield return CoroutineManager.WaitForFixedUpdate;
 
             if (_groundedCheckSphere.isGrounded == true)
             {
@@ -138,6 +138,11 @@ public sealed class Player : Character
             if (_moveDirection == Vector2.zero)
             {
                 animator.SetBool("isMoving", false);
+
+                if (animator.GetBool("isAiming") == true)
+                {
+                    animator.transform.forward = cameraForward;
+                }
             }
 
             else

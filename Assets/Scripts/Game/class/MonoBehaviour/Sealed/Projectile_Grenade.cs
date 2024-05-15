@@ -9,7 +9,7 @@ public class Projectile_Grenade : Projectile
     {
         _rigidbody.velocity = transform.forward * projectileInfo.force;
 
-        yield return CoroutineWizard.WaitForSeconds(projectileInfo.lifeTime);
+        yield return CoroutineManager.WaitForSeconds(projectileInfo.lifeTime);
 
         _attackBox.Check((hitBox) => { if (hitBox != null) _actionOnHit.Invoke(hitBox); });
 

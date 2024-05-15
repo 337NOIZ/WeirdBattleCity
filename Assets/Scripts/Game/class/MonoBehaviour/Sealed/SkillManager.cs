@@ -3,30 +3,28 @@ using System.Collections;
 
 using UnityEngine;
 
-using UnityEngine.Events;
-
-public sealed class SkillWizard : MonoBehaviour
+public sealed class SkillManager : MonoBehaviour
 {
     public Animator animator { get; private set; }
 
-    public AnimatorWizard animatorWizard { get; private set; }
+    public AnimatorManager animatorManager { get; private set; }
 
     private SkillInfo _skillInfo = null;
 
     public void Awaken()
     {
-        animatorWizard = GetComponent<AnimatorWizard>();
+        animatorManager = GetComponent<AnimatorManager>();
 
-        animatorWizard.Awaken();
+        animatorManager.Awaken();
 
-        animator = animatorWizard.animator;
+        animator = animatorManager.animator;
     }
 
     public void Rebind()
     {
         StopAllCoroutines();
 
-        animatorWizard.Rebind();
+        animatorManager.Rebind();
     }
 
     public bool TrySetSkill(SkillInfo skillInfo)
@@ -74,7 +72,7 @@ public sealed class SkillWizard : MonoBehaviour
 
             if (_skillInfo.castingMotionLoopTime > 0f)
             {
-                yield return CoroutineWizard.WaitForSeconds(_skillInfo.castingMotionLoopTime);
+                yield return CoroutineManager.WaitForSeconds(_skillInfo.castingMotionLoopTime);
 
                 animator.SetBool("isCasting", false);
             }
@@ -95,11 +93,11 @@ public sealed class SkillWizard : MonoBehaviour
 
         if (_skillInfo.skillMotionLoopTime > 0f)
         {
-            animatorWizard.InvokeEventAction(motionTriggerName);
+            animatorManager.InvokeEventAction(motionTriggerName);
 
-            yield return CoroutineWizard.WaitForSeconds(_skillInfo.skillMotionLoopTime);
+            yield return CoroutineManager.WaitForSeconds(_skillInfo.skillMotionLoopTime);
 
-            animatorWizard.InvokeEventAction(motionTriggerName);
+            animatorManager.InvokeEventAction(motionTriggerName);
 
             animator.SetBool("isUsingSkill", false);
         }
