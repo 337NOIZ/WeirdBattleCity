@@ -29,6 +29,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0, y: 0, z: 0}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3238854610571462403}
   - {fileID: 5942376278609995433}
@@ -78,7 +79,7 @@ MonoBehaviour:
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 1280, y: 720}
   m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0.5
+  m_MatchWidthOrHeight: 1
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
@@ -128,6 +129,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7367908337645076764}
   m_Father: {fileID: 0}
@@ -365,11 +367,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6b0a69ba4859cf84c82dc65bdc6f0cfd, type: 3}
---- !u!224 &5942376278609995433 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 4112912161904050940, guid: 6b0a69ba4859cf84c82dc65bdc6f0cfd, type: 3}
-  m_PrefabInstance: {fileID: 7738433669876769877}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1018751499100357682 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7297842933412880487, guid: 6b0a69ba4859cf84c82dc65bdc6f0cfd, type: 3}
@@ -381,3 +378,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff305b3e5c2609f40920c116b1554d07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!224 &5942376278609995433 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 4112912161904050940, guid: 6b0a69ba4859cf84c82dc65bdc6f0cfd, type: 3}
+  m_PrefabInstance: {fileID: 7738433669876769877}
+  m_PrefabAsset: {fileID: 0}
